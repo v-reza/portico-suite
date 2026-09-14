@@ -21,8 +21,11 @@ ROOT_WIN="$(cd "$ROOT" && pwd -W 2>/dev/null || echo "$ROOT")"
 
 # MSYS `ln -s` on a DIRECTORY silently copies it instead of linking, so every
 # link here goes through mklink /J (a real NTFS junction, no admin needed).
+# Paths are handed over in -m form (forward slashes) because a backslash in the
+# bash-built string is read as an escape and corrupts the command line.
 jlink() { # jlink <target> <linkpath>
-  cmd.exe /c "mklink /J \"$(cygpath -w "$2" 2>/dev/null || echo "$2")\" \"$(cygpath -w "$1" 2>/dev/null || echo "$1")\"" >/dev/null 2>&1
+  cmd.exe /c "mklink /J \"$(cygpath -m "$2" 2>/dev/null || echo "$2")\" \"$(cygpath -m "$1" 2>/dev/null || echo "$1")\"" >/dev/null 2>&1
+  [ -e "$2" ]
 }
 
 if [ ! -f "$WT/package.json" ]; then
