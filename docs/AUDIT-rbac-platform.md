@@ -21,7 +21,7 @@
 | T10 | `hub_login_states` nggak pernah dibersihkan; `expires_at` cuma dipakai saat consume. Tabel tumbuh terus. | — | Rendah |
 | T11 | JIT penautan lewat email pakai `WHERE email = $1` — case-sensitive. `Maya@x.com` vs `maya@x.com` bikin akun kedua, yang AC2 larang. | US-A31 AC2 | Sedang (perlu cek manual) |
 
-## Tabel lengkap 19 route handler + 2 endpoint operasional
+## Tabel lengkap 22 route handler (19 di `api/` + 3 operasional)
 
 Kolom `org_id` = ada filter kepemilikan workspace di query SQL-nya, bukan cuma di `can()`.
 `-` artinya handler-nya memang nggak menyentuh data milik satu workspace.
@@ -56,6 +56,7 @@ Kolom `org_id` = ada filter kepemilikan workspace di query SQL-nya, bukan cuma d
 | `api/auth/me` | GET | ya | — | — | aman |
 | `api/auth/hub/start` | GET | n/a | n/a | n/a | **T4/T5** |
 | `api/auth/hub/callback` | GET | n/a | n/a | n/a | **T6/T8/T9/T11** |
+| `app/favicon.ico` | GET | n/a | n/a | n/a | aman (redirect statis ke `/icon.svg`) |
 | `app/health` | GET | n/a | n/a | n/a | aman |
 | `app/ready` | GET | n/a | n/a | n/a | aman |
 
