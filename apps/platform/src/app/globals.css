@@ -24,3 +24,17 @@ body {
   background-size: 16px 16px;
   background-color: #f1f1f4;
 }
+
+/* Modal entrance (packages/ui/src/Modal.tsx). Kept here rather than inline so
+ * the keyframe exists in one place; the component pairs it with `motion-safe:`,
+ * so `prefers-reduced-motion` skips the animation entirely. */
+@keyframes po-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
