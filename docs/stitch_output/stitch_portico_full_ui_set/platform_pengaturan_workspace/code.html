@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform — Pengaturan Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: {
+              page: '#f7f7f8',
+              panel: '#ffffff',
+              elevated: '#ffffff',
+              hover: '#f1f1f3',
+              sunken: '#ededf0',
+              canvas: '#f1f1f4',
+              accentTint: '#f2f0fe',
+            },
+            accent: {
+              DEFAULT: '#6e5ae6',
+              hover: '#5b46d6',
+            },
+            text: {
+              primary: '#101014',
+              secondary: '#4b5058',
+              tertiary: '#62676f',
+              quaternary: '#9aa0aa',
+            },
+            border: {
+              standard: 'rgba(15,23,42,0.10)',
+              subtle: 'rgba(15,23,42,0.06)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f7f8;
+      color: #101014;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.12);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.20);
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-row select-none bg-[#f7f7f8]">
+
+  <!-- RAIL (56px) -->
+  <aside class="w-[56px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col items-center justify-between py-3 z-30 shrink-0">
+    <!-- Top Apps Section -->
+    <div class="flex flex-col items-center gap-2 w-full">
+      <!-- Hub / Portico Logo Icon -->
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#6e5ae6] mb-2 cursor-pointer hover:bg-[#f1f1f3] transition-colors" title="Portico Suite">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 3v3m0 12v3M3 12h3m12 0h3m-2.6-6.4-2.1 2.1m-6.6 6.6-2.1 2.1m0-10.8 2.1 2.1m6.6 6.6 2.1 2.1"></path>
+        </svg>
+      </div>
+
+      <!-- App [A]: Platform (ACTIVE) -->
+      <a href="#" class="w-9 h-9 rounded-md bg-[#f2f0fe] text-[#5b46d6] flex items-center justify-center transition-colors" title="Platform (Aktif)">
+        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+      </a>
+
+      <!-- App [B]: Helpdesk -->
+      <a href="#" class="w-9 h-9 rounded-md text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] flex items-center justify-center transition-colors" title="Helpdesk">
+        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+      </a>
+
+      <!-- App [C]: Code Review -->
+      <a href="#" class="w-9 h-9 rounded-md text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] flex items-center justify-center transition-colors" title="Code Review">
+        <span class="material-symbols-outlined text-[20px]">code</span>
+      </a>
+    </div>
+
+    <!-- Bottom Rail Section -->
+    <div class="flex flex-col items-center gap-2 w-full">
+      <div class="w-7 h-[1px] bg-[rgba(15,23,42,0.10)] my-1"></div>
+      <a href="#" class="w-9 h-9 rounded-md text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] flex items-center justify-center transition-colors" title="Pengaturan Sistem">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR (236px) -->
+  <aside class="w-[236px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between shrink-0 z-20">
+    <!-- Top Wordmark & Navigation -->
+    <div class="flex flex-col">
+      <!-- Sidebar Header / Wordmark -->
+      <div class="h-12 px-4 flex items-center border-b border-[rgba(15,23,42,0.06)]">
+        <span class="text-[15px] font-[590] text-[#101014] tracking-tight">Platform</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="p-3 space-y-4 overflow-y-auto">
+        <!-- APPS Group -->
+        <div>
+          <div class="px-2.5 pb-1.5 text-[11px] font-mono uppercase tracking-wider text-[#9aa0aa]">APPS</div>
+          <nav class="space-y-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">widgets</span>
+                <span>Semua Apps</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">6</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">database</span>
+                <span>Data</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">1</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">dashboard_customize</span>
+                <span>Komponen</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">18</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">sync_alt</span>
+                <span>Integrasi</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">9</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- WORKFLOW Group -->
+        <div>
+          <div class="px-2.5 pb-1.5 text-[11px] font-mono uppercase tracking-wider text-[#9aa0aa]">WORKFLOW</div>
+          <nav class="space-y-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">account_tree</span>
+                <span>Alur Kerja</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">24</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">play_circle</span>
+                <span>Eksekusi</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">142</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">neurology</span>
+                <span>Model & LLM</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#9aa0aa]">4</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[17px] text-[#62676f]">vpn_key</span>
+                <span>Kunci API</span>
+              </div>
+            </a>
+          </nav>
+        </div>
+
+        <!-- SETTINGS / PENGATURAN (ACTIVE) -->
+        <div class="pt-1 border-t border-[rgba(15,23,42,0.06)]">
+          <a href="#" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] font-[560] bg-[#f2f0fe] text-[#5b46d6]">
+            <span class="material-symbols-outlined text-[17px] text-[#5b46d6]">tune</span>
+            <span>Pengaturan</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Card (Bottom of Sidebar) -->
+    <div class="p-3 border-t border-[rgba(15,23,42,0.10)] bg-[#ffffff]">
+      <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+          SR
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="text-[12px] font-[560] text-[#101014] truncate leading-tight">Siti Rahmawati</span>
+          <span class="text-[11px] text-[#62676f] truncate leading-tight">Platform Admin</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA (TOP BAR + DUA KOLOM PANE ISI) -->
+  <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-[#f7f7f8]">
+
+    <!-- TOP BAR (48px) HANYA DI ATAS PANE ISI -->
+    <header class="h-12 w-full bg-[#ffffff] border-b border-[rgba(15,23,42,0.10)] px-5 flex items-center justify-between shrink-0 z-10">
+      <!-- Title -->
+      <div class="flex items-center gap-2">
+        <h1 class="text-[15px] font-[590] text-[#101014] tracking-tight">Pengaturan</h1>
+      </div>
+
+      <!-- Right: Compact Search + Avatar User -->
+      <div class="flex items-center gap-3">
+        <div class="relative w-56">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-[#9aa0aa]">search</span>
+          <input 
+            type="text" 
+            placeholder="Cari pengaturan..." 
+            class="w-full h-7 pl-8 pr-2.5 text-[12px] bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded-md text-[#101014] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] transition-colors"
+          />
+        </div>
+        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0 cursor-pointer">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- PANE ISI — DUA KOLOM -->
+    <div class="flex-1 flex flex-row min-h-0 overflow-hidden relative">
+
+      <!-- NAV TAB KIRI 200px (di dalam pane isi) -->
+      <aside class="w-[200px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] py-4 px-2 flex flex-col gap-0.5 shrink-0 select-none">
+        <a href="#" class="flex items-center px-3 py-2 text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] rounded-md transition-colors">
+          General
+        </a>
+        <!-- ACTIVE TAB: Anggota (bg #f2f0fe + teks #5b46d6 + strip kiri 2px violet) -->
+        <a href="#" class="flex items-center px-3 py-2 text-[13px] font-[560] bg-[#f2f0fe] text-[#5b46d6] rounded-md relative transition-colors">
+          <span class="absolute left-0 top-1.5 bottom-1.5 w-[2px] bg-[#5b46d6] rounded-r"></span>
+          Anggota
+        </a>
+        <a href="#" class="flex items-center px-3 py-2 text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] rounded-md transition-colors">
+          Peran
+        </a>
+        <a href="#" class="flex items-center px-3 py-2 text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] rounded-md transition-colors">
+          Kredensial
+        </a>
+        <a href="#" class="flex items-center px-3 py-2 text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] rounded-md transition-colors">
+          Integrasi
+        </a>
+      </aside>
+
+      <!-- PANE KANAN (scroll sendiri) MENAMPILKAN TAB "ANGGOTA" -->
+      <main class="flex-1 h-full overflow-y-auto bg-[#f7f7f8] flex flex-col justify-between pb-16">
+        <div class="p-6 max-w-6xl w-full mx-auto">
+          <!-- Card Container with Hairline Border -->
+          <div class="bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded-lg overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
+            
+            <!-- BARIS ALAT 44px: Search kiri + Tombol primer "Undang anggota" kanan -->
+            <div class="h-11 px-4 border-b border-[rgba(15,23,42,0.10)] bg-[#ffffff] flex items-center justify-between gap-4">
+              <div class="relative w-64">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-[#9aa0aa]">search</span>
+                <input 
+                  type="text" 
+                  placeholder="Cari nama atau surel..." 
+                  class="w-full h-7 pl-8 pr-2.5 text-[12px] bg-[#f7f7f8] border border-[rgba(15,23,42,0.08)] rounded-md text-[#101014] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] focus:bg-[#ffffff] transition-all"
+                />
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button class="h-7 px-3 rounded-md bg-[#6e5ae6] hover:bg-[#5b46d6] text-[#ffffff] text-[12px] font-[560] flex items-center gap-1.5 transition-colors shadow-sm">
+                  <span class="material-symbols-outlined text-[15px]">person_add</span>
+                  <span>Undang anggota</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- TABEL ANGGOTA -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <!-- Header: 36px mono-label #62676f bg #f7f7f8 -->
+                <thead>
+                  <tr class="h-9 bg-[#f7f7f8] border-b border-[rgba(15,23,42,0.10)] text-[11px] font-mono uppercase tracking-wider text-[#62676f]">
+                    <th class="px-4 font-[500] w-[240px]">Nama</th>
+                    <th class="px-4 font-[500] w-[240px]">Email</th>
+                    <th class="px-4 font-[500] w-[140px]">Peran</th>
+                    <th class="px-4 font-[500] w-[160px]">Status</th>
+                    <th class="px-4 font-[500] text-right w-[160px]">Terakhir Aktif</th>
+                    <th class="px-4 font-[500] text-right w-[80px]">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[rgba(15,23,42,0.10)] text-[13px]">
+                  
+                  <!-- Baris 1: Siti Rahmawati (Admin terakhir - PROTECTED) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          SR
+                        </div>
+                        <div class="flex flex-col">
+                          <span class="font-[560] text-[#101014] leading-tight">Siti Rahmawati</span>
+                          <span class="text-[11px] text-[#62676f] leading-tight">Anda</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      siti.rahmawati@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <!-- Badge peran: admin bg #f2f0fe teks #5b46d6 -->
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[560] bg-[#f2f0fe] text-[#5b46d6]">
+                        admin
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <!-- Badge status: Aktif -->
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#e8f6ee] text-[#15803d]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
+                        Aktif
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058] text-right">
+                      Sekarang
+                    </td>
+                    <td class="px-4 py-2 text-right relative">
+                      <div class="inline-flex flex-col items-end">
+                        <button disabled class="p-1 rounded text-[#9aa0aa] cursor-not-allowed opacity-60" title="Admin terakhir tidak bisa diturunkan">
+                          <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                        </button>
+                        <span class="text-[10px] text-[#62676f] italic block text-right mt-0.5">Admin terakhir tidak bisa diturunkan</span>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Baris 2: Ahmad Fauzi (Builder) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          AF
+                        </div>
+                        <span class="font-[500] text-[#101014]">Ahmad Fauzi</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      ahmad.f@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <!-- Badge peran: builder/agent bg #ededf0 teks #4b5058 -->
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#ededf0] text-[#4b5058]">
+                        builder
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#e8f6ee] text-[#15803d]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
+                        Aktif
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058] text-right">
+                      14 mnt lalu
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button class="p-1 rounded hover:bg-[#ededf0] text-[#62676f] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Baris 3: Budi Santoso (Agent - Menunggu Undangan) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          BS
+                        </div>
+                        <span class="font-[500] text-[#101014]">Budi Santoso</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      budi.s@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#ededf0] text-[#4b5058]">
+                        agent
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <!-- Badge status: Menunggu undangan -->
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#fdf1e3] text-[#b45309]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#d97706]"></span>
+                        Menunggu undangan
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#9aa0aa] text-right">
+                      —
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button class="p-1 rounded hover:bg-[#ededf0] text-[#62676f] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Baris 4: Dewi Lestari (Builder) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          DL
+                        </div>
+                        <span class="font-[500] text-[#101014]">Dewi Lestari</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      dewi.l@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#ededf0] text-[#4b5058]">
+                        builder
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#e8f6ee] text-[#15803d]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
+                        Aktif
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058] text-right">
+                      2 jam lalu
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button class="p-1 rounded hover:bg-[#ededf0] text-[#62676f] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Baris 5: Rizky Pratama (Agent) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          RP
+                        </div>
+                        <span class="font-[500] text-[#101014]">Rizky Pratama</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      rizky.p@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#ededf0] text-[#4b5058]">
+                        agent
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#e8f6ee] text-[#15803d]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
+                        Aktif
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058] text-right">
+                      Kemarin
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button class="p-1 rounded hover:bg-[#ededf0] text-[#62676f] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Baris 6: Intan Permata (Builder - Menunggu Undangan) -->
+                  <tr class="h-12 bg-[#ffffff] hover:bg-[#f1f1f3] transition-colors">
+                    <td class="px-4 py-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-[26px] h-[26px] rounded-full bg-[#ededf0] text-[#4b5058] text-[11px] font-[560] flex items-center justify-center shrink-0">
+                          IP
+                        </div>
+                        <span class="font-[500] text-[#101014]">Intan Permata</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#4b5058]">
+                      intan.permata@acme.corp
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#ededf0] text-[#4b5058]">
+                        builder
+                      </span>
+                    </td>
+                    <td class="px-4 py-2">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-[500] bg-[#fdf1e3] text-[#b45309]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#d97706]"></span>
+                        Menunggu undangan
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 font-mono text-[12px] text-[#9aa0aa] text-right">
+                      —
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button class="p-1 rounded hover:bg-[#ededf0] text-[#62676f] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer Pagination / Summary -->
+            <div class="h-10 px-4 border-t border-[rgba(15,23,42,0.10)] bg-[#ffffff] flex items-center justify-between text-[12px] text-[#62676f]">
+              <span>Menampilkan 1–6 dari 6 anggota</span>
+              <div class="flex items-center gap-1.5">
+                <button disabled class="px-2 py-1 text-[11px] rounded border border-[rgba(15,23,42,0.10)] text-[#9aa0aa] bg-[#f7f7f8] cursor-not-allowed">Sebelumnya</button>
+                <button class="px-2 py-1 text-[11px] rounded border border-[rgba(15,23,42,0.10)] text-[#101014] bg-[#ffffff] font-medium">1</button>
+                <button disabled class="px-2 py-1 text-[11px] rounded border border-[rgba(15,23,42,0.10)] text-[#9aa0aa] bg-[#f7f7f8] cursor-not-allowed">Berikutnya</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STICKY BAR BAWAH: "Perubahan belum disimpan" + tombol Batal / Simpan -->
+        <div class="fixed bottom-0 left-[292px] right-0 h-14 bg-[#ffffff] border-t border-[rgba(15,23,42,0.10)] px-6 flex items-center justify-between z-40 shadow-[0_-2px_10px_rgba(15,23,42,0.04)]">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#d97706] animate-pulse"></span>
+            <span class="text-[13px] font-[500] text-[#101014]">Perubahan belum disimpan</span>
+            <span class="text-[12px] text-[#62676f] ml-1 hidden sm:inline">(1 peran anggota dimodifikasi)</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="h-8 px-3 rounded-md text-[13px] font-[500] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] border border-[rgba(15,23,42,0.10)] transition-colors">
+              Batal
+            </button>
+            <button class="h-8 px-4 rounded-md text-[13px] font-[560] bg-[#6e5ae6] hover:bg-[#5b46d6] text-[#ffffff] transition-colors shadow-sm flex items-center gap-1.5">
+              <span>Simpan perubahan</span>
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

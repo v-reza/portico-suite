@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lacak Tiket - Portico Helpdesk</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "text-primary": "#101014",
+            "on-surface-variant": "#47464b",
+            "secondary": "#5a5f67",
+            "info": "#6e5ae6",
+            "accent": "#6e5ae6",
+            "on-secondary-container": "#60656d",
+            "inverse-on-surface": "#f0f1f2",
+            "tertiary-container": "#171c23",
+            "on-primary-fixed-variant": "#47464b",
+            "on-secondary-fixed": "#171c23",
+            "surface": "#f9f9fa",
+            "surface-bright": "#f9f9fa",
+            "surface-accent-tint": "#f2f0fe",
+            "on-tertiary-fixed-variant": "#42474f",
+            "on-tertiary-fixed": "#171c23",
+            "surface-page": "#f7f7f8",
+            "outline": "#78767b",
+            "on-background": "#1a1c1d",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "secondary-fixed-dim": "#c2c7d0",
+            "error-container": "#ffdad6",
+            "diff-context-bg": "#fbfbfc",
+            "surface-variant": "#e2e2e3",
+            "surface-dim": "#dadadb",
+            "inverse-primary": "#c8c5cb",
+            "tertiary-fixed": "#dee3ec",
+            "on-surface": "#1a1c1d",
+            "text-quaternary": "#9aa0aa",
+            "on-tertiary-container": "#7f848c",
+            "primary-fixed": "#e4e1e7",
+            "danger": "#dc2626",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#2f3132",
+            "primary-container": "#1b1b1f",
+            "secondary-container": "#dee2ec",
+            "surface-container-low": "#f3f3f4",
+            "success": "#16a34a",
+            "primary-fixed-dim": "#c8c5cb",
+            "outline-variant": "#c8c5cb",
+            "danger-solid": "#dc2626",
+            "warning": "#d97706",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "error": "#ba1a1a",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#e8e8e9",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "on-primary-container": "#858388",
+            "critical": "#b91c1c",
+            "on-tertiary": "#ffffff",
+            "surface-canvas": "#f1f1f4",
+            "tertiary": "#000000",
+            "surface-tint": "#5f5e63",
+            "surface-sunken": "#ededf0",
+            "text-tertiary": "#62676f",
+            "surface-panel": "#ffffff",
+            "text-secondary": "#4b5058",
+            "primary": "#000000",
+            "surface-elevated": "#ffffff",
+            "overlay": "rgba(16,16,20,0.40)",
+            "on-primary-fixed": "#1b1b1f",
+            "on-error": "#ffffff",
+            "background": "#f9f9fa",
+            "on-secondary-fixed-variant": "#42474f",
+            "surface-container": "#eeeeef",
+            "surface-container-highest": "#e2e2e3",
+            "surface-container-lowest": "#ffffff",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "surface-hover": "#f1f1f3",
+            "accent-hover": "#5b46d6",
+            "on-error-container": "#93000a"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "space-xs": "4px",
+            "space-sm": "8px",
+            "space-md": "12px",
+            "space-lg": "16px",
+            "space-xl": "24px",
+            "space-2xl": "32px",
+            "space-3xl": "48px",
+            "margin": "24px",
+            "gutter": "16px"
+          },
+          fontFamily: {
+            mono: ["JetBrains Mono", "monospace"],
+            label: ["Inter", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            "heading-section": ["Inter", "sans-serif"],
+            caption: ["Inter", "sans-serif"],
+            "heading-card": ["Inter", "sans-serif"],
+            "body-small": ["Inter", "sans-serif"],
+            "display-xl": ["Inter", "sans-serif"],
+            "mono-label": ["JetBrains Mono", "monospace"]
+          },
+          fontSize: {
+            mono: ["0.813rem", { lineHeight: "1.5", fontWeight: "400" }],
+            label: ["0.813rem", { lineHeight: "1.5", letterSpacing: "-0.13px", fontWeight: "560" }],
+            body: ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "heading-section": ["1.25rem", { lineHeight: "1.33", letterSpacing: "-0.24px", fontWeight: "590" }],
+            caption: ["0.75rem", { lineHeight: "1.4", fontWeight: "450" }],
+            "heading-card": ["1rem", { lineHeight: "1.5", letterSpacing: "-0.165px", fontWeight: "560" }],
+            "body-small": ["0.813rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "display-xl": ["2rem", { lineHeight: "1.13", letterSpacing: "-0.704px", fontWeight: "590" }],
+            "mono-label": ["0.75rem", { lineHeight: "1.4", fontWeight: "500" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface-page min-h-screen flex items-center justify-center p-6 antialiased selection:bg-surface-accent-tint selection:text-accent">
+<!-- Main Card (Blueprint D: Hub Landing Card Model - 560px) -->
+<main class="w-full max-w-[560px] bg-surface-panel border border-border-standard rounded-xl shadow-sm p-8 transition-all">
+<!-- 1. Header Kartu -->
+<header class="border-b border-border-subtle pb-5 mb-6">
+<h1 class="font-heading-section text-heading-section font-semibold text-text-primary">
+        Helpdesk
+      </h1>
+<p class="font-caption text-caption text-text-tertiary mt-1">
+        Lacak status penanganan permohonan bantuan Anda secara publik.
+      </p>
+</header>
+<!-- 2. Form Pencarian Tiket -->
+<section class="mb-6">
+<label class="font-mono-label text-mono-label font-medium text-text-secondary uppercase tracking-wider mb-1.5 block" for="ticket-code-input">
+        Kode tiket
+      </label>
+<form action="#" class="flex items-center" method="GET" onsubmit="event.preventDefault();">
+<div class="relative flex-1">
+<input class="font-mono text-body-small tracking-wide bg-surface-panel border border-border-standard rounded-lg px-3.5 h-10 w-full text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors" id="ticket-code-input" name="ticket" placeholder="TKT-2231" type="text" value="TKT-2231"/>
+</div>
+<button class="bg-accent hover:bg-accent-hover text-on-primary font-label text-label px-5 h-10 rounded-lg transition-colors flex items-center justify-center gap-1.5 shrink-0 ml-2 shadow-sm" type="submit">
+<span class="material-symbols-outlined text-[16px]">search</span>
+<span>Lacak</span>
+</button>
+</form>
+</section>
+<!-- 3. Hasil Temuan Tiket (State Default Valid / Ditemukan) -->
+<section class="pt-6 border-t border-border-subtle">
+<!-- Header Tiket -->
+<div>
+<h2 class="font-heading-card text-heading-card font-medium text-text-primary leading-snug mb-3">
+          Gagal verifikasi webhook transfer batch #921 (504 Gateway Timeout)
+        </h2>
+<!-- Metadata Badges -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono-label text-mono-label text-text-tertiary bg-surface-sunken px-2 py-0.5 rounded border border-border-standard">
+            #TKT-2231
+          </span>
+<span class="font-label text-caption px-2.5 py-0.5 rounded-full font-medium bg-amber-50 text-amber-700 border border-amber-200">
+            Menunggu Respon
+          </span>
+<span class="font-label text-caption px-2.5 py-0.5 rounded-full font-medium bg-red-50 text-red-700 border border-red-200">
+            Prioritas Tinggi (P1)
+          </span>
+<span class="font-mono-label text-mono-label text-text-tertiary ml-auto self-center">
+            Diperbarui: 24 Okt 2024, 14:32 WIB
+          </span>
+</div>
+</div>
+<!-- 4. Timeline Ringkas Publik -->
+<div class="mt-6">
+<h3 class="font-mono-label text-mono-label uppercase tracking-wider text-text-quaternary mb-4">
+          RIWAYAT PENANGANAN PUBLIK
+        </h3>
+<div class="space-y-4">
+<!-- Item 1 (Balasan Agen Terkini) -->
+<article class="bg-surface-bright border border-border-subtle rounded-lg p-3.5 flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-surface-accent-tint text-accent font-label text-caption font-medium flex items-center justify-center shrink-0 border border-accent/20">
+              SR
+            </div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2 mb-1.5">
+<span class="font-label text-body-small font-medium text-text-primary truncate">
+                  Siti Rahmawati (Support Lead)
+                </span>
+<time class="font-mono-label text-mono-label text-text-quaternary shrink-0">
+                  14:32 WIB
+                </time>
+</div>
+<p class="font-body text-body-small text-text-secondary leading-relaxed">
+                Selamat siang Pak Budi. Kami telah mengidentifikasi lonjakan memori pada salah satu node worker runner yang memproses file lampiran berukuran besar. Saat ini beban worker telah dinormalkan kembali dan sistem sedang otomatis memproses ulang webhook yang tertunda.
+              </p>
+</div>
+</article>
+<!-- Item 2 (Pesan Awal Requester) -->
+<article class="bg-surface-bright border border-border-subtle rounded-lg p-3.5 flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-surface-sunken text-text-secondary font-label text-caption font-medium flex items-center justify-center shrink-0 border border-border-standard">
+              BR
+            </div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2 mb-1.5">
+<span class="font-label text-body-small font-medium text-text-primary truncate">
+                  Budi Rahardjo
+                </span>
+<time class="font-mono-label text-mono-label text-text-quaternary shrink-0">
+                  14:28 WIB
+                </time>
+</div>
+<p class="font-body text-body-small text-text-secondary leading-relaxed">
+                Halo tim support Portico, kami mendapati webhook penerimaan berkas transfer batch #921 selalu gagal sejak pukul 14:15 WIB. Mohon bantuannya untuk periksa antrean worker.
+              </p>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- 5. Footer Ringkas dalam Kartu -->
+<footer class="pt-4 border-t border-border-subtle mt-6">
+<p class="font-caption text-caption text-text-quaternary text-center leading-normal">
+        Mengalami kendala mencari tiket? Hubungi admin organisasi Anda atau kirimkan email bantuan ke 
+        <a class="text-text-tertiary hover:text-accent underline transition-colors" href="mailto:support@perkasa.co.id">
+          support@perkasa.co.id
+        </a>
+</p>
+</footer>
+</main>
+</body></html>

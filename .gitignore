@@ -28,3 +28,6 @@ apps/*/shots/
 *.tsbuildinfo
 .turbo/
 dist/
+
+# kanban worker worktrees
+.worktrees/

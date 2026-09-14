@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: '#f7f7f8',
+            panel: '#ffffff',
+            primary: '#101014',
+            secondary: '#4b5058',
+            tertiary: '#62676f',
+            accent: '#6e5ae6',
+            'accent-hover': '#5b46d6',
+            danger: '#b91c1c',
+            border: 'rgba(15,23,42,0.10)',
+            'border-subtle': 'rgba(15,23,42,0.06)',
+            hover: '#f1f1f3',
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            card: '0 1px 2px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.08)',
+          },
+          borderRadius: {
+            card: '8px',
+            input: '6px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f7f7f8;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-4 bg-page">
+
+  <!-- Blueprint D — Centered Auth Card (380px) -->
+  <div class="w-full max-w-[380px] bg-panel rounded-card shadow-card border border-border p-8">
+    
+    <!-- 1. Wordmark TEKS (bukan gambar/logo): Inter 1.25rem, #101014 -->
+    <h1 class="text-[1.25rem] font-[590] text-primary tracking-[-0.24px] leading-tight mb-6">
+      CodeReview
+    </h1>
+
+    <!-- 2. VARIAN APP: Tombol sekunder full-width "Masuk lewat Hub" -->
+    <div class="space-y-4">
+      <button 
+        type="button" 
+        class="w-full h-10 px-4 flex items-center justify-center text-[0.813rem] font-[560] text-primary bg-panel hover:bg-hover border border-border rounded-input transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent/20">
+        Masuk lewat Hub
+      </button>
+
+      <!-- Pemisah tipis bertuliskan "atau login lokal" -->
+      <div class="relative flex items-center justify-center">
+        <div class="w-full border-t border-border"></div>
+        <span class="absolute bg-panel px-3 text-[12px] font-[450] text-tertiary">
+          atau login lokal
+        </span>
+      </div>
+
+      <!-- 3. Form input email + password lokal -->
+      <form class="space-y-4 pt-1" onsubmit="return false;">
+        <!-- Email field -->
+        <div class="space-y-1.5">
+          <label for="email" class="block text-[0.75rem] font-[500] text-tertiary">
+            Email
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="nama@email.com" 
+            class="w-full h-10 px-3 text-[0.875rem] text-primary placeholder-tertiary/60 bg-panel border border-border rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
+          />
+        </div>
+
+        <!-- Password field -->
+        <div class="space-y-1.5">
+          <label for="password" class="block text-[0.75rem] font-[500] text-tertiary">
+            Password
+          </label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="••••••••" 
+            class="w-full h-10 px-3 text-[0.875rem] text-primary placeholder-tertiary/60 bg-panel border border-border rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
+          />
+        </div>
+
+        <!-- 5. Tombol primer full-width "Masuk" -->
+        <div class="pt-2">
+          <button 
+            type="submit" 
+            class="w-full h-10 px-4 flex items-center justify-center text-[0.813rem] font-[560] text-white bg-accent hover:bg-accent-hover rounded-input transition-colors duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30">
+            Masuk
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</body>
+</html>

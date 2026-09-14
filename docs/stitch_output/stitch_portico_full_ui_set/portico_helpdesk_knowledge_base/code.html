@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portico Helpdesk — Knowledge Base</title>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "text-secondary": "#4b5058",
+            "surface-tint": "#5f5e63",
+            "surface-container-low": "#f3f3f4",
+            "primary-fixed": "#e4e1e7",
+            "on-primary-fixed-variant": "#47464b",
+            "warning": "#d97706",
+            "text-quaternary": "#9aa0aa",
+            "on-primary": "#ffffff",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "primary-container": "#1b1b1f",
+            "on-secondary": "#ffffff",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "surface-container-highest": "#e2e2e3",
+            "on-error-container": "#93000a",
+            "on-background": "#1a1c1d",
+            "surface-page": "#f7f7f8",
+            "diff-context-bg": "#fbfbfc",
+            "danger-solid": "#dc2626",
+            "background": "#f9f9fa",
+            "on-tertiary-container": "#7f848c",
+            "accent": "#6e5ae6",
+            "on-surface": "#1a1c1d",
+            "error": "#ba1a1a",
+            "surface-elevated": "#ffffff",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "surface-bright": "#f9f9fa",
+            "surface-dim": "#dadadb",
+            "secondary-container": "#dee2ec",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "on-secondary-fixed": "#171c23",
+            "secondary": "#5a5f67",
+            "primary-fixed-dim": "#c8c5cb",
+            "success": "#16a34a",
+            "outline": "#78767b",
+            "secondary-fixed-dim": "#c2c7d0",
+            "on-secondary-fixed-variant": "#42474f",
+            "inverse-on-surface": "#f0f1f2",
+            "accent-hover": "#5b46d6",
+            "surface-container": "#eeeeef",
+            "surface-canvas": "#f1f1f4",
+            "on-tertiary-fixed": "#171c23",
+            "critical": "#b91c1c",
+            "on-surface-variant": "#47464b",
+            "on-primary-container": "#858388",
+            "tertiary-fixed": "#dee3ec",
+            "tertiary": "#000000",
+            "surface-panel": "#ffffff",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "secondary-fixed": "#dee2ec",
+            "tertiary-container": "#171c23",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-high": "#e8e8e9",
+            "surface-sunken": "#ededf0",
+            "on-secondary-container": "#60656d",
+            "info": "#6e5ae6",
+            "surface-accent-tint": "#f2f0fe",
+            "text-tertiary": "#62676f",
+            "surface-hover": "#f1f1f3",
+            "surface-variant": "#e2e2e3",
+            "text-primary": "#101014",
+            "inverse-surface": "#2f3132",
+            "overlay": "rgba(16,16,20,0.40)",
+            "on-tertiary": "#ffffff",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "error-container": "#ffdad6",
+            "primary": "#000000",
+            "danger": "#dc2626",
+            "surface": "#f9f9fa",
+            "on-error": "#ffffff",
+            "inverse-primary": "#c8c5cb",
+            "on-tertiary-fixed-variant": "#42474f",
+            "on-primary-fixed": "#1b1b1f",
+            "outline-variant": "#c8c5cb"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "16px",
+            "space-md": "12px",
+            "space-sm": "8px",
+            "space-3xl": "48px",
+            "space-lg": "16px",
+            "space-2xl": "32px",
+            "space-xl": "24px",
+            "space-xs": "4px",
+            "margin": "24px"
+          },
+          "fontFamily": {
+            "display-xl": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "caption": ["Inter"],
+            "label": ["Inter"],
+            "body-small": ["Inter"],
+            "heading-card": ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "heading-section": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }],
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body class="h-full w-full overflow-hidden bg-surface-page text-text-primary font-body select-none">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- 1. LEFT NAVIGATION RAIL (56px) -->
+<aside class="w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between items-center py-3 shrink-0 z-20">
+<!-- Top App Switcher Suite -->
+<div class="flex flex-col items-center gap-space-sm w-full">
+<!-- Platform App -->
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Platform">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<!-- Helpdesk App (ACTIVE) -->
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-accent-tint text-accent transition-colors" title="Helpdesk">
+<span class="material-symbols-outlined" data-icon="support">support</span>
+</button>
+<!-- Code Review App -->
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Code Review">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+</button>
+</div>
+<!-- Bottom Rail Actions -->
+<div class="flex flex-col items-center gap-space-md w-full">
+<div class="w-6 h-[1px] bg-border-standard"></div>
+<!-- Settings -->
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Settings">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<!-- User Avatar SR -->
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label text-[11px] font-semibold tracking-tight cursor-pointer">
+          SR
+        </div>
+</div>
+</aside>
+<!-- 2. CONTEXTUAL SIDEBAR (236px) -->
+<aside class="w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between shrink-0 z-10">
+<div class="flex flex-col flex-1 overflow-hidden">
+<!-- Brand Header -->
+<div class="h-12 px-4 border-b border-border-subtle flex items-center justify-between shrink-0">
+<span class="font-heading-card text-[15px] font-semibold text-text-primary tracking-tight">Portico Helpdesk</span>
+</div>
+<!-- Section Label -->
+<div class="px-4 pt-4 pb-2">
+<span class="font-mono-label text-[11px] font-medium text-text-quaternary tracking-wider uppercase">KATEGORI KNOWLEDGE BASE</span>
+</div>
+<!-- Categories List -->
+<nav class="flex-1 px-2 py-1 space-y-0.5 overflow-y-auto">
+<!-- Active: Semua Artikel -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-sunken text-text-primary font-label text-label transition-colors" href="#">
+<span>Semua Artikel</span>
+<span class="font-mono text-[11px] text-text-secondary bg-surface-panel px-1.5 py-0.5 rounded border border-border-subtle">48</span>
+</a>
+<!-- Integrasi & API -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-body-small text-body-small transition-colors" href="#">
+<span>Integrasi &amp; API</span>
+<span class="font-mono text-[11px] text-text-quaternary">14</span>
+</a>
+<!-- Autentikasi & SSO -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-body-small text-body-small transition-colors" href="#">
+<span>Autentikasi &amp; SSO</span>
+<span class="font-mono text-[11px] text-text-quaternary">9</span>
+</a>
+<!-- Alur Kerja & Workflow -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-body-small text-body-small transition-colors" href="#">
+<span>Alur Kerja &amp; Workflow</span>
+<span class="font-mono text-[11px] text-text-quaternary">11</span>
+</a>
+<!-- Billing & Kuota -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-body-small text-body-small transition-colors" href="#">
+<span>Billing &amp; Kuota</span>
+<span class="font-mono text-[11px] text-text-quaternary">6</span>
+</a>
+<!-- Panduan Insiden -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-body-small text-body-small transition-colors" href="#">
+<span>Panduan Insiden</span>
+<span class="font-mono text-[11px] text-text-quaternary">8</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Pinned User Profile -->
+<div class="p-3 border-t border-border-subtle bg-surface-panel flex items-center gap-space-sm shrink-0">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-text-primary flex items-center justify-center font-label text-[11px] font-semibold shrink-0">
+          SR
+        </div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label text-[13px] text-text-primary truncate">Siti Rahmawati</span>
+<span class="font-caption text-caption text-text-secondary truncate">Support Lead</span>
+</div>
+</div>
+</aside>
+<!-- 3. MAIN CONTENT CANVAS -->
+<main class="flex-1 flex flex-col h-full bg-surface-page min-w-0 overflow-hidden">
+<!-- TOP BAR (48px) -->
+<header class="h-12 bg-surface-panel border-b border-border-standard px-6 flex items-center justify-between shrink-0 z-10">
+<!-- Title & Status Metadata -->
+<div class="flex items-center gap-space-md">
+<h1 class="font-label text-label font-semibold text-text-primary tracking-tight">Knowledge Base</h1>
+<div class="h-3.5 w-[1px] bg-border-standard"></div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="font-caption text-caption text-text-secondary">Live · 2 menit lalu</span>
+</div>
+</div>
+<!-- Right Quick Controls -->
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-quaternary pointer-events-none text-[16px]" data-icon="search">search</span>
+<input class="w-48 pl-8 pr-3 py-1 bg-surface-panel border border-border-standard rounded-lg font-body-small text-[13px] text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-accent" placeholder="Search..." type="text"/>
+</div>
+<button class="flex items-center gap-1 px-2.5 py-1 bg-surface-panel border border-border-standard rounded-lg text-text-secondary hover:bg-surface-hover font-label text-caption transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="filter_list">filter_list</span>
+<span>Filter</span>
+</button>
+<div class="w-6 h-6 rounded-full bg-surface-accent-tint text-accent flex items-center justify-center font-mono-label text-[10px] font-semibold border border-accent/20">
+            SR
+          </div>
+</div>
+</header>
+<!-- KB CONTENT PANE (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-space-xl">
+<!-- Breadcrumb & Control Action Bar -->
+<div class="flex flex-col gap-space-md">
+<div class="font-mono-label text-[11px] text-text-tertiary">
+            Helpdesk / Knowledge Base / <span class="text-text-primary font-medium">Semua Artikel</span>
+</div>
+<div class="flex items-center justify-between gap-space-md">
+<!-- Search Bar -->
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-quaternary text-[18px]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-4 py-2 bg-surface-panel border border-border-standard rounded-lg font-body text-body text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-accent shadow-sm" placeholder="Cari panduan, endpoint, atau troubleshooting..." type="text"/>
+</div>
+<!-- Primary Action Button -->
+<button class="flex items-center gap-2 px-3.5 py-2 bg-accent text-on-primary rounded-lg font-label text-label hover:bg-accent-hover active:scale-[0.99] transition-all shadow-sm shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>Tulis Artikel</span>
+</button>
+</div>
+</div>
+<!-- Filter Sub-Tabs -->
+<div class="flex items-center gap-1 border-b border-border-standard pb-px">
+<button class="px-3 py-1.5 font-label text-label text-accent border-b-2 border-accent -mb-px font-medium">
+            Semua (48)
+          </button>
+<button class="px-3 py-1.5 font-label text-label text-text-secondary hover:text-text-primary transition-colors">
+            Terbit (42)
+          </button>
+<button class="px-3 py-1.5 font-label text-label text-text-secondary hover:text-text-primary transition-colors">
+            Draft (6)
+          </button>
+</div>
+<!-- 2-COLUMN ARTICLE GRID -->
+<div class="grid grid-cols-2 gap-space-md pb-6">
+<!-- Article Card 1 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                Panduan Integrasi Webhook ERP &amp; Troubleshooting 504 Gateway
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Langkah-langkah penanganan webhook timeout pada klaster worker k8s dan konfigurasi re-try exponential backoff untuk partner logistik...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">1.420 dibaca · Diperbarui 2 hari lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+<!-- Article Card 2 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                Konfigurasi Custom Model Gemini 1.5 Pro pada Pipeline OCR
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Spesifikasi token limit, format payload JSON terstruktur, dan penyesuaian parameter suhu untuk ekstraksi akta serta dokumen legal...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">980 dibaca · Diperbarui 4 hari lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+<!-- Article Card 3 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                Manajemen Kuota Token &amp; Ambang Batas Eksekusi Alur Kerja
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Cara menetapkan batas p95 latensi alur kerja dan konfigurasi peringatan otomatis saat penggunaan token melebihi batas bulanan...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">612 dibaca · Diperbarui 5 hari lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+<!-- Article Card 4 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                Rotasi Secret Kunci API &amp; Pengaturan Role-Based Access Control
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Prosedur keamanan untuk membatalkan kunci API lama tanpa memutus worker antrean intake vendor yang sedang berjalan aktif...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">840 dibaca · Diperbarui 1 minggu lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+<!-- Article Card 5 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                SLA Response Time Policy: Tier 1 Enterprise vs Tier 2
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Ketentuan eskalasi prioritas tiket darurat, waktu respons pertama kurang dari 4 jam, dan penghitungan otomatis jam kerja...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">1.890 dibaca · Diperbarui 2 minggu lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+<!-- Article Card 6 -->
+<article class="bg-surface-panel border border-border-standard rounded-xl p-4 shadow-sm flex flex-col justify-between gap-space-md hover:border-slate-300 transition-colors">
+<div class="flex flex-col gap-1.5">
+<h2 class="font-heading-card text-heading-card text-text-primary hover:text-accent cursor-pointer transition-colors leading-snug">
+                Migrasi Skema Database Postgres &amp; Sinkronisasi Ledger Gudang
+              </h2>
+<p class="font-body-small text-body-small text-text-tertiary line-clamp-2">
+                Langkah rollback dan verifikasi integritas data ketika migrasi tabel vendor_intake mendeteksi inkonsistensi status verifikasi...
+              </p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle">
+<span class="font-mono-label text-[11px] text-text-secondary">450 dibaca · Diperbarui 3 minggu lalu</span>
+<span class="bg-[#e8f6ee] text-[#15803d] rounded-full px-2 py-0.5 font-label text-caption font-medium">Terbit</span>
+</div>
+</article>
+</div>
+</div>
+</main>
+</div>
+</body></html>

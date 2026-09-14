@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portico Helpdesk — Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f7f7f8;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #101014;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background-color: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.10);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.08);
+      padding: 32px 28px;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 590;
+      line-height: 1.33;
+      letter-spacing: -0.24px;
+      color: #101014;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: #62676f;
+      margin-bottom: 6px;
+      text-transform: none;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      background-color: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.10);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: #101014;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .input-field::placeholder {
+      color: #9aa0aa;
+    }
+
+    .input-field:focus {
+      border-color: #6e5ae6;
+      box-shadow: 0 0 0 1px #6e5ae6;
+    }
+
+    .helper-text {
+      display: block;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: #62676f;
+      margin-top: 5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 40px;
+      margin-top: 20px;
+      background-color: #6e5ae6;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.813rem;
+      font-weight: 560;
+      letter-spacing: -0.13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #5b46d6;
+    }
+
+    .submit-btn:active {
+      background-color: #5b46d6;
+    }
+
+    .auth-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.813rem;
+      color: #62676f;
+    }
+
+    .auth-footer a {
+      color: #6e5ae6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-footer a:hover {
+      color: #5b46d6;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <h1 class="brand-title">Helpdesk</h1>
+
+    <form onsubmit="return false;">
+      <div class="form-group">
+        <label class="field-label" for="org-name">Nama organisasi</label>
+        <input 
+          type="text" 
+          id="org-name" 
+          class="input-field" 
+          value="PT Perkasa Logistik Nusantara" 
+          placeholder="PT Contoh Indonesia"
+          required
+        >
+        <span class="helper-text">Nama entitas atau tim untuk portal tiket Anda.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          class="input-field" 
+          value="nama@perusahaan.com" 
+          placeholder="nama@perusahaan.com"
+          required
+        >
+        <span class="helper-text">Gunakan alamat surel kerja resmi organisasi.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          class="input-field" 
+          value="••••••••••••" 
+          placeholder="Minimal 8 karakter"
+          required
+        >
+        <span class="helper-text">Minimal 8 karakter dengan kombinasi huruf dan angka.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="confirm-password">Konfirmasi password</label>
+        <input 
+          type="password" 
+          id="confirm-password" 
+          class="input-field" 
+          value="••••••••••••" 
+          placeholder="Ulangi kata sandi"
+          required
+        >
+        <span class="helper-text">Masukkan ulang kata sandi yang sama untuk verifikasi.</span>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        Buat akun
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Sudah punya akun? <a href="#">Masuk</a>
+    </div>
+  </div>
+</body>
+</html>

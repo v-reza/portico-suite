@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform — Workflow Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            primary: '#101014',
+            secondary: '#4b5058',
+            tertiary: '#62676f',
+            quaternary: '#9aa0aa',
+            accent: '#6e5ae6',
+            'accent-hover': '#5b46d6',
+            'accent-tint': '#f2f0fe',
+            'surface-page': '#f7f7f8',
+            'surface-panel': '#ffffff',
+            'surface-hover': '#f1f1f3',
+            'surface-sunken': '#ededf0',
+            'surface-canvas': '#f1f1f4',
+            danger: '#dc2626',
+            warning: '#d97706',
+            success: '#16a34a'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+    }
+    .canvas-dot-grid {
+      background-color: #f1f1f4;
+      background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1.25px, transparent 1.25px);
+      background-size: 16px 16px;
+    }
+    .node-shadow {
+      box-shadow: 0 1px 2px rgba(15,23,42,0.08), 0 4px 12px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.10);
+    }
+    .node-selected {
+      box-shadow: 0 0 0 1.5px #6e5ae6, 0 0 0 4.5px rgba(110, 90, 230, 0.18), 0 4px 14px rgba(15,23,42,0.08);
+    }
+  </style>
+</head>
+<body class="bg-surface-page text-primary antialiased font-sans h-screen w-screen overflow-hidden flex flex-col select-none">
+
+  <!-- TOP TOOLBAR 56px -->
+  <header class="h-14 bg-surface-panel border-b border-[rgba(15,23,42,0.10)] px-4 flex items-center justify-between z-30 shrink-0">
+    <!-- Kiri: Back icon + Editable Title + Status dot + Trigger dropdown -->
+    <div class="flex items-center gap-3">
+      <a href="#" class="w-8 h-8 rounded-md flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      </a>
+
+      <div class="h-4 w-[1px] bg-[rgba(15,23,42,0.10)]"></div>
+
+      <div class="flex items-center gap-2">
+        <input type="text" value="Intake Vendor & Validasi NIB" class="font-[560] text-[14px] text-primary tracking-tight bg-transparent hover:bg-surface-hover focus:bg-white px-2 py-1 rounded border border-transparent focus:border-[rgba(15,23,42,0.18)] focus:outline-none transition-all w-64" />
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#fdf1e3] text-[#b45309] text-[11px] font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#d97706]"></span>
+          <span>Belum disimpan</span>
+        </div>
+      </div>
+
+      <div class="h-4 w-[1px] bg-[rgba(15,23,42,0.10)] mx-1"></div>
+
+      <!-- Dropdown tipe trigger -->
+      <div class="flex items-center gap-1.5 bg-surface-panel border border-[rgba(15,23,42,0.10)] rounded-md px-2.5 py-1 text-[12px] text-secondary hover:border-[rgba(15,23,42,0.20)] cursor-pointer">
+        <span class="text-tertiary">Pemicu:</span>
+        <span class="font-medium text-primary">Webhook / Form Event</span>
+        <span class="material-symbols-outlined text-[15px] text-quaternary">expand_more</span>
+      </div>
+
+      <!-- Toggle Aktif (Violet) -->
+      <div class="flex items-center gap-2 pl-2">
+        <button type="button" class="w-8 h-[18px] bg-accent rounded-full relative p-0.5 transition-colors cursor-pointer" aria-pressed="true">
+          <span class="block w-3.5 h-3.5 rounded-full bg-white transform translate-x-3.5 shadow-sm transition-transform"></span>
+        </button>
+        <span class="text-[12px] font-medium text-primary">Aktif</span>
+      </div>
+    </div>
+
+    <!-- Kanan: Undo / Redo + Test Run + Save -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center bg-surface-panel border border-[rgba(15,23,42,0.10)] rounded-md overflow-hidden mr-1">
+        <button title="Undo (Ctrl+Z)" class="w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors border-r border-[rgba(15,23,42,0.08)]">
+          <span class="material-symbols-outlined text-[17px]">undo</span>
+        </button>
+        <button title="Redo (Ctrl+Y)" class="w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-[17px]">redo</span>
+        </button>
+      </div>
+
+      <button type="button" class="h-8 px-3 rounded-md border border-[rgba(15,23,42,0.12)] bg-white text-secondary hover:text-primary hover:bg-surface-hover text-[12px] font-[560] flex items-center gap-1.5 transition-colors">
+        <span class="material-symbols-outlined text-[16px] text-secondary">play_arrow</span>
+        <span>Uji jalankan</span>
+      </button>
+
+      <button type="button" class="h-8 px-3.5 rounded-md bg-accent hover:bg-accent-hover text-white text-[12px] font-[560] flex items-center gap-1.5 shadow-sm transition-colors">
+        <span class="material-symbols-outlined text-[16px] text-white">save</span>
+        <span>Simpan alur</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- BODY WORKSPACE: 3 COLUMN FULL-BLEED -->
+  <div class="flex flex-1 w-full h-[calc(100vh-56px)] overflow-hidden">
+
+    <!-- PALETTE KIRI 220px -->
+    <aside class="w-[220px] bg-surface-panel border-r border-[rgba(15,23,42,0.10)] flex flex-col shrink-0 z-20">
+      <!-- Search kecil -->
+      <div class="p-3 border-b border-[rgba(15,23,42,0.08)]">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-2 text-[15px] text-quaternary">search</span>
+          <input type="text" placeholder="Cari modul..." class="w-full h-7 pl-7 pr-2 text-[12px] bg-surface-page rounded border border-[rgba(15,23,42,0.08)] focus:border-accent focus:bg-white focus:outline-none transition-all placeholder:text-quaternary" />
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-3 space-y-5">
+        <!-- Grup TRIGGER -->
+        <div>
+          <div class="text-[11px] font-mono uppercase text-quaternary tracking-wider mb-2 px-1">Trigger</div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">assignment_turned_in</span>
+              <span class="truncate">Formulir dikirim</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+              <span class="truncate">Jadwal harian</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">webhook</span>
+              <span class="truncate">Webhook masuk</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grup AKSI -->
+        <div>
+          <div class="text-[11px] font-mono uppercase text-quaternary tracking-wider mb-2 px-1">Aksi</div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">psychology</span>
+              <span class="truncate">Panggil AI</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">mail</span>
+              <span class="truncate">Kirim email</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">database</span>
+              <span class="truncate">Tulis ke database</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">alt_route</span>
+              <span class="truncate">Cabang kondisi</span>
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] text-primary hover:bg-surface-hover cursor-grab active:cursor-grabbing border border-transparent hover:border-[rgba(15,23,42,0.06)] transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-secondary">hourglass_empty</span>
+              <span class="truncate">Tunggu</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-[rgba(15,23,42,0.06)]">
+          <div class="px-2 py-2 rounded bg-surface-page text-[11px] text-tertiary leading-relaxed">
+            Seret item ke kanvas untuk menambah langkah alur otomatisasi.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CANVAS TENGAH flex-1 -->
+    <main class="flex-1 canvas-dot-grid relative overflow-hidden flex items-center justify-center">
+
+      <!-- SVG LAYER UNTUK CONNECTIONS / EDGES -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <defs>
+          <!-- Standard Arrow Marker -->
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(15,23,42,0.22)" />
+          </marker>
+          <!-- Active / Selected Arrow Marker (#6e5ae6) -->
+          <marker id="arrow-selected" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#6e5ae6" />
+          </marker>
+        </defs>
+
+        <!-- Edge 1: Formulir dikirim -> Panggil AI (biasa) -->
+        <!-- Start: center x=50%, y=80 + 58 = 138; End: center x=50%, y=200 -->
+        <path d="M calc(50%) 138 L calc(50%) 198" stroke="rgba(15,23,42,0.16)" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+        <!-- Edge 2: Panggil AI -> Cabang kondisi (TERPILIH / VIOLET) -->
+        <!-- Start: center x=50%, y=200 + 64 = 264; End: center x=50%, y=326 -->
+        <path d="M calc(50%) 264 L calc(50%) 324" stroke="#6e5ae6" stroke-width="2" fill="none" marker-end="url(#arrow-selected)" />
+
+        <!-- Edge 3a: Cabang kondisi -> Kirim email (Kiri) -->
+        <!-- Start: Cabang kondisi bottom left port x=calc(50% - 40px), y=390. End: Node Kirim email top x=calc(50% - 150px), y=456 -->
+        <path d="M calc(50% - 40px) 390 C calc(50% - 40px) 424, calc(50% - 150px) 424, calc(50% - 150px) 454" stroke="rgba(15,23,42,0.16)" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+        <!-- Edge 3b: Cabang kondisi -> Tulis ke database (Kanan) -->
+        <!-- Start: Cabang kondisi bottom right port x=calc(50% + 40px), y=390. End: Node Tulis database top x=calc(50% + 150px), y=456 -->
+        <path d="M calc(50% + 40px) 390 C calc(50% + 40px) 424, calc(50% + 150px) 424, calc(50% + 150px) 454" stroke="rgba(15,23,42,0.16)" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+      </svg>
+
+      <!-- NODE CONTAINER (POSISI RELATIF DITENGAH) -->
+      <div class="relative w-full h-full max-w-[840px] flex flex-col items-center pt-14 z-10 pointer-events-auto">
+
+        <!-- NODE 1: Formulir dikirim (Trigger) -->
+        <div class="w-[260px] bg-white rounded-lg node-shadow border border-[rgba(15,23,42,0.08)] p-3 cursor-pointer hover:border-[rgba(15,23,42,0.20)] transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded bg-surface-sunken flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[17px]">assignment_turned_in</span>
+              </div>
+              <div>
+                <div class="text-[13px] font-[560] text-primary">Formulir dikirim</div>
+                <div class="text-[11px] text-tertiary">Registrasi Vendor v1.2</div>
+              </div>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-surface-sunken text-[10px] font-mono text-tertiary">TRIGGER</span>
+          </div>
+          <!-- Output port pin -->
+          <div class="flex justify-center -mb-4 mt-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary"></span>
+          </div>
+        </div>
+
+        <div class="h-16"></div>
+
+        <!-- NODE 2: Panggil AI (TERPILIH) -->
+        <div class="w-[280px] bg-white rounded-lg node-selected p-3 cursor-pointer relative transition-all">
+          <!-- Input port pin -->
+          <div class="flex justify-center -mt-4.5 mb-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-accent"></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded bg-accent-tint flex items-center justify-center text-accent">
+                <span class="material-symbols-outlined text-[17px]">psychology</span>
+              </div>
+              <div>
+                <div class="text-[13px] font-[560] text-primary">Panggil AI</div>
+                <div class="text-[11px] text-tertiary">Ekstraksi Dokumen & NIB</div>
+              </div>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-accent-tint text-[10px] font-mono text-accent font-medium">gemini-1.5-pro</span>
+          </div>
+          <div class="mt-2 pt-2 border-t border-[rgba(15,23,42,0.06)] flex items-center justify-between text-[11px]">
+            <span class="text-tertiary">Confidence:</span>
+            <span class="font-mono text-primary">0.984</span>
+          </div>
+          <!-- Output port pin -->
+          <div class="flex justify-center -mb-4 mt-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-accent"></span>
+          </div>
+        </div>
+
+        <div class="h-16"></div>
+
+        <!-- NODE 3: Cabang kondisi -->
+        <div class="w-[260px] bg-white rounded-lg node-shadow border border-[rgba(15,23,42,0.08)] p-3 cursor-pointer hover:border-[rgba(15,23,42,0.20)] transition-all">
+          <!-- Input port pin -->
+          <div class="flex justify-center -mt-4.5 mb-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary"></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded bg-surface-sunken flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[17px]">alt_route</span>
+              </div>
+              <div>
+                <div class="text-[13px] font-[560] text-primary">Cabang kondisi</div>
+                <div class="text-[11px] text-tertiary">Skor kelayakan &gt;= 0.85</div>
+              </div>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-surface-sunken text-[10px] font-mono text-tertiary">LOGIKA</span>
+          </div>
+          <!-- Output dual ports pin (True / False) -->
+          <div class="flex justify-between px-8 -mb-4 mt-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary" title="Valid (True)"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary" title="Tidak Valid (False)"></span>
+          </div>
+        </div>
+
+        <div class="h-16"></div>
+
+        <!-- LEVEL 4: PARALEL BRANCH NODES -->
+        <div class="w-full flex items-start justify-center gap-10">
+
+          <!-- NODE 4: Kirim email -->
+          <div class="w-[240px] bg-white rounded-lg node-shadow border border-[rgba(15,23,42,0.08)] p-3 cursor-pointer hover:border-[rgba(15,23,42,0.20)] transition-all">
+            <!-- Input port pin -->
+            <div class="flex justify-center -mt-4.5 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary"></span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded bg-surface-sunken flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-[17px]">mail</span>
+                </div>
+                <div>
+                  <div class="text-[13px] font-[560] text-primary">Kirim email</div>
+                  <div class="text-[11px] text-tertiary">Konfirmasi Vendor</div>
+                </div>
+              </div>
+              <span class="px-1.5 py-0.5 rounded bg-surface-sunken text-[10px] font-mono text-tertiary">SMTP</span>
+            </div>
+          </div>
+
+          <!-- NODE 5: Tulis ke database -->
+          <div class="w-[240px] bg-white rounded-lg node-shadow border border-[rgba(15,23,42,0.08)] p-3 cursor-pointer hover:border-[rgba(15,23,42,0.20)] transition-all">
+            <!-- Input port pin -->
+            <div class="flex justify-center -mt-4.5 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-secondary"></span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded bg-surface-sunken flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-[17px]">database</span>
+                </div>
+                <div>
+                  <div class="text-[13px] font-[560] text-primary">Tulis ke database</div>
+                  <div class="text-[11px] text-tertiary">Tabel vendor_intake</div>
+                </div>
+              </div>
+              <span class="px-1.5 py-0.5 rounded bg-surface-sunken text-[10px] font-mono text-tertiary">POSTGRES</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- KONTROL ZOOM KIRI BAWAH (100%) -->
+      <div class="absolute bottom-4 left-4 flex items-center bg-white border border-[rgba(15,23,42,0.12)] rounded-md shadow-sm z-20 overflow-hidden">
+        <button type="button" title="Perkecil" class="w-7 h-7 flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors border-r border-[rgba(15,23,42,0.08)]">
+          <span class="material-symbols-outlined text-[15px]">remove</span>
+        </button>
+        <span class="px-2.5 text-[11px] font-mono font-medium text-primary">100%</span>
+        <button type="button" title="Perbesar" class="w-7 h-7 flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors border-l border-[rgba(15,23,42,0.08)]">
+          <span class="material-symbols-outlined text-[15px]">add</span>
+        </button>
+        <div class="h-4 w-[1px] bg-[rgba(15,23,42,0.10)]"></div>
+        <button type="button" title="Pusatkan Kanvas" class="w-7 h-7 flex items-center justify-center text-secondary hover:bg-surface-hover hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-[15px]">filter_center_focus</span>
+        </button>
+      </div>
+
+    </main>
+
+    <!-- INSPECTOR KANAN 280px -->
+    <aside class="w-[280px] bg-surface-panel border-l border-[rgba(15,23,42,0.10)] flex flex-col shrink-0 z-20">
+      <!-- Sub-header: nama node + badge tipe mono -->
+      <div class="p-4 border-b border-[rgba(15,23,42,0.08)]">
+        <div class="flex items-center justify-between">
+          <div class="text-[13px] font-[590] text-primary tracking-tight">Panggil AI</div>
+          <span class="px-2 py-0.5 rounded bg-accent-tint text-[10px] font-mono text-accent font-medium uppercase">Aksi: Model</span>
+        </div>
+        <div class="text-[11px] text-tertiary mt-1">ID Node: <span class="font-mono text-secondary">node_call_ai_02</span></div>
+      </div>
+
+      <!-- Field-field konfigurasi -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4">
+        
+        <!-- Field Model -->
+        <div>
+          <label class="block text-[11px] font-medium text-tertiary mb-1.5 uppercase tracking-wider">Model</label>
+          <div class="relative">
+            <select class="w-full h-8 px-2.5 text-[12px] bg-white rounded border border-[rgba(15,23,42,0.14)] text-primary focus:border-accent focus:outline-none appearance-none cursor-pointer">
+              <option selected>gemini-1.5-pro</option>
+              <option>gemini-1.5-flash</option>
+              <option>claude-3-5-sonnet</option>
+              <option>gpt-4o</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-2 top-2 text-[15px] text-quaternary pointer-events-none">unfold_more</span>
+          </div>
+        </div>
+
+        <!-- Field Prompt -->
+        <div>
+          <label class="block text-[11px] font-medium text-tertiary mb-1.5 uppercase tracking-wider">Prompt</label>
+          <textarea rows="4" class="w-full p-2 text-[12px] font-mono bg-white rounded border border-[rgba(15,23,42,0.14)] text-primary focus:border-accent focus:outline-none leading-relaxed resize-none">Ekstrak NIB, nama perusahaan, serta keabsahan akta dari lampiran payload form: {{trigger.payload.dokumen}}</textarea>
+          <div class="text-[10px] text-quaternary mt-1">Gunakan kurung ganda untuk menyisipkan variabel konteks.</div>
+        </div>
+
+        <!-- Field Maks Token -->
+        <div>
+          <label class="block text-[11px] font-medium text-tertiary mb-1.5 uppercase tracking-wider">Maks token</label>
+          <input type="number" value="2048" class="w-full h-8 px-2.5 text-[12px] font-mono bg-white rounded border border-[rgba(15,23,42,0.14)] text-primary focus:border-accent focus:outline-none" />
+        </div>
+
+        <!-- Field Suhu (Temperature) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-[11px] font-medium text-tertiary uppercase tracking-wider">Suhu</label>
+            <span class="text-[11px] font-mono text-secondary">0.2</span>
+          </div>
+          <input type="range" min="0" max="1" step="0.1" value="0.2" class="w-full accent-accent h-1.5 bg-surface-sunken rounded-lg cursor-pointer" />
+          <div class="flex justify-between text-[10px] text-quaternary font-mono mt-1">
+            <span>0.0 (Presisi)</span>
+            <span>1.0 (Kreatif)</span>
+          </div>
+        </div>
+
+        <!-- Opsi Ekstraksi Output -->
+        <div class="pt-3 border-t border-[rgba(15,23,42,0.06)]">
+          <label class="block text-[11px] font-medium text-tertiary mb-1.5 uppercase tracking-wider">Format Respons</label>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="json_mode" checked class="rounded border-[rgba(15,23,42,0.20)] text-accent focus:ring-accent" />
+            <label for="json_mode" class="text-[12px] text-primary">Paksa skema JSON terstruktur</label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bawah: "Hapus node" sebagai TEKS MERAH bukan tombol solid -->
+      <div class="p-4 border-t border-[rgba(15,23,42,0.08)] bg-surface-panel flex items-center justify-between">
+        <button type="button" class="text-[12px] font-medium text-danger hover:text-red-700 hover:underline flex items-center gap-1.5 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[16px] text-danger">delete</span>
+          <span>Hapus node</span>
+        </button>
+        <button type="button" class="h-7 px-3 rounded bg-surface-hover hover:bg-surface-sunken text-primary text-[11px] font-medium transition-colors">
+          Terapkan
+        </button>
+      </div>
+
+    </aside>
+
+  </div>
+
+</body>
+</html>

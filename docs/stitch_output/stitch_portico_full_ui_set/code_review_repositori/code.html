@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review — Repositori</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'surface-page': '#f7f7f8',
+            'surface-panel': '#ffffff',
+            'surface-hover': '#f1f1f3',
+            'surface-sunken': '#ededf0',
+            'surface-accent-tint': '#f2f0fe',
+            'text-primary': '#101014',
+            'text-secondary': '#4b5058',
+            'text-tertiary': '#62676f',
+            'text-quaternary': '#9aa0aa',
+            'accent': '#6e5ae6',
+            'accent-hover': '#5b46d6',
+            'success': '#16a34a',
+            'danger': '#dc2626',
+            'border-standard': 'rgba(15,23,42,0.10)',
+            'border-subtle': 'rgba(15,23,42,0.06)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f7f7f8;
+      color: #101014;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-row overflow-hidden select-none">
+
+  <!-- RAIL (56px, full height, borderRight hairline, bg #ffffff) -->
+  <aside class="w-[56px] min-w-[56px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between items-center py-3 z-30">
+    <!-- App Switcher Top (Platform, Helpdesk, Code Review aktif) -->
+    <div class="flex flex-col items-center gap-2 w-full">
+      <!-- App 1: Platform -->
+      <a href="#" title="Platform" class="w-9 h-9 flex items-center justify-center rounded-lg text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+        <span class="material-symbols-outlined text-[20px]">hub</span>
+      </a>
+      <!-- App 2: Helpdesk -->
+      <a href="#" title="Helpdesk" class="w-9 h-9 flex items-center justify-center rounded-lg text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+      </a>
+      <!-- App 3: Code Review (Aktif) -->
+      <a href="#" title="Code Review" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#f2f0fe] text-[#5b46d6]">
+        <span class="material-symbols-outlined text-[20px]">code</span>
+      </a>
+    </div>
+
+    <!-- Rail Bottom Divider & Settings -->
+    <div class="flex flex-col items-center gap-2 w-full">
+      <div class="w-7 h-[1px] bg-[rgba(15,23,42,0.10)] my-1"></div>
+      <a href="#" title="Pengaturan Sistem" class="w-9 h-9 flex items-center justify-center rounded-lg text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR (236px, putih, borderRight hairline) -->
+  <aside class="w-[236px] min-w-[236px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between z-20">
+    <div>
+      <!-- Wordmark "CodeReview" -->
+      <div class="h-12 px-4 flex items-center border-b border-transparent">
+        <span class="font-[590] text-[15px] tracking-[-0.2px] text-[#101014]">CodeReview</span>
+      </div>
+
+      <!-- Navigation groups -->
+      <div class="px-2 py-3 flex flex-col gap-4">
+        <!-- Group: TINJAUAN -->
+        <div>
+          <div class="px-2 pb-1.5 font-mono text-[11px] uppercase tracking-wider text-[#9aa0aa]">Tinjauan</div>
+          <div class="flex flex-col gap-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#62676f]">dashboard</span>
+                <span>Dashboard</span>
+              </div>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#62676f]">call_split</span>
+                <span>Pull Requests</span>
+              </div>
+              <span class="font-mono text-[11px] text-[#62676f] bg-[#ededf0] px-1.5 py-0.5 rounded-full leading-none">14</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#62676f]">warning</span>
+                <span>Temuan Kritis</span>
+              </div>
+              <span class="font-mono text-[11px] text-[#dc2626] bg-[#fdecec] px-1.5 py-0.5 rounded-full leading-none">3</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Group: REPOSITORI -->
+        <div>
+          <div class="px-2 pb-1.5 font-mono text-[11px] uppercase tracking-wider text-[#9aa0aa]">Repositori</div>
+          <div class="flex flex-col gap-0.5">
+            <!-- Repositori (Aktif) -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] font-[560] bg-[#f2f0fe] text-[#5b46d6]">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#5b46d6]">folder</span>
+                <span>Repositori</span>
+              </div>
+              <span class="font-mono text-[11px] text-[#5b46d6] bg-[#ffffff] px-1.5 py-0.5 rounded-full leading-none">8</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#62676f]">shield</span>
+                <span>Aturan Analisis</span>
+              </div>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#62676f]">webhook</span>
+                <span>Integrasi Webhook</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar footer status -->
+    <div class="p-3 border-t border-[rgba(15,23,42,0.10)] flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-[#16a34a]"></div>
+      <span class="font-mono text-[11px] text-[#62676f]">Engine v2.4 Online</span>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA: C-LIST BLUEPRINT (Top bar 48px + Toolbar 44px + Table pane yang scroll) -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-[#f7f7f8]">
+
+    <!-- TOP BAR (48px, putih, borderBottom hairline, HANYA di atas kolom konten) -->
+    <header class="h-[48px] min-h-[48px] bg-[#ffffff] border-b border-[rgba(15,23,42,0.10)] px-6 flex items-center justify-between z-10">
+      <!-- Kiri: judul + breadcrumb mono 11px -->
+      <div class="flex items-center gap-2">
+        <h1 class="text-[14px] font-[590] text-[#101014] tracking-[-0.15px]">Repositori</h1>
+        <span class="text-[#9aa0aa] text-[13px]">/</span>
+        <span class="font-mono text-[11px] text-[#62676f]">daftar-repo</span>
+      </div>
+
+      <!-- Kanan: search compact + ikon filter + avatar user -->
+      <div class="flex items-center gap-3">
+        <div class="relative w-64">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-[#9aa0aa]">search</span>
+          <input 
+            type="text" 
+            placeholder="Cari repositori..." 
+            class="w-full h-7 pl-8 pr-3 bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded text-[12px] text-[#101014] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6]"
+          />
+        </div>
+        <button class="h-7 px-2.5 flex items-center gap-1.5 bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded text-[12px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors">
+          <span class="material-symbols-outlined text-[15px]">filter_list</span>
+          <span>Filter</span>
+        </button>
+        <!-- Avatar user (SR) -->
+        <div class="w-7 h-7 rounded-full bg-[#ededf0] text-[#4b5058] flex items-center justify-center font-mono text-[11px] font-medium border border-[rgba(15,23,42,0.10)] ml-1">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- TOOLBAR (44px, putih, borderBottom hairline) -->
+    <div class="h-[44px] min-h-[44px] bg-[#ffffff] border-b border-[rgba(15,23,42,0.10)] px-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-[13px] text-[#4b5058]"><strong class="font-[560] text-[#101014]">8</strong> repositori aktif</span>
+        <div class="h-3 w-[1px] bg-[rgba(15,23,42,0.10)]"></div>
+        <div class="flex items-center gap-1.5 text-[12px] text-[#62676f]">
+          <span>Organisasi:</span>
+          <span class="font-mono text-[11px] text-[#101014] bg-[#f1f1f3] px-2 py-0.5 rounded">semua (2)</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button class="h-7 px-3 flex items-center gap-1.5 bg-[#6e5ae6] hover:bg-[#5b46d6] text-[#ffffff] rounded text-[12px] font-[500] transition-colors">
+          <span class="material-symbols-outlined text-[15px]">add</span>
+          <span>Hubungkan Repositori</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABLE PANE (Satu-satunya pane yang scroll, header kolom sticky) -->
+    <div class="flex-1 overflow-y-auto px-6 py-4">
+      <div class="bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded-lg overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
+        <table class="w-full text-left border-collapse">
+          <!-- Header kolom sticky -->
+          <thead class="sticky top-0 bg-[#f7f7f8] border-b border-[rgba(15,23,42,0.10)] z-10">
+            <tr class="h-9 font-mono text-[11px] text-[#62676f] uppercase tracking-wider">
+              <th class="px-4 font-medium w-[32%]">Repo</th>
+              <th class="px-4 font-medium w-[18%]">Org</th>
+              <th class="px-4 font-medium w-[22%]">Terakhir Ditinjau</th>
+              <th class="px-4 font-medium text-right w-[13%]">Jumlah PR</th>
+              <th class="px-4 font-medium w-[15%]">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[rgba(15,23,42,0.06)] text-[13px]">
+            <!-- Baris 1 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">portico-gateway-service</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">24 Okt 2024, 14:15</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">4</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#dc2626]"></span>
+                  <span class="text-[12px] text-[#dc2626] font-medium">Ada kritis</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 2 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">identity-auth-engine</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">24 Okt 2024, 13:40</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">2</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                  <span class="text-[12px] text-[#16a34a] font-medium">Sehat</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 3 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">worker-pipeline-ocr</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">24 Okt 2024, 11:02</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">3</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#dc2626]"></span>
+                  <span class="text-[12px] text-[#dc2626] font-medium">Ada kritis</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 4 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">helpdesk-frontend-web</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">23 Okt 2024, 18:20</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">1</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                  <span class="text-[12px] text-[#16a34a] font-medium">Sehat</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 5 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">platform-builder-core</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">acme-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">23 Okt 2024, 15:10</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">2</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                  <span class="text-[12px] text-[#16a34a] font-medium">Sehat</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 6 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">erp-sync-service</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">22 Okt 2024, 17:45</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">1</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                  <span class="text-[12px] text-[#16a34a] font-medium">Sehat</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 7 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">webhook-dispatcher</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">acme-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">22 Okt 2024, 09:12</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">1</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#dc2626]"></span>
+                  <span class="text-[12px] text-[#dc2626] font-medium">Ada kritis</span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Baris 8 -->
+            <tr class="h-[48px] hover:bg-[#f1f1f3] transition-colors cursor-pointer">
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#9aa0aa]">bookmark</span>
+                  <span class="text-[14px] font-medium text-[#101014]">shared-ui-tokens</span>
+                </div>
+              </td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">perkasa-corp</td>
+              <td class="px-4 font-mono text-[11px] text-[#62676f]">20 Okt 2024, 14:05</td>
+              <td class="px-4 font-mono text-[11px] text-[#101014] text-right font-medium">0</td>
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                  <span class="text-[12px] text-[#16a34a] font-medium">Sehat</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

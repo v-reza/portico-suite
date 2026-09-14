@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review — Pengaturan Repositori</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: {
+              page: '#f7f7f8',
+              panel: '#ffffff',
+              elevated: '#ffffff',
+              hover: '#f1f1f3',
+              sunken: '#ededf0',
+              canvas: '#f1f1f4',
+              accentTint: '#f2f0fe',
+            },
+            accent: {
+              DEFAULT: '#6e5ae6',
+              hover: '#5b46d6',
+            },
+            border: {
+              subtle: 'rgba(15,23,42,0.06)',
+              standard: 'rgba(15,23,42,0.10)',
+            },
+            textPrimary: '#101014',
+            textSecondary: '#4b5058',
+            textTertiary: '#62676f',
+            textQuaternary: '#9aa0aa',
+            danger: '#dc2626',
+            success: '#16a34a',
+            warning: '#d97706',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f7f8;
+      color: #101014;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.12);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.22);
+    }
+  </style>
+</head>
+<body class="w-screen h-screen flex overflow-hidden select-none">
+
+  <!-- RAIL (56px, full height, borderRight hairline, bg #ffffff) -->
+  <aside class="w-[56px] h-full flex-shrink-0 bg-white border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between items-center py-3 z-30">
+    <!-- App Switcher: [A] Platform · [B] Helpdesk · [C] Code Review (aktif) -->
+    <div class="flex flex-col items-center gap-2.5 w-full">
+      <!-- App A: Platform -->
+      <button class="w-9 h-9 rounded-md flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors" title="Platform">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+      </button>
+
+      <!-- App B: Helpdesk -->
+      <button class="w-9 h-9 rounded-md flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors" title="Helpdesk">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </button>
+
+      <!-- App C: Code Review (Aktif) -->
+      <button class="w-9 h-9 rounded-md flex items-center justify-center bg-[#f2f0fe] text-[#5b46d6] relative" title="Code Review">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Divider tipis & Ikon Settings paling bawah -->
+    <div class="flex flex-col items-center gap-2.5 w-full">
+      <div class="w-7 h-[1px] bg-[rgba(15,23,42,0.10)]"></div>
+      <button class="w-9 h-9 rounded-md flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors" title="Pengaturan Portico">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR (236px, putih, borderRight hairline) -->
+  <aside class="w-[236px] h-full flex-shrink-0 bg-white border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between z-20">
+    <div class="flex flex-col">
+      <!-- Wordmark CodeReview -->
+      <div class="h-12 flex items-center px-4 border-b border-[rgba(15,23,42,0.06)]">
+        <span class="font-sans font-[590] text-[15px] tracking-tight text-[#101014]">CodeReview</span>
+      </div>
+
+      <!-- Navigation List -->
+      <div class="p-3 flex flex-col gap-5">
+        <!-- Grup TINJAUAN -->
+        <div>
+          <div class="px-2.5 pb-1.5 font-mono text-[11px] font-medium tracking-wider uppercase text-[#9aa0aa]">
+            TINJAUAN
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <rect x="3" y="3" width="7" height="9"></rect>
+                  <rect x="14" y="3" width="7" height="5"></rect>
+                  <rect x="14" y="12" width="7" height="9"></rect>
+                  <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+                <span>Dashboard</span>
+              </div>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <circle cx="18" cy="18" r="3"></circle>
+                  <circle cx="6" cy="6" r="3"></circle>
+                  <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                  <line x1="6" y1="9" x2="6" y2="21"></line>
+                </svg>
+                <span>Pull Requests</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#62676f]">14</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Temuan Kritis</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[#fdecec] text-[#b91c1c] font-medium">3</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Grup REPOSITORI -->
+        <div>
+          <div class="px-2.5 pb-1.5 font-mono text-[11px] font-medium tracking-wider uppercase text-[#9aa0aa]">
+            REPOSITORI
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span>Repositori</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#62676f]">8</span>
+            </a>
+
+            <!-- Item Aktif: Aturan Analisis / Settings -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] bg-[#f2f0fe] text-[#5b46d6] font-medium transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#5b46d6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                <span>Aturan Analisis</span>
+              </div>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Integrasi Webhook</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Engine di Bawah Sidebar -->
+    <div class="p-3 border-t border-[rgba(15,23,42,0.06)] flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+        <span class="font-mono text-[11px] text-[#62676f]">Engine v2.4 Online</span>
+      </div>
+      <button class="text-[#9aa0aa] hover:text-[#4b5058]">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA (Top Bar + Body Area) -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-[#f7f7f8]">
+
+    <!-- TOP BAR (48px, putih, borderBottom hairline, HANYA di atas kolom konten) -->
+    <header class="h-12 w-full bg-white border-b border-[rgba(15,23,42,0.10)] px-6 flex items-center justify-between flex-shrink-0 z-10">
+      <!-- Kiri: Judul + Breadcrumb mono 11px -->
+      <div class="flex items-center gap-2.5">
+        <span class="text-[14px] font-[590] text-[#101014]">Aturan Analisis</span>
+        <span class="text-[#9aa0aa] font-mono text-[11px]">/</span>
+        <span class="font-mono text-[11px] text-[#62676f] bg-[#f1f1f4] px-1.5 py-0.5 rounded border border-[rgba(15,23,42,0.06)]">
+          portico-gateway-service / settings
+        </span>
+      </div>
+
+      <!-- Kanan: Search compact + Ikon filter + Avatar user (JANGAN lebih dari ini) -->
+      <div class="flex items-center gap-3">
+        <!-- Search compact -->
+        <div class="relative">
+          <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9aa0aa]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            placeholder="Cari parameter..." 
+            class="h-7 pl-8 pr-2.5 text-[12px] bg-white border border-[rgba(15,23,42,0.10)] rounded-md text-[#101014] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] w-48 transition-colors"
+          />
+        </div>
+
+        <!-- Ikon filter -->
+        <button class="h-7 px-2 border border-[rgba(15,23,42,0.10)] rounded-md flex items-center gap-1.5 text-[12px] text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" title="Filter Parameter">
+          <svg class="w-3.5 h-3.5 text-[#62676f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+          <span class="text-[11px]">Filter</span>
+        </button>
+
+        <!-- Avatar user (SR) -->
+        <div class="w-7 h-7 rounded-full bg-[#101014] text-white flex items-center justify-center font-mono text-[11px] font-medium" title="Siti Rahmawati">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY: [Nav tab kiri 200px] + [Form kanan - scroll sendiri] -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+      <!-- NAV TAB KIRI (200px, borderRight hairline, background white) -->
+      <nav class="w-[200px] h-full flex-shrink-0 bg-white border-r border-[rgba(15,23,42,0.10)] p-2.5 flex flex-col gap-1 z-10">
+        <!-- Tab 1: Aktif (Aturan & Agen) -> bg #f2f0fe + teks #5b46d6 + strip kiri 2px violet -->
+        <a href="#" class="flex items-center px-3 py-2 rounded-md bg-[#f2f0fe] text-[#5b46d6] text-[13px] font-[560] relative transition-colors">
+          <span class="absolute left-0 top-1.5 bottom-1.5 w-[2px] bg-[#5b46d6] rounded-r"></span>
+          <span>Aturan & Agen</span>
+        </a>
+
+        <!-- Tab 2: Ambang Batas -->
+        <a href="#" class="flex items-center px-3 py-2 rounded-md text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] text-[13px] font-normal transition-colors">
+          <span>Ambang Batas</span>
+        </a>
+
+        <!-- Tab 3: Model & AI -->
+        <a href="#" class="flex items-center px-3 py-2 rounded-md text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] text-[13px] font-normal transition-colors">
+          <span>Model & AI</span>
+        </a>
+
+        <!-- Tab 4: Pengecualian File -->
+        <a href="#" class="flex items-center px-3 py-2 rounded-md text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] text-[13px] font-normal transition-colors">
+          <span>Pengecualian File</span>
+        </a>
+
+        <!-- Tab 5: Notifikasi & Bot -->
+        <a href="#" class="flex items-center px-3 py-2 rounded-md text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014] text-[13px] font-normal transition-colors">
+          <span>Notifikasi & Bot</span>
+        </a>
+      </nav>
+
+      <!-- FORM KANAN — SCROLL SENDIRI -->
+      <main class="flex-1 h-full overflow-y-auto custom-scrollbar p-8 pb-28">
+        <div class="max-w-4xl mx-auto flex flex-col gap-6">
+
+          <!-- Section Title & Meta Repo -->
+          <div class="flex items-start justify-between">
+            <div>
+              <h1 class="text-[20px] font-[590] text-[#101014] tracking-tight">Konfigurasi Pipeline Peninjauan Kode</h1>
+              <p class="text-[13px] text-[#62676f] mt-1">Tentukan agen intelijen mesin dan ambang toleransi keamanan yang diuji saat pull request dibuat.</p>
+            </div>
+            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#e8f6ee] border border-[rgba(22,163,74,0.18)]">
+              <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+              <span class="font-mono text-[11px] text-[#15803d]">Active Branch: main</span>
+            </div>
+          </div>
+
+          <!-- KARTU 1: Agen Analisis Aktif (Toggle VIOLET #6e5ae6, Dropdown Model + Badge Mono) -->
+          <div class="bg-white rounded-lg border border-[rgba(15,23,42,0.10)] shadow-[0_1px_2px_rgba(15,23,42,0.06)] p-6 flex flex-col gap-5">
+            <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,23,42,0.06)]">
+              <div>
+                <h2 class="text-[15px] font-[590] text-[#101014]">Agen Analisis Aktif</h2>
+                <p class="text-[12px] text-[#62676f] mt-0.5">Setiap agen menjalankan instruksi inspeksi terpisah dan memvalidasi patch secara asinkron.</p>
+              </div>
+              <span class="font-mono text-[11px] text-[#9aa0aa]">3/3 Diaktifkan</span>
+            </div>
+
+            <!-- List Agen (Bug / Security / Style) - Tanpa toggle auto-fix -->
+            <div class="flex flex-col gap-3.5">
+
+              <!-- Agen 1: Bug & Vulnerability Agent -->
+              <div class="p-4 rounded-lg border border-[rgba(15,23,42,0.08)] bg-white hover:border-[rgba(15,23,42,0.16)] transition-all flex items-center justify-between gap-4">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-9 h-9 rounded-md bg-[#f2f0fe] text-[#5b46d6] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="m8 2 1.88 1.88"></path>
+                      <path d="M14.12 3.88 16 2"></path>
+                      <path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"></path>
+                      <path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"></path>
+                      <path d="M12 20v-9"></path>
+                      <path d="M6.53 9C4.6 8.8 3 7.1 3 5"></path>
+                      <path d="M6 13H2"></path>
+                      <path d="M3 21c0-2.1 1.7-3.9 3.8-4"></path>
+                      <path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"></path>
+                      <path d="M22 13h-4"></path>
+                      <path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[14px] font-[590] text-[#101014]">Bug & Vulnerability Agent</span>
+                      <span class="font-mono text-[10.5px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#62676f]">core-agent</span>
+                    </div>
+                    <p class="text-[12.5px] text-[#62676f] mt-1">Mendeteksi logical errors, memory leaks, race conditions, dan unhandled exceptions.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 flex-shrink-0">
+                  <!-- Dropdown model per agen + badge mono nama model -->
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-[10px] uppercase tracking-wider text-[#9aa0aa]">MODEL:</span>
+                    <div class="relative">
+                      <select class="appearance-none font-mono text-[12px] bg-white border border-[rgba(15,23,42,0.12)] rounded-md pl-2.5 pr-7 py-1 text-[#101014] focus:outline-none focus:border-[#6e5ae6] cursor-pointer">
+                        <option value="claude-3-5-sonnet" selected>claude-3-5-sonnet</option>
+                        <option value="gpt-4o">gpt-4o</option>
+                        <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                      </select>
+                      <svg class="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-[#9aa0aa] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Toggle VIOLET #6e5ae6 (Aktif) -->
+                  <button type="button" class="w-10 h-5 bg-[#6e5ae6] rounded-full relative p-0.5 transition-colors focus:outline-none" title="Nonaktifkan Agen">
+                    <span class="block w-4 h-4 bg-white rounded-full translate-x-5 transition-transform"></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Agen 2: Security & Secrets Agent -->
+              <div class="p-4 rounded-lg border border-[rgba(15,23,42,0.08)] bg-white hover:border-[rgba(15,23,42,0.16)] transition-all flex items-center justify-between gap-4">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-9 h-9 rounded-md bg-[#f2f0fe] text-[#5b46d6] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[14px] font-[590] text-[#101014]">Security & Secrets Agent (OWASP & Hardcoded Credentials)</span>
+                      <span class="font-mono text-[10.5px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#62676f]">owasp-top-10</span>
+                    </div>
+                    <p class="text-[12.5px] text-[#62676f] mt-1">Memindai token API yang bocor, SQL injection, insecure deserialization, dan kelemahan CWE.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 flex-shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-[10px] uppercase tracking-wider text-[#9aa0aa]">MODEL:</span>
+                    <div class="relative">
+                      <select class="appearance-none font-mono text-[12px] bg-white border border-[rgba(15,23,42,0.12)] rounded-md pl-2.5 pr-7 py-1 text-[#101014] focus:outline-none focus:border-[#6e5ae6] cursor-pointer">
+                        <option value="gemini-1.5-pro" selected>gemini-1.5-pro</option>
+                        <option value="claude-3-5-sonnet">claude-3-5-sonnet</option>
+                        <option value="gpt-4o">gpt-4o</option>
+                      </select>
+                      <svg class="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-[#9aa0aa] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Toggle VIOLET #6e5ae6 (Aktif) -->
+                  <button type="button" class="w-10 h-5 bg-[#6e5ae6] rounded-full relative p-0.5 transition-colors focus:outline-none" title="Nonaktifkan Agen">
+                    <span class="block w-4 h-4 bg-white rounded-full translate-x-5 transition-transform"></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Agen 3: Style & Performance Agent -->
+              <div class="p-4 rounded-lg border border-[rgba(15,23,42,0.08)] bg-white hover:border-[rgba(15,23,42,0.16)] transition-all flex items-center justify-between gap-4">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-9 h-9 rounded-md bg-[#f2f0fe] text-[#5b46d6] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[14px] font-[590] text-[#101014]">Style & Performance Agent</span>
+                      <span class="font-mono text-[10.5px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#62676f]">lint-optimization</span>
+                    </div>
+                    <p class="text-[12.5px] text-[#62676f] mt-1">Analisis kompleksitas siklomatis (O(n)), kepatuhan idiom linting, dan overhead memori I/O.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 flex-shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-[10px] uppercase tracking-wider text-[#9aa0aa]">MODEL:</span>
+                    <div class="relative">
+                      <select class="appearance-none font-mono text-[12px] bg-white border border-[rgba(15,23,42,0.12)] rounded-md pl-2.5 pr-7 py-1 text-[#101014] focus:outline-none focus:border-[#6e5ae6] cursor-pointer">
+                        <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
+                        <option value="claude-3-haiku">claude-3-haiku</option>
+                        <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                      </select>
+                      <svg class="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-[#9aa0aa] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Toggle VIOLET #6e5ae6 (Aktif) -->
+                  <button type="button" class="w-10 h-5 bg-[#6e5ae6] rounded-full relative p-0.5 transition-colors focus:outline-none" title="Nonaktifkan Agen">
+                    <span class="block w-4 h-4 bg-white rounded-full translate-x-5 transition-transform"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- KARTU 2: Ambang Batas & Parameter Temuan -->
+          <div class="bg-white rounded-lg border border-[rgba(15,23,42,0.10)] shadow-[0_1px_2px_rgba(15,23,42,0.06)] p-6 flex flex-col gap-5">
+            <div>
+              <h2 class="text-[15px] font-[590] text-[#101014]">Ambang Batas & Parameter Temuan</h2>
+              <p class="text-[12px] text-[#62676f] mt-0.5">Kendali ketat kriteria merge gate status check untuk memproteksi cabang produksi.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+              <!-- Field 1: Dropdown Ambang Severity (Label caption #62676f di atas input) -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-mono text-[11px] uppercase tracking-wider text-[#62676f]">
+                  Ambang Batas Pemblokiran PR
+                </label>
+                <div class="relative">
+                  <select class="w-full text-[13px] bg-white border border-[rgba(15,23,42,0.12)] rounded-md px-3 py-2 text-[#101014] focus:outline-none focus:border-[#6e5ae6] cursor-pointer appearance-none">
+                    <option value="kritis" selected>Kritis (CWE/CVE skor &gt;= 7.0)</option>
+                    <option value="tinggi">Tinggi & Kritis (Skor &gt;= 5.0)</option>
+                    <option value="semua">Semua Temuan Termasuk Peringatan Minor</option>
+                  </select>
+                  <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#9aa0aa] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                <span class="text-[11.5px] text-[#9aa0aa]">Hanya pull request dengan skor keparahan di atas nilai ini yang ditandai gagal pada status check.</span>
+              </div>
+
+              <!-- Field 2: Input Maksimal Temuan (Mono) -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-mono text-[11px] uppercase tracking-wider text-[#62676f]">
+                  Batas Maksimal Temuan Per Scan
+                </label>
+                <div class="relative">
+                  <input 
+                    type="number" 
+                    value="50" 
+                    class="w-full font-mono text-[13px] bg-white border border-[rgba(15,23,42,0.12)] rounded-md px-3 py-2 text-[#101014] focus:outline-none focus:border-[#6e5ae6]"
+                  />
+                </div>
+                <span class="text-[11.5px] text-[#9aa0aa]">Mencegah spam komentar review pada perubahan berukuran besar.</span>
+              </div>
+            </div>
+
+            <!-- Field 3 dengan INLINE ERROR: Batas Waktu Timeout -->
+            <div class="flex flex-col gap-1.5 pt-2 border-t border-[rgba(15,23,42,0.06)]">
+              <label class="font-mono text-[11px] uppercase tracking-wider text-[#62676f]">
+                Batas Waktu Timeout Eksekusi Sandbox (Detik)
+              </label>
+              <div class="max-w-xs relative">
+                <input 
+                  type="text" 
+                  value="240" 
+                  class="w-full font-mono text-[13px] bg-white border border-[#dc2626] rounded-md px-3 py-2 text-[#101014] focus:outline-none focus:ring-1 focus:ring-[#dc2626] pr-8"
+                />
+                <svg class="w-4 h-4 text-[#dc2626] absolute right-2.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <!-- Inline Error Text -->
+              <span class="text-[11.5px] font-medium text-[#dc2626] flex items-center gap-1">
+                Batas maksimal timeout tidak boleh melebihi 180 detik
+              </span>
+            </div>
+          </div>
+
+          <!-- KARTU 3: SKELETON FORM SECTION (Kategori Ruleset Tambahan yang Sedang Dimuat) -->
+          <div class="bg-white rounded-lg border border-[rgba(15,23,42,0.10)] shadow-[0_1px_2px_rgba(15,23,42,0.06)] p-6 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-1.5 w-1/3">
+                <div class="h-3.5 bg-[#ededf0] rounded w-3/4"></div>
+                <div class="h-2.5 bg-[#f1f1f4] rounded w-full"></div>
+              </div>
+              <div class="h-6 w-20 bg-[#ededf0] rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 pt-2">
+              <div class="p-3.5 border border-[rgba(15,23,42,0.06)] rounded-md flex flex-col gap-2.5">
+                <div class="h-3 bg-[#ededf0] rounded w-1/2"></div>
+                <div class="h-8 bg-[#f7f7f8] rounded w-full border border-[rgba(15,23,42,0.06)]"></div>
+              </div>
+              <div class="p-3.5 border border-[rgba(15,23,42,0.06)] rounded-md flex flex-col gap-2.5">
+                <div class="h-3 bg-[#ededf0] rounded w-2/3"></div>
+                <div class="h-8 bg-[#f7f7f8] rounded w-full border border-[rgba(15,23,42,0.06)]"></div>
+              </div>
+              <div class="p-3.5 border border-[rgba(15,23,42,0.06)] rounded-md flex flex-col gap-2.5">
+                <div class="h-3 bg-[#ededf0] rounded w-1/3"></div>
+                <div class="h-8 bg-[#f7f7f8] rounded w-full border border-[rgba(15,23,42,0.06)]"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- STICKY BAR BAWAH: "Perubahan belum disimpan" + Simpan/Batal -->
+      <!-- KONTRAK: SOLID bg-surface-elevated (#ffffff), TANPA blur/backdrop-filter apa pun -->
+      <div class="absolute bottom-0 left-[200px] right-0 h-14 bg-white border-t border-[rgba(15,23,42,0.10)] shadow-[0_-2px_8px_rgba(15,23,42,0.05)] px-8 flex items-center justify-between z-20">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
+          <span class="text-[13px] font-[560] text-[#101014]">Perubahan belum disimpan</span>
+          <span class="text-[12px] text-[#62676f]">(2 modifikasi pada agen dan ambang batas)</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button class="px-3 py-1.5 text-[13px] font-medium text-[#4b5058] hover:bg-[#f1f1f3] rounded-md transition-colors">
+            Batal
+          </button>
+          <button class="px-4 py-1.5 text-[13px] font-medium bg-[#6e5ae6] hover:bg-[#5b46d6] text-white rounded-md flex items-center gap-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.12)] transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span>Simpan Perubahan</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

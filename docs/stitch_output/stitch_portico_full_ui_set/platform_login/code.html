@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#101014',
+            secondary: '#4b5058',
+            tertiary: '#62676f',
+            accent: '#6e5ae6',
+            'accent-hover': '#5b46d6',
+            'surface-page': '#f7f7f8',
+            'surface-panel': '#ffffff',
+            'surface-elevated': '#ffffff',
+            'surface-hover': '#f1f1f3',
+            'surface-sunken': '#ededf0',
+            'border-subtle': 'rgba(15,23,42,0.06)',
+            'border-standard': 'rgba(15,23,42,0.10)',
+            'text-primary': '#101014',
+            'text-secondary': '#4b5058',
+            'text-tertiary': '#62676f',
+            critical: '#b91c1c'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            card: '0 1px 2px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f7f8] text-[#101014] font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <!-- Centered Login Card: 380px, radius 8px (rounded-lg), card shadow, hairline border -->
+  <main class="w-full max-w-[380px] bg-white rounded-lg border border-[rgba(15,23,42,0.10)] shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)] p-6">
+    
+    <!-- 1. Wordmark TEKS: Inter 1.25rem (text-xl / 20px), #101014, font weight 590 (font-semibold) -->
+    <div class="mb-6">
+      <h1 class="text-[1.25rem] leading-[1.33] font-semibold text-[#101014] tracking-[-0.24px]">Platform</h1>
+    </div>
+
+    <!-- 2. Tombol Sekunder Full-Width "Masuk lewat Hub" -->
+    <div class="mb-5">
+      <button 
+        type="button" 
+        class="w-full h-10 px-3.5 bg-white hover:bg-[#f1f1f3] text-[#4b5058] hover:text-[#101014] text-[0.813rem] font-medium rounded-[6px] border border-[rgba(15,23,42,0.10)] transition-colors flex items-center justify-center gap-2 cursor-pointer">
+        <span>Masuk lewat Hub</span>
+      </button>
+    </div>
+
+    <!-- Pemisah tipis bertuliskan "atau login lokal" -->
+    <div class="relative flex items-center justify-center mb-5">
+      <div class="w-full border-t border-[rgba(15,23,42,0.10)]"></div>
+      <span class="absolute bg-white px-2.5 text-[12px] leading-none text-[#62676f] font-normal">atau login lokal</span>
+    </div>
+
+    <!-- 3. Form login lokal: Input Email + Password -->
+    <form class="space-y-4" onsubmit="event.preventDefault()">
+      <!-- Email Field -->
+      <div>
+        <label for="email" class="block text-[0.75rem] font-medium text-[#62676f] mb-1.5 leading-normal">
+          Email
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          autocomplete="username"
+          placeholder="nama@email.com" 
+          class="w-full h-10 px-3 bg-white text-[#101014] placeholder-[#9aa0aa] text-[0.875rem] rounded-[6px] border border-[rgba(15,23,42,0.10)] focus:outline-none focus:border-[#6e5ae6] focus:ring-1 focus:ring-[#6e5ae6] transition-colors"
+        />
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-[0.75rem] font-medium text-[#62676f] mb-1.5 leading-normal">
+          Password
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          autocomplete="current-password"
+          placeholder="••••••••" 
+          class="w-full h-10 px-3 bg-white text-[#101014] placeholder-[#9aa0aa] text-[0.875rem] rounded-[6px] border border-[rgba(15,23,42,0.10)] focus:outline-none focus:border-[#6e5ae6] focus:ring-1 focus:ring-[#6e5ae6] transition-colors"
+        />
+      </div>
+
+      <!-- 5. Tombol Primer Full-Width "Masuk" -->
+      <div class="pt-1">
+        <button 
+          type="submit" 
+          class="w-full h-10 px-3.5 bg-[#6e5ae6] hover:bg-[#5b46d6] text-white text-[0.813rem] font-medium rounded-[6px] transition-colors flex items-center justify-center cursor-pointer">
+          Masuk
+        </button>
+      </div>
+    </form>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portico Helpdesk — Pengaturan</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "danger": "#b91c1c",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#47464b",
+            "on-secondary-fixed-variant": "#42474f",
+            "text-secondary": "#4b5058",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-container-low": "#f3f3f4",
+            "error": "#ba1a1a",
+            "surface-tint": "#5f5e63",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "tertiary": "#000000",
+            "secondary": "#5a5f67",
+            "primary": "#000000",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "on-primary-container": "#858388",
+            "on-tertiary-container": "#7f848c",
+            "secondary-fixed-dim": "#c2c7d0",
+            "overlay": "rgba(16,16,20,0.40)",
+            "surface-accent-tint": "#f2f0fe",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "outline": "#78767b",
+            "surface": "#f9f9fa",
+            "accent-hover": "#5b46d6",
+            "on-primary": "#ffffff",
+            "surface-panel": "#ffffff",
+            "on-primary-fixed": "#1b1b1f",
+            "on-error-container": "#93000a",
+            "danger-solid": "#dc2626",
+            "surface-hover": "#f1f1f3",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#dee2ec",
+            "on-primary-fixed-variant": "#47464b",
+            "on-tertiary-fixed-variant": "#42474f",
+            "background": "#f9f9fa",
+            "tertiary-fixed": "#dee3ec",
+            "diff-context-bg": "#fbfbfc",
+            "surface-container-high": "#e8e8e9",
+            "secondary-container": "#dee2ec",
+            "success": "#16a34a",
+            "warning": "#b45309",
+            "primary-fixed-dim": "#c8c5cb",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "accent": "#6e5ae6",
+            "surface-container": "#eeeeef",
+            "tertiary-container": "#171c23",
+            "text-tertiary": "#62676f",
+            "outline-variant": "#c8c5cb",
+            "on-tertiary-fixed": "#171c23",
+            "on-background": "#1a1c1d",
+            "surface-container-highest": "#e2e2e3",
+            "text-quaternary": "#9aa0aa",
+            "on-secondary-fixed": "#171c23",
+            "critical": "#b91c1c",
+            "on-secondary-container": "#60656d",
+            "surface-sunken": "#ededf0",
+            "surface-elevated": "#ffffff",
+            "inverse-surface": "#2f3132",
+            "info": "#6e5ae6",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed": "#e4e1e7",
+            "inverse-primary": "#c8c5cb",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "surface-canvas": "#f1f1f4",
+            "on-surface": "#1a1c1d",
+            "text-primary": "#101014",
+            "surface-dim": "#dadadb",
+            "primary-container": "#1b1b1f",
+            "surface-bright": "#f9f9fa",
+            "surface-page": "#f7f7f8",
+            "surface-variant": "#e2e2e3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "16px",
+            "gutter": "16px",
+            "space-3xl": "48px",
+            "space-2xl": "32px",
+            "margin": "24px",
+            "space-md": "12px",
+            "space-sm": "8px",
+            "space-xs": "4px",
+            "space-xl": "24px"
+          },
+          "fontFamily": {
+            "mono-label": ["JetBrains Mono"],
+            "body-small": ["Inter"],
+            "heading-card": ["Inter"],
+            "display-xl": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "label": ["Inter"],
+            "heading-section": ["Inter"],
+            "caption": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.15);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.25);
+    }
+  </style>
+</head>
+<body class="h-full bg-[#f7f7f8] text-[#101014] font-body text-body antialiased overflow-hidden m-0 p-0 flex">
+<!-- 1. APP RAIL (Far Left, 56px wide, fixed full height) -->
+<aside class="w-[56px] min-w-[56px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between items-center py-4 z-30 select-none">
+<div class="flex flex-col items-center gap-3 w-full">
+<!-- App 1: Platform -->
+<button class="w-9 h-9 rounded-md flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors" title="Portico Platform" type="button">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<!-- App 2: Helpdesk (ACTIVE) -->
+<button class="w-9 h-9 rounded-md flex items-center justify-center bg-[#f2f0fe] text-[#5b46d6] transition-colors relative" title="Portico Helpdesk" type="button">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-[#5b46d6] rounded-r"></span>
+</button>
+<!-- App 3: Code Review -->
+<button class="w-9 h-9 rounded-md flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] hover:text-[#101014] transition-colors" title="Portico Code Review" type="button">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+</button>
+</div>
+<div class="flex flex-col items-center gap-3 w-full">
+<!-- Settings Icon -->
+<button class="w-9 h-9 rounded-md flex items-center justify-center text-[#101014] bg-[#f1f1f3] transition-colors" title="Pengaturan Global" type="button">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<!-- Hairline divider -->
+<div class="w-6 h-[1px] bg-[rgba(15,23,42,0.10)]"></div>
+<!-- User avatar pill -->
+<div class="w-8 h-8 rounded-full bg-[#ededf0] text-[#101014] text-[11px] font-mono font-medium flex items-center justify-center border border-[rgba(15,23,42,0.10)]" title="Siti Rahmawati (SR)">
+        SR
+      </div>
+</div>
+</aside>
+<!-- 2. CONTEXTUAL SIDEBAR (236px wide) -->
+<aside class="w-[236px] min-w-[236px] h-full bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] flex flex-col justify-between select-none z-20">
+<div class="flex flex-col">
+<!-- Sidebar Wordmark -->
+<div class="h-12 px-4 flex items-center border-b border-[rgba(15,23,42,0.06)]">
+<span class="font-semibold text-[15px] text-[#101014] tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-[#5b46d6] text-base" data-icon="headset_mic">headset_mic</span>
+          Portico Helpdesk
+        </span>
+</div>
+<!-- Navigation groups -->
+<div class="px-3 py-3 space-y-4 overflow-y-auto">
+<!-- PRODUK -->
+<div>
+<div class="px-2 pb-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-[#9aa0aa]">
+            PRODUK
+          </div>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="inbox">inbox</span>
+                Tiket Masuk
+              </span>
+<span class="font-mono text-xs text-[#62676f]">18</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="assignment_ind">assignment_ind</span>
+                Ditugaskan ke Saya
+              </span>
+<span class="font-mono text-xs text-[#62676f]">6</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="schedule">schedule</span>
+                Menunggu Respon
+              </span>
+<span class="font-mono text-xs text-[#62676f]">9</span>
+</a>
+</nav>
+</div>
+<!-- VIEWS -->
+<div>
+<div class="px-2 pb-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-[#9aa0aa]">
+            VIEWS
+          </div>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#b91c1c]" data-icon="warning">warning</span>
+                SLA Hampir Lewat
+              </span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[#fdecec] text-[#b91c1c] font-medium">4</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="task_alt">task_alt</span>
+                Selesai Minggu Ini
+              </span>
+<span class="font-mono text-xs text-[#62676f]">82</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="archive">archive</span>
+                Arsip
+              </span>
+<span class="font-mono text-xs text-[#62676f]">310</span>
+</a>
+</nav>
+</div>
+<!-- WORKSPACE -->
+<div>
+<div class="px-2 pb-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-[#9aa0aa]">
+            WORKSPACE
+          </div>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-[#4b5058] hover:bg-[#f1f1f3] transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#62676f]" data-icon="group">group</span>
+                Anggota Tim
+              </span>
+<span class="font-mono text-xs text-[#62676f]">12</span>
+</a>
+<!-- ACTIVE TAB in Workspace -->
+<a class="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium bg-[#f2f0fe] text-[#5b46d6]" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-[#5b46d6]" data-icon="tune">tune</span>
+                Pengaturan &amp; SLA
+              </span>
+</a>
+</nav>
+</div>
+</div>
+</div>
+<!-- Bottom User Card -->
+<div class="p-3 border-t border-[rgba(15,23,42,0.06)] bg-[#ffffff]">
+<div class="flex items-center gap-2.5 p-1 rounded-md">
+<div class="w-8 h-8 rounded-full bg-[#ededf0] text-[#101014] text-xs font-mono font-medium flex items-center justify-center border border-[rgba(15,23,42,0.10)] shrink-0">
+          SR
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-medium text-[#101014] truncate">Siti Rahmawati</span>
+<span class="text-[11px] text-[#62676f] truncate">Support Lead</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- RIGHT WRAPPER (Top Bar + Dynamic Content Pane) -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- 3. TOP BAR (48px high, spans only over content) -->
+<header class="h-12 min-h-[48px] bg-[#ffffff] border-b border-[rgba(15,23,42,0.10)] px-6 flex items-center justify-between select-none z-10">
+<div class="flex items-center gap-3">
+<h1 class="font-semibold text-sm text-[#101014] tracking-tight">Pengaturan Helpdesk</h1>
+<span class="w-[1px] h-3.5 bg-[rgba(15,23,42,0.15)]"></span>
+<div class="flex items-center gap-1.5 text-xs text-[#62676f]">
+<span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+<span>Live · 2 menit lalu</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9aa0aa] text-base pointer-events-none" data-icon="search">search</span>
+<input class="w-full h-8 pl-8 pr-3 text-xs bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded-md text-[#101014] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] focus:ring-1 focus:ring-[#6e5ae6]" placeholder="Cari pengaturan, policy, webhook..." type="text"/>
+</div>
+<button class="w-8 h-8 rounded-md border border-[rgba(15,23,42,0.10)] flex items-center justify-center text-[#62676f] hover:bg-[#f1f1f3] transition-colors" title="Filter pengaturan" type="button">
+<span class="material-symbols-outlined text-[17px]" data-icon="tune">tune</span>
+</button>
+<div class="w-7 h-7 rounded-full bg-[#ededf0] text-[#101014] text-[11px] font-mono font-medium flex items-center justify-center border border-[rgba(15,23,42,0.10)]">
+          SR
+        </div>
+</div>
+</header>
+<!-- 4. CONTENT PANE -->
+<div class="flex-1 flex flex-row h-[calc(100vh-48px)] bg-[#f7f7f8] overflow-hidden relative">
+<!-- LEFT INNER NAV TABS (200px wide, vertical tabs on left) -->
+<nav class="w-[200px] min-w-[200px] bg-[#ffffff] border-r border-[rgba(15,23,42,0.10)] p-3 space-y-1 h-full select-none shrink-0">
+<a class="bg-[#f2f0fe] text-[#5b46d6] font-medium border-l-[3px] border-[#5b46d6] rounded-r-md px-3 py-2 flex items-center justify-between text-sm" href="#general">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+            General
+          </span>
+<span class="material-symbols-outlined text-[15px]" data-icon="chevron_right">chevron_right</span>
+</a>
+<a class="text-[#4b5058] hover:bg-[#f1f1f3] rounded-md px-3 py-2 text-sm flex items-center gap-2 transition-colors" href="#users">
+<span class="material-symbols-outlined text-[18px] text-[#62676f]" data-icon="group">group</span>
+          Users
+        </a>
+<a class="text-[#4b5058] hover:bg-[#f1f1f3] rounded-md px-3 py-2 text-sm flex items-center gap-2 transition-colors" href="#sla">
+<span class="material-symbols-outlined text-[18px] text-[#62676f]" data-icon="timer">timer</span>
+          SLA
+        </a>
+<a class="text-[#4b5058] hover:bg-[#f1f1f3] rounded-md px-3 py-2 text-sm flex items-center gap-2 transition-colors" href="#webhooks">
+<span class="material-symbols-outlined text-[18px] text-[#62676f]" data-icon="webhook">webhook</span>
+          Webhooks
+        </a>
+<a class="text-[#4b5058] hover:bg-[#f1f1f3] rounded-md px-3 py-2 text-sm flex items-center gap-2 transition-colors" href="#email">
+<span class="material-symbols-outlined text-[18px] text-[#62676f]" data-icon="mail">mail</span>
+          Email
+        </a>
+</nav>
+<!-- RIGHT MAIN SETTINGS PANE -->
+<main class="flex-1 overflow-y-auto p-8 max-w-5xl space-y-8 pb-28">
+<!-- SECTION: GENERAL -->
+<section class="space-y-4" id="general">
+<div>
+<h2 class="text-lg font-semibold text-[#101014] tracking-tight">Pengaturan Umum (General)</h2>
+<p class="text-sm text-[#62676f]">Identitas organisasi, logo portal bantuan, dan zona waktu operasional.</p>
+</div>
+<!-- General Card -->
+<div class="bg-[#ffffff] border border-[rgba(15,23,42,0.10)] rounded-lg p-6 shadow-sm space-y-5">
+<!-- Organization Name -->
+<div class="space-y-1.5">
+<label class="block font-mono text-[11px] uppercase tracking-wider text-[#62676f]">NAMA ORGANISASI</label>
+<input class="w-full max-w-xl h-9 px-3 text-sm bg-[#ffffff] border border-[rgba(15,23,42,0.15)] rounded-md text-[#101014] focus:outline-none focus:border-[#6e5ae6] focus:ring-1 focus:ring-[#6e5ae6]" type="text" value="PT Perkasa Logistik Nusantara"/>
+</div>
+<!-- Logo Upload -->
+<div class="space-y-1.5 max-w-xl">
+<label class="block font-mono text-[11px] uppercase tracking-wider text-[#62676f]">LOGO ORGANISASI</label>
+<div class="border-2 border-dashed border-[rgba(15,23,42,0.15)] rounded-lg p-6 text-center bg-[#f7f7f8] hover:bg-[#f1f1f3] cursor-pointer transition-colors flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-[#62676f] text-3xl mb-2" data-icon="upload_file">upload_file</span>
+<span class="text-xs font-medium text-[#101014]">Seret dan lepas file logo ke sini, atau klik untuk telusuri</span>
+<span class="text-[11px] text-[#62676f] mt-1">PNG, SVG atau JPG (Maks. 2MB, rasio ideal 1:1 atau horizontal)</span>
+</div>
+</div>
+<!-- Operational Timezone -->
+<div class="space-y-1.5 max-w-xl">
+<label class="block font-mono text-[11px] uppercase tracking-wider text-[#62676f]">ZONA WAKTU OPERASIONAL</label>
+<div class="relative">
+<select class="w-full h-9 px-3 pr-8 text-sm bg-[#ffffff] border border-[rgba(15,23,42,0.15)] rounded-md text-[#101014] appearance-none focus:outline-none focus:border-[#6e5ae6] focus:ring-1 focus:ring-[#6e5ae6]">
+<option selected="">Asia/Jakarta (WIB, UTC+07:00)</option>
+<option>Asia/Makassar (WITA, UTC+08:00)</option>
+<option>Asia/Jayapura (WIT, UTC+09:00)</option>
+<option>UTC (Coordinated Universal Time)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-[#62676f] text-base pointer-events-none" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+<!-- Inline Warning Note -->
+<div class="bg-[#fdecec] text-[#b91c1c] border border-[rgba(185,28,28,0.2)] rounded-md p-3 text-xs flex items-center gap-2.5 max-w-xl">
+<span class="material-symbols-outlined text-[17px] shrink-0" data-icon="error_outline">error_outline</span>
+<span>Perhatian sinkronisasi: Jam server berbeda 2 detik dari NTP global. Pastikan cron SLA tidak terganggu.</span>
+</div>
+</div>
+</section>
+<!-- SECTION: USERS -->
+<section class="space-y-4 pt-2" id="users">
+<div class="flex items-end justify-between">
+<div>
+<h2 class="text-lg font-semibold text-[#101014] tracking-tight">Manajemen Pengguna (Users)</h2>
+<p class="text-sm text-[#62676f]">Daftar staf, agen penerima eskalasi tiket, dan level akses sistem helpdesk.</p>
+</div>
+<button class="bg-[#6e5ae6] text-white px-3.5 py-1.5 rounded-md text-xs font-medium hover:bg-[#5b46d6] transition-colors flex items-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+              Undang Staf
+            </button>
+</div>
+<!-- Clean Data Table -->
+<div class="border border-[rgba(15,23,42,0.10)] rounded-lg overflow-hidden bg-white shadow-sm">
+<div class="font-mono text-[11px] uppercase tracking-wider text-[#62676f] bg-[#f7f7f8] h-9 px-4 flex items-center border-b border-[rgba(15,23,42,0.06)]">
+<div class="w-1/3">Nama Staf</div>
+<div class="w-1/3">Email</div>
+<div class="w-1/6">Peran (Role)</div>
+<div class="w-1/12">Status</div>
+<div class="w-12 text-right">Aksi</div>
+</div>
+<div class="divide-y divide-[rgba(15,23,42,0.06)] text-xs">
+<!-- Row 1 -->
+<div class="h-12 px-4 flex items-center hover:bg-[#f1f1f3] transition-colors">
+<div class="w-1/3 font-medium text-[#101014] flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-[#f2f0fe] text-[#5b46d6] font-mono text-[10px] font-semibold flex items-center justify-center">SR</div>
+                  Siti Rahmawati
+                </div>
+<div class="w-1/3 text-[#4b5058] font-mono text-[11px]">siti.rahmawati@perkasa.co.id</div>
+<div class="w-1/6">
+<span class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#f2f0fe] text-[#5b46d6] font-medium border border-[rgba(110,90,230,0.2)]">Admin</span>
+</div>
+<div class="w-1/12 flex items-center gap-1.5 text-[#101014]">
+<span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+<span>Aktif</span>
+</div>
+<div class="w-12 text-right">
+<button class="text-[#62676f] hover:text-[#101014] px-1" title="Aksi lainnya" type="button">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="h-12 px-4 flex items-center hover:bg-[#f1f1f3] transition-colors">
+<div class="w-1/3 font-medium text-[#101014] flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-[#ededf0] text-[#4b5058] font-mono text-[10px] font-semibold flex items-center justify-center">AF</div>
+                  Ahmad Fauzi
+                </div>
+<div class="w-1/3 text-[#4b5058] font-mono text-[11px]">ahmad.fauzi@perkasa.co.id</div>
+<div class="w-1/6">
+<span class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#ededf0] text-[#4b5058] font-medium border border-[rgba(15,23,42,0.10)]">Agen</span>
+</div>
+<div class="w-1/12 flex items-center gap-1.5 text-[#101014]">
+<span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+<span>Aktif</span>
+</div>
+<div class="w-12 text-right">
+<button class="text-[#62676f] hover:text-[#101014] px-1" title="Aksi lainnya" type="button">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="h-12 px-4 flex items-center hover:bg-[#f1f1f3] transition-colors">
+<div class="w-1/3 font-medium text-[#101014] flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-[#ededf0] text-[#4b5058] font-mono text-[10px] font-semibold flex items-center justify-center">DA</div>
+                  Dewi Anggraeni
+                </div>
+<div class="w-1/3 text-[#4b5058] font-mono text-[11px]">dewi.anggraeni@perkasa.co.id</div>
+<div class="w-1/6">
+<span class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#ededf0] text-[#4b5058] font-medium border border-[rgba(15,23,42,0.10)]">Agen</span>
+</div>
+<div class="w-1/12 flex items-center gap-1.5 text-[#101014]">
+<span class="w-2 h-2 rounded-full bg-[#b45309]"></span>
+<span>Cuti</span>
+</div>
+<div class="w-12 text-right">
+<button class="text-[#62676f] hover:text-[#101014] px-1" title="Aksi lainnya" type="button">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="h-12 px-4 flex items-center hover:bg-[#f1f1f3] transition-colors">
+<div class="w-1/3 font-medium text-[#101014] flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-[#ededf0] text-[#4b5058] font-mono text-[10px] font-semibold flex items-center justify-center">TH</div>
+                  Taufik Hidayat
+                </div>
+<div class="w-1/3 text-[#4b5058] font-mono text-[11px]">taufik.h@perkasa.co.id</div>
+<div class="w-1/6">
+<span class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#ededf0] text-[#4b5058] font-medium border border-[rgba(15,23,42,0.10)]">Agen</span>
+</div>
+<div class="w-1/12 flex items-center gap-1.5 text-[#101014]">
+<span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+<span>Aktif</span>
+</div>
+<div class="w-12 text-right">
+<button class="text-[#62676f] hover:text-[#101014] px-1" title="Aksi lainnya" type="button">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: SLA -->
+<section class="space-y-4 pt-2" id="sla">
+<div>
+<h2 class="text-lg font-semibold text-[#101014] tracking-tight">Kebijakan Service Level Agreement (SLA)</h2>
+<p class="text-sm text-[#62676f]">Target waktu resolusi dan respons awal tiket berdasarkan urgensi isu.</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- SLA Card 1 -->
+<div class="bg-white border border-[rgba(15,23,42,0.10)] rounded-lg p-5 shadow-sm space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-medium text-sm text-[#101014]">Tier 1 Enterprise (Kritis / P1)</h3>
+</div>
+<span class="inline-block mt-1 font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#fdecec] text-[#b91c1c] font-medium border border-[rgba(185,28,28,0.2)]">Prioritas Tinggi</span>
+</div>
+<!-- Toggle switch active -->
+<div class="w-9 h-5 bg-[#6e5ae6] rounded-full p-0.5 flex items-center cursor-pointer justify-end" title="Status Kebijakan Aktif">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2 border-t border-[rgba(15,23,42,0.06)]">
+<div>
+<span class="font-mono text-[10px] uppercase tracking-wider text-[#62676f] block">RESPONS PERTAMA</span>
+<span class="font-mono text-sm font-medium text-[#101014]">15m</span>
+</div>
+<div>
+<span class="font-mono text-[10px] uppercase tracking-wider text-[#62676f] block">WAKTU SELESAI</span>
+<span class="font-mono text-sm font-medium text-[#101014]">4j</span>
+</div>
+</div>
+</div>
+<!-- SLA Card 2 -->
+<div class="bg-white border border-[rgba(15,23,42,0.10)] rounded-lg p-5 shadow-sm space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-medium text-sm text-[#101014]">Standard Support (P2 &amp; P3)</h3>
+</div>
+<span class="inline-block mt-1 font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#ededf0] text-[#4b5058] font-medium border border-[rgba(15,23,42,0.10)]">Normal</span>
+</div>
+<!-- Toggle switch active -->
+<div class="w-9 h-5 bg-[#6e5ae6] rounded-full p-0.5 flex items-center cursor-pointer justify-end" title="Status Kebijakan Aktif">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2 border-t border-[rgba(15,23,42,0.06)]">
+<div>
+<span class="font-mono text-[10px] uppercase tracking-wider text-[#62676f] block">RESPONS PERTAMA</span>
+<span class="font-mono text-sm font-medium text-[#101014]">1j</span>
+</div>
+<div>
+<span class="font-mono text-[10px] uppercase tracking-wider text-[#62676f] block">WAKTU SELESAI</span>
+<span class="font-mono text-sm font-medium text-[#101014]">24j</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: WEBHOOKS -->
+<section class="space-y-4 pt-2" id="webhooks">
+<div class="flex items-end justify-between">
+<div>
+<h2 class="text-lg font-semibold text-[#101014] tracking-tight">Integrasi Webhook Keluar</h2>
+<p class="text-sm text-[#62676f]">Memicu notifikasi HTTP POST ke sistem pihak ketiga saat status tiket diperbarui.</p>
+</div>
+<button class="bg-white border border-[rgba(15,23,42,0.10)] text-[#101014] px-3 py-1.5 rounded-md text-xs font-medium hover:bg-[#f1f1f3] transition-colors flex items-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+              Tambah Endpoint
+            </button>
+</div>
+<!-- Webhook Card -->
+<div class="bg-white border border-[rgba(15,23,42,0.10)] rounded-lg p-5 shadow-sm space-y-3">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h3 class="font-medium text-sm text-[#101014]">Webhook ERP Warehouse Sync</h3>
+<span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[#f2f0fe] text-[#5b46d6] font-medium">JSON payload</span>
+</div>
+<p class="font-mono text-xs text-[#62676f] truncate max-w-lg">https://api.perkasa.co.id/v1/webhooks/helpdesk/dispatch-events</p>
+</div>
+<div class="flex items-center gap-3">
+<!-- Toggle switch active -->
+<div class="w-9 h-5 bg-[#6e5ae6] rounded-full p-0.5 flex items-center cursor-pointer justify-end" title="Webhook Aktif">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-[rgba(15,23,42,0.06)] text-xs">
+<div class="flex items-center gap-2 text-[#62676f]">
+<span class="material-symbols-outlined text-sm text-[#16a34a]" data-icon="check_circle">check_circle</span>
+<span>Terakhir dipicu: <span class="font-mono text-[#101014]">4 menit lalu</span> (Status 200 OK)</span>
+</div>
+<button class="text-[#b91c1c] text-xs hover:underline cursor-pointer" type="button">
+                Hapus Webhook
+              </button>
+</div>
+</div>
+</section>
+<!-- SECTION: EMAIL INBOUND -->
+<section class="space-y-4 pt-2" id="email">
+<div>
+<h2 class="text-lg font-semibold text-[#101014] tracking-tight">Konfigurasi Email Masuk (Inbound Parsing)</h2>
+<p class="text-sm text-[#62676f]">Ubah surat masuk ke alamat bantuan menjadi tiket terkelola secara otomatis.</p>
+</div>
+<div class="bg-white border border-[rgba(15,23,42,0.10)] rounded-lg p-5 shadow-sm space-y-4">
+<div class="space-y-1.5">
+<label class="block font-mono text-[11px] uppercase tracking-wider text-[#62676f]">ALAMAT EMAIL FORWARDING RESMI</label>
+<!-- Well alamat inbound -->
+<div class="bg-[#ededf0] rounded-md p-3 font-mono text-xs text-[#101014] flex justify-between items-center border border-[rgba(15,23,42,0.06)]">
+<span class="select-all">support-inbound-perkasa@mail.portico.internal</span>
+<button class="flex items-center gap-1 text-xs text-[#4b5058] hover:text-[#101014] px-2 py-1 rounded bg-[#ffffff] border border-[rgba(15,23,42,0.10)] shadow-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+                  Salin
+                </button>
+</div>
+</div>
+<!-- Forwarding Instructions -->
+<div class="space-y-2 pt-2 border-t border-[rgba(15,23,42,0.06)]">
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#62676f] block">PETUNJUK INTEGRASI SERVER EMAIL</span>
+<ol class="text-xs text-[#4b5058] space-y-1.5 list-decimal pl-4">
+<li>Konfigurasi MX atau forwarder di penyedia email Anda untuk meneruskan seluruh surel pelanggan ke endpoint di atas.</li>
+<li>Verifikasi token DNS TXT untuk SPF/DKIM agar pesan keluar tidak ditandai sebagai spam oleh gateway klien.</li>
+</ol>
+</div>
+</div>
+</section>
+</main>
+<!-- STICKY BOTTOM BAR FOR UNSAVED CHANGES -->
+<div class="absolute bottom-0 left-[200px] right-0 bg-[#ffffff] border-t border-[rgba(15,23,42,0.10)] px-8 py-3.5 flex items-center justify-between z-20 shadow-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#b45309]"></span>
+<span class="text-xs text-[#101014] font-medium">Perubahan belum disimpan <span class="text-[#62676f] font-normal">(1 modifikasi pada Nama Organisasi)</span></span>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-[#4b5058] bg-[#ffffff] border border-[rgba(15,23,42,0.10)] px-3.5 py-1.5 rounded-md text-xs font-medium hover:bg-[#f1f1f3] transition-colors" type="button">
+            Batal
+          </button>
+<button class="bg-[#6e5ae6] hover:bg-[#5b46d6] text-white px-4 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm" type="button">
+            Simpan Perubahan
+          </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

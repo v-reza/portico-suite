@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pengaturan Aplikasi — Intake Vendor | Portico Platform</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "surface-bright": "#f9f9fa",
+            "surface-sunken": "#ededf0",
+            "on-primary-container": "#858388",
+            "text-primary": "#101014",
+            "on-tertiary-fixed": "#171c23",
+            "info": "#6e5ae6",
+            "critical": "#b91c1c",
+            "on-background": "#1a1c1d",
+            "warning": "#d97706",
+            "primary-fixed-dim": "#c8c5cb",
+            "on-primary-fixed": "#1b1b1f",
+            "on-secondary-container": "#60656d",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "inverse-surface": "#2f3132",
+            "text-tertiary": "#62676f",
+            "on-secondary-fixed-variant": "#42474f",
+            "surface-variant": "#e2e2e3",
+            "surface-tint": "#5f5e63",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "on-surface": "#1a1c1d",
+            "on-tertiary-fixed-variant": "#42474f",
+            "surface-panel": "#ffffff",
+            "surface-page": "#f7f7f8",
+            "surface-accent-tint": "#f2f0fe",
+            "secondary-fixed": "#dee2ec",
+            "tertiary-container": "#171c23",
+            "success": "#16a34a",
+            "on-error": "#ffffff",
+            "surface-container-low": "#f3f3f4",
+            "accent": "#6e5ae6",
+            "outline-variant": "#c8c5cb",
+            "inverse-primary": "#c8c5cb",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "error": "#ba1a1a",
+            "text-secondary": "#4b5058",
+            "surface-container-highest": "#e2e2e3",
+            "on-primary": "#ffffff",
+            "surface-dim": "#dadadb",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-container-high": "#e8e8e9",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#000000",
+            "tertiary": "#000000",
+            "on-tertiary-container": "#7f848c",
+            "on-secondary-fixed": "#171c23",
+            "surface-elevated": "#ffffff",
+            "overlay": "rgba(16,16,20,0.40)",
+            "on-primary-fixed-variant": "#47464b",
+            "background": "#f9f9fa",
+            "danger-solid": "#dc2626",
+            "surface-hover": "#f1f1f3",
+            "danger": "#dc2626",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "surface-canvas": "#f1f1f4",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "surface": "#f9f9fa",
+            "text-quaternary": "#9aa0aa",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "primary-fixed": "#e4e1e7",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#dee3ec",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "primary-container": "#1b1b1f",
+            "secondary": "#5a5f67",
+            "surface-container": "#eeeeef",
+            "on-surface-variant": "#47464b",
+            "outline": "#78767b",
+            "secondary-fixed-dim": "#c2c7d0",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#dee2ec",
+            "diff-context-bg": "#fbfbfc",
+            "accent-hover": "#5b46d6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-2xl": "32px",
+            "space-xl": "24px",
+            "space-sm": "8px",
+            "space-lg": "16px",
+            "space-3xl": "48px",
+            "margin": "24px",
+            "space-xs": "4px",
+            "gutter": "16px",
+            "space-md": "12px"
+          },
+          "fontFamily": {
+            "body-small": ["Inter"],
+            "caption": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "heading-card": ["Inter"],
+            "label": ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "heading-section": ["Inter"],
+            "display-xl": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.12);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.20);
+    }
+  </style>
+</head>
+<body class="bg-surface-page text-text-primary font-body text-body antialiased selection:bg-surface-accent-tint selection:text-accent overflow-hidden">
+<div class="flex h-screen w-screen overflow-hidden">
+<!-- 1. RAIL (56px, w-14) -->
+<aside class="w-14 min-w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between items-center py-3 select-none z-30">
+<div class="flex flex-col items-center gap-2">
+<!-- App Switcher 1: Platform (Aktif) -->
+<button class="w-8 h-8 rounded-md bg-surface-accent-tint text-accent-hover flex items-center justify-center transition-colors" title="Platform" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="grid_view">grid_view</span>
+</button>
+<!-- App Switcher 2: Helpdesk -->
+<button class="w-8 h-8 rounded-md bg-surface-panel text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Helpdesk" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="headset_mic">headset_mic</span>
+</button>
+<!-- App Switcher 3: Code Review -->
+<button class="w-8 h-8 rounded-md bg-surface-panel text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Code Review" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="code">code</span>
+</button>
+<div class="border-t border-border-standard w-8 my-2"></div>
+</div>
+<!-- Rail Bottom: Settings icon -->
+<div class="flex flex-col items-center">
+<button class="w-8 h-8 rounded-md text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Global Settings" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+</button>
+</div>
+</aside>
+<!-- 2. SIDEBAR (236px) -->
+<aside class="w-[236px] min-w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between select-none z-20">
+<div class="flex flex-col overflow-y-auto custom-scrollbar">
+<!-- Header Wordmark -->
+<div class="px-4 py-3.5 border-b border-border-subtle">
+<span class="font-heading-section text-heading-card font-bold tracking-tight text-text-primary">Platform</span>
+</div>
+<!-- Menu Grup: APPS -->
+<div class="pt-3 pb-1">
+<div class="font-mono-label text-[11px] font-medium uppercase tracking-wider text-text-quaternary px-4 pb-1">APPS</div>
+<nav class="space-y-0.5 mt-1">
+<!-- Apps (Aktif) -->
+<a class="mx-2 px-3 py-1.5 rounded-md bg-surface-accent-tint text-accent-hover flex items-center justify-between font-label text-label font-medium transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="apps">apps</span>
+<span>Apps</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">6</span>
+</a>
+<!-- Data -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="database">database</span>
+<span>Data</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">1</span>
+</a>
+<!-- Komponen -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="widgets">widgets</span>
+<span>Komponen</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">18</span>
+</a>
+<!-- Integrasi -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="hub">hub</span>
+<span>Integrasi</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">9</span>
+</a>
+</nav>
+</div>
+<!-- Menu Grup: WORKFLOW -->
+<div class="pt-3 pb-2">
+<div class="font-mono-label text-[11px] font-medium uppercase tracking-wider text-text-quaternary px-4 pb-1">WORKFLOW</div>
+<nav class="space-y-0.5 mt-1">
+<!-- Alur Kerja -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="account_tree">account_tree</span>
+<span>Alur Kerja</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">24</span>
+</a>
+<!-- Eksekusi -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="bolt">bolt</span>
+<span>Eksekusi</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">142</span>
+</a>
+<!-- Model & LLM -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="neurology">neurology</span>
+<span>Model &amp; LLM</span>
+</span>
+<span class="bg-surface-sunken text-text-tertiary font-mono-label text-[11px] px-1.5 py-0.5 rounded-full">4</span>
+</a>
+<!-- Kunci API -->
+<a class="mx-2 px-3 py-1.5 rounded-md text-text-secondary hover:bg-surface-hover flex items-center justify-between font-label text-label transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="key">key</span>
+<span>Kunci API</span>
+</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Bawah: Profil User -->
+<div class="p-3 border-t border-border-standard flex items-center gap-2.5">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary font-mono-label text-[11px] font-semibold flex items-center justify-center shrink-0">
+          SR
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label text-caption font-semibold text-text-primary truncate leading-tight">Siti Rahmawati</span>
+<span class="font-caption text-[11px] text-text-tertiary truncate leading-tight">Platform Admin</span>
+</div>
+</div>
+</aside>
+<!-- MAIN WRAPPER (Top Bar + Main Body) -->
+<div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+<!-- 3. TOP BAR (48px) -->
+<header class="h-12 min-h-[48px] bg-surface-panel border-b border-border-standard flex items-center justify-between px-6 z-10">
+<!-- Breadcrumb / Titles -->
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-heading-card text-heading-card font-semibold text-text-primary tracking-tight">Pengaturan Aplikasi</span>
+<span class="font-mono-label text-[11px] text-text-tertiary font-normal tracking-tight"> — Intake Vendor</span>
+</div>
+<!-- Search compact 32px + filter button + user avatar -->
+<div class="flex items-center gap-3">
+<div class="relative w-56">
+<span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-text-tertiary">
+<span class="material-symbols-outlined text-[16px]" data-icon="search">search</span>
+</span>
+<input class="w-full h-8 pl-8 pr-3 bg-surface-page border border-border-standard rounded-md font-body text-caption text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent focus:bg-surface-panel transition-all" placeholder="Cari parameter..." type="text"/>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-md border border-border-standard bg-surface-panel text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Filter" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="tune">tune</span>
+</button>
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary font-mono-label text-[11px] font-semibold flex items-center justify-center shrink-0 border border-border-standard">
+            SR
+          </div>
+</div>
+</header>
+<!-- 4. KONTEN (flex-1 flex flex-row overflow-hidden) -->
+<main class="flex-1 flex flex-row overflow-hidden bg-surface-page relative">
+<!-- NAV TAB KIRI (200px) -->
+<nav class="w-[200px] min-w-[200px] bg-surface-panel border-r border-border-standard py-4 flex flex-col gap-1 select-none">
+<!-- General (Aktif) -->
+<a class="bg-surface-accent-tint text-accent-hover font-label text-label font-medium px-4 py-2 border-l-2 border-accent-hover flex items-center gap-2 transition-colors" href="#section-general">
+<span class="material-symbols-outlined text-[16px]" data-icon="tune">tune</span>
+<span>General</span>
+</a>
+<!-- Sumber Data -->
+<a class="text-text-secondary hover:bg-surface-hover font-label text-label px-4 py-2 border-l-2 border-transparent flex items-center gap-2 transition-colors" href="#section-sumber-data">
+<span class="material-symbols-outlined text-[16px]" data-icon="database">database</span>
+<span>Sumber Data</span>
+</a>
+<!-- Anggaran AI -->
+<a class="text-text-secondary hover:bg-surface-hover font-label text-label px-4 py-2 border-l-2 border-transparent flex items-center gap-2 transition-colors" href="#section-anggaran-ai">
+<span class="material-symbols-outlined text-[16px]" data-icon="toll">toll</span>
+<span>Anggaran AI</span>
+</a>
+<!-- Zona Berbahaya -->
+<a class="text-critical hover:bg-[#fdecec] font-label text-label px-4 py-2 border-l-2 border-transparent flex items-center gap-2 transition-colors" href="#section-zona-berbahaya">
+<span class="material-symbols-outlined text-[16px]" data-icon="warning">warning</span>
+<span>Zona Berbahaya</span>
+</a>
+</nav>
+<!-- PANE KANAN (Scrollable Area) -->
+<div class="flex-1 p-6 overflow-y-auto custom-scrollbar space-y-6 pb-28">
+<!-- a) GENERAL -->
+<section class="bg-surface-panel p-6 rounded-lg border border-border-standard space-y-5" id="section-general">
+<div class="border-b border-border-subtle pb-3">
+<h2 class="font-heading-card text-heading-card font-semibold text-text-primary">General</h2>
+<p class="font-caption text-caption text-text-tertiary mt-0.5">Informasi dasar dan visibilitas aplikasi vendor.</p>
+</div>
+<div class="space-y-4">
+<!-- Nama App -->
+<div>
+<label class="block font-label text-label font-medium text-text-primary mb-1.5" for="app-name">Nama Aplikasi</label>
+<input class="w-full h-10 px-3 bg-surface-panel border border-border-standard rounded-md font-body text-body text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all" id="app-name" type="text" value="Intake Vendor"/>
+</div>
+<!-- Slug -->
+<div>
+<label class="block font-label text-label font-medium text-text-primary mb-1.5" for="app-slug">Slug Aplikasi</label>
+<div class="flex items-center h-10 border border-border-standard rounded-md bg-surface-panel overflow-hidden focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-all">
+<span class="px-3 bg-surface-page text-text-tertiary font-mono-label text-caption border-r border-border-standard h-full flex items-center select-none">app.portico.internal/</span>
+<input class="flex-1 h-full px-3 font-mono text-[13px] text-text-primary border-none focus:ring-0 bg-transparent" id="app-slug" type="text" value="intake-vendor"/>
+</div>
+</div>
+<!-- Deskripsi -->
+<div>
+<label class="block font-label text-label font-medium text-text-primary mb-1.5" for="app-desc">Deskripsi</label>
+<textarea class="w-full p-3 bg-surface-panel border border-border-standard rounded-md font-body text-body text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none" id="app-desc" rows="3">Alur intake otomatis calon rekanan bisnis lengkap dengan ekstraksi data dokumen NIB dan validasi akta OCR.</textarea>
+</div>
+<div class="border-t border-border-subtle pt-4 space-y-4">
+<!-- Toggle: Terbitkan aplikasi -->
+<div class="flex items-start justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label text-label font-medium text-text-primary">Terbitkan aplikasi</span>
+<span class="font-caption text-caption text-text-tertiary">Aplikasi aktif dan dapat diakses oleh pengguna terotorisasi di workspace.</span>
+</div>
+<!-- Switch Aktif -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-sunken peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-panel after:border-border-standard after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+</label>
+</div>
+<!-- Toggle: Wajib login -->
+<div class="flex items-start justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label text-label font-medium text-text-primary">Wajib login untuk submit form</span>
+<span class="font-caption text-caption text-text-tertiary">Pengisi formulir wajib memiliki sesi akun terdaftar di Identity Hub.</span>
+</div>
+<!-- Switch Aktif -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-sunken peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-panel after:border-border-standard after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- b) SUMBER DATA -->
+<section class="bg-surface-panel p-6 rounded-lg border border-border-standard space-y-4" id="section-sumber-data">
+<!-- Baris Alat 44px -->
+<div class="flex items-center justify-between h-11 border-b border-border-subtle pb-2">
+<div>
+<h2 class="font-heading-card text-heading-card font-semibold text-text-primary">Koneksi Sumber Data</h2>
+</div>
+<button class="bg-accent hover:bg-accent-hover text-on-primary px-3.5 py-1.5 font-label text-label font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+<span>Tambah sumber</span>
+</button>
+</div>
+<!-- Tabel Sumber Data -->
+<div class="border border-border-standard rounded-md overflow-hidden bg-surface-panel">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="h-9 font-mono-label text-[11px] text-text-tertiary bg-surface-page border-b border-border-standard">
+<th class="px-4 font-medium uppercase tracking-wider">NAMA</th>
+<th class="px-4 font-medium uppercase tracking-wider">TIPE</th>
+<th class="px-4 font-medium uppercase tracking-wider">STATUS</th>
+<th class="px-4 font-medium uppercase tracking-wider text-right">TERAKHIR DIUJI</th>
+<th class="px-4 font-medium uppercase tracking-wider text-center w-24">AKSI</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-standard font-body text-caption">
+<!-- Row 1 -->
+<tr class="h-12 hover:bg-surface-hover transition-colors">
+<td class="px-4 font-medium text-text-primary">Postgres Produksi</td>
+<td class="px-4">
+<span class="bg-surface-sunken text-text-secondary font-mono-label text-[11px] px-2 py-0.5 rounded-full border border-border-subtle">Database</span>
+</td>
+<td class="px-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-text-primary font-medium">Aktif</span>
+</div>
+</td>
+<td class="px-4 text-right font-mono text-[12px] text-success">Terhubung 96 ms</td>
+<td class="px-4 text-center">
+<button class="font-label text-caption font-medium text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-surface-accent-tint transition-colors" type="button">Uji koneksi</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="h-12 hover:bg-surface-hover transition-colors">
+<td class="px-4 font-medium text-text-primary">Google Sheets Vendor</td>
+<td class="px-4">
+<span class="bg-surface-sunken text-text-secondary font-mono-label text-[11px] px-2 py-0.5 rounded-full border border-border-subtle">Spreadsheet</span>
+</td>
+<td class="px-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-text-primary font-medium">Aktif</span>
+</div>
+</td>
+<td class="px-4 text-right font-mono text-[12px] text-text-tertiary">Kemarin 16:40</td>
+<td class="px-4 text-center">
+<button class="font-label text-caption font-medium text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-surface-accent-tint transition-colors" type="button">Uji koneksi</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="h-12 hover:bg-surface-hover transition-colors">
+<td class="px-4 font-medium text-text-primary">Webhook CRM</td>
+<td class="px-4">
+<span class="bg-surface-sunken text-text-secondary font-mono-label text-[11px] px-2 py-0.5 rounded-full border border-border-subtle">Webhook</span>
+</td>
+<td class="px-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-danger-solid"></span>
+<span class="text-danger-solid font-medium">Terputus</span>
+</div>
+</td>
+<td class="px-4 text-right font-mono text-[12px] text-danger-solid">Gagal (504)</td>
+<td class="px-4 text-center">
+<button class="font-label text-caption font-medium text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-surface-accent-tint transition-colors" type="button">Uji koneksi</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="h-12 hover:bg-surface-hover transition-colors">
+<td class="px-4 font-medium text-text-primary">OCR Pipeline</td>
+<td class="px-4">
+<span class="bg-surface-sunken text-text-secondary font-mono-label text-[11px] px-2 py-0.5 rounded-full border border-border-subtle">AI/LLM</span>
+</td>
+<td class="px-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-text-primary font-medium">Aktif</span>
+</div>
+</td>
+<td class="px-4 text-right font-mono text-[12px] text-text-tertiary">10 mnt lalu</td>
+<td class="px-4 text-center">
+<button class="font-label text-caption font-medium text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-surface-accent-tint transition-colors" type="button">Uji koneksi</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footnote Caption -->
+<p class="font-mono-label text-[12px] text-text-tertiary pt-1">
+              Kredensial tersimpan aman di vault; terakhir diperbarui 3 hari lalu • 4 sumber terkonfigurasi
+            </p>
+</section>
+<!-- c) ANGGARAN AI -->
+<section class="bg-surface-panel p-6 rounded-lg border border-border-standard space-y-5" id="section-anggaran-ai">
+<div class="border-b border-border-subtle pb-3">
+<h2 class="font-heading-card text-heading-card font-semibold text-text-primary">Anggaran &amp; Batas Pemakaian AI</h2>
+</div>
+<div class="space-y-3">
+<span class="font-label text-caption text-text-secondary">Pemakaian bulan ini</span>
+<div class="flex items-baseline gap-2 flex-wrap">
+<span class="font-mono text-[32px] font-semibold tracking-tight text-text-primary leading-none">4.210.000</span>
+<span class="font-body text-caption text-text-tertiary">dari batas</span>
+<span class="font-mono text-body font-semibold text-text-primary">5.000.000 token</span>
+</div>
+<!-- Progress bar 6px -->
+<div class="w-full bg-surface-sunken h-1.5 rounded-full overflow-hidden">
+<div class="bg-accent h-full rounded-full transition-all duration-300" style="width: 84.2%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] font-mono-label text-text-tertiary">
+<span>84.2% Terpakai</span>
+<span>790.000 token tersisa</span>
+</div>
+</div>
+<!-- Input Batas Bulanan -->
+<div class="pt-2">
+<label class="block font-label text-label font-medium text-text-primary mb-1.5" for="monthly-limit">Batas Maksimal Bulanan</label>
+<div class="flex items-center gap-2">
+<input class="h-10 w-64 px-3 bg-surface-panel border border-border-standard rounded-md font-mono text-body text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all" id="monthly-limit" type="text" value="5.000.000"/>
+<span class="font-body text-caption text-text-secondary">Token/bulan</span>
+</div>
+</div>
+<!-- Toggle Hentikan Generasi -->
+<div class="border-t border-border-subtle pt-4 flex items-start justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label text-label font-medium text-text-primary">Hentikan generasi saat batas tercapai</span>
+<span class="font-caption text-caption text-text-tertiary">Mencegah lonjakan biaya tak terduga jika antrean OCR melebihi kuota.</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-sunken peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-panel after:border-border-standard after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+</label>
+</div>
+</section>
+<!-- d) ZONA BERBAHAYA -->
+<section class="bg-surface-panel p-6 rounded-lg border border-[#fdecec] space-y-4" id="section-zona-berbahaya">
+<div>
+<h2 class="font-heading-card text-heading-card font-semibold text-critical">Hapus aplikasi</h2>
+</div>
+<p class="font-body text-body text-text-secondary leading-relaxed">
+              Tindakan ini tidak dapat dibatalkan. <span class="font-mono font-medium text-text-primary">12 halaman</span> dan <span class="font-mono font-medium text-text-primary">4.812 baris data</span> pendaftaran vendor akan ikut terhapus permanen dari kluster.
+            </p>
+<div class="pt-1">
+<label class="block font-body text-caption text-text-secondary mb-1.5" for="delete-confirmation">
+                Ketik <span class="font-mono font-bold text-text-primary">intake-vendor</span> untuk mengonfirmasi:
+              </label>
+<input class="h-10 w-80 px-3 bg-surface-panel border border-border-standard rounded-md font-mono text-body text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-critical focus:ring-1 focus:ring-critical transition-all" id="delete-confirmation" placeholder="intake-vendor" type="text"/>
+</div>
+<div class="pt-2">
+<button class="bg-critical hover:opacity-90 text-on-error px-4 py-2 font-label text-label font-semibold rounded-md transition-opacity" type="button">
+                Hapus permanen
+              </button>
+</div>
+</section>
+</div>
+<!-- 5. STICKY BAR PERUBAHAN BELUM DISIMPAN (Docked Bawah) -->
+<div class="absolute bottom-4 left-[224px] right-6 z-20 pointer-events-auto">
+<div class="bg-surface-panel border border-border-standard shadow-[0_8px_24px_rgba(15,23,42,0.12)] rounded-lg px-5 py-3 flex items-center justify-between">
+<div class="flex items-center min-w-0">
+<span class="w-2 h-2 rounded-full bg-warning inline-block mr-2.5 shrink-0"></span>
+<span class="font-label text-label font-medium text-text-primary mr-1.5">Perubahan belum disimpan</span>
+<span class="font-caption text-caption text-text-tertiary truncate">(1 modifikasi pada deskripsi)</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="px-3 py-1.5 font-label text-label font-medium text-text-tertiary hover:bg-surface-hover hover:text-text-primary rounded-md transition-colors" type="button">
+                Batal
+              </button>
+<button class="px-4 py-1.5 font-label text-label font-semibold bg-accent-hover text-on-primary rounded-md shadow-sm hover:opacity-95 transition-opacity" type="button">
+                Simpan Perubahan
+              </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

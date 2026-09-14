@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review — Pull Requests</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: '#f7f7f8',
+            panel: '#ffffff',
+            hover: '#f1f1f3',
+            sunken: '#ededf0',
+            primary: '#101014',
+            secondary: '#4b5058',
+            tertiary: '#62676f',
+            quaternary: '#9aa0aa',
+            accent: '#6e5ae6',
+            'accent-hover': '#5b46d6',
+            'accent-tint': '#f2f0fe',
+            border: 'rgba(15,23,42,0.10)',
+            'border-subtle': 'rgba(15,23,42,0.06)',
+            critical: '#b91c1c',
+            'critical-bg': '#fdecec',
+            success: '#15803d',
+            'success-bg': '#e8f6ee',
+            warning: '#b45309',
+            'warning-bg': '#fdf1e3',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+    }
+    .icon-16 {
+      font-size: 16px;
+    }
+    /* Hover row reveals checkbox */
+    .table-row:hover .row-checkbox {
+      opacity: 1;
+    }
+    .table-row:hover .row-index {
+      display: none;
+    }
+    .table-row .row-checkbox {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body class="h-full bg-page text-primary font-sans antialiased overflow-hidden flex flex-row select-none">
+
+  <!-- 1. RAIL (56px, full height, borderRight hairline, bg #ffffff) -->
+  <aside class="w-[56px] flex-shrink-0 bg-panel border-r border-border h-full flex flex-col items-center justify-between py-3 z-30">
+    <!-- App Switcher Top (Fixed Order: Platform, Helpdesk, Code Review) -->
+    <div class="flex flex-col items-center gap-2">
+      <!-- App 1: Platform -->
+      <a href="#" title="Platform" class="w-9 h-9 rounded-md flex items-center justify-center text-secondary hover:bg-hover hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">hub</span>
+      </a>
+      <!-- App 2: Helpdesk -->
+      <a href="#" title="Helpdesk" class="w-9 h-9 rounded-md flex items-center justify-center text-secondary hover:bg-hover hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">support_agent</span>
+      </a>
+      <!-- App 3: Code Review (Aktif) -->
+      <a href="#" title="Code Review" class="w-9 h-9 rounded-md flex items-center justify-center bg-accent-tint text-accent-hover font-semibold transition-colors">
+        <span class="material-symbols-outlined">code</span>
+      </a>
+    </div>
+
+    <!-- Rail Bottom Divider & Settings -->
+    <div class="flex flex-col items-center gap-2 w-full px-2">
+      <div class="w-full h-px bg-border my-1"></div>
+      <a href="#" title="Pengaturan Sistem" class="w-9 h-9 rounded-md flex items-center justify-center text-secondary hover:bg-hover hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- 2. SIDEBAR (236px, putih, borderRight hairline) -->
+  <aside class="w-[236px] flex-shrink-0 bg-panel border-r border-border h-full flex flex-col justify-between z-20">
+    <div class="flex flex-col">
+      <!-- Sidebar Brand Header -->
+      <div class="h-[48px] px-4 flex items-center border-b border-border">
+        <span class="font-semibold text-[15px] tracking-tight text-primary">CodeReview</span>
+      </div>
+
+      <!-- Navigation Menu Groups -->
+      <div class="p-3 flex flex-col gap-5">
+        <!-- Group 1: Tinjauan -->
+        <div class="flex flex-col gap-1">
+          <div class="px-2 pb-1 font-mono text-[11px] uppercase tracking-wider text-quaternary font-medium">Tinjauan</div>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-secondary hover:bg-hover hover:text-primary transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-secondary">grid_view</span>
+              <span>Dashboard</span>
+            </div>
+          </a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] bg-accent-tint text-accent-hover font-medium transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-accent-hover">call_split</span>
+              <span>Pull Requests</span>
+            </div>
+            <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-panel text-accent-hover font-semibold">14</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-secondary hover:bg-hover hover:text-primary transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-secondary">warning</span>
+              <span>Temuan Kritis</span>
+            </div>
+            <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-critical-bg text-critical font-semibold">3</span>
+          </a>
+        </div>
+
+        <!-- Group 2: Repositori -->
+        <div class="flex flex-col gap-1">
+          <div class="px-2 pb-1 font-mono text-[11px] uppercase tracking-wider text-quaternary font-medium">Repositori</div>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-secondary hover:bg-hover hover:text-primary transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-secondary">folder</span>
+              <span>Repositori</span>
+            </div>
+            <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-sunken text-tertiary">8</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-secondary hover:bg-hover hover:text-primary transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-secondary">verified_user</span>
+              <span>Aturan Analisis</span>
+            </div>
+          </a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-secondary hover:bg-hover hover:text-primary transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined icon-16 text-secondary">webhook</span>
+              <span>Integrasi Webhook</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Bottom Status Footer -->
+    <div class="p-3 border-t border-border">
+      <div class="flex items-center gap-2 px-2 py-1">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-mono text-[11px] text-tertiary">Engine v2.4 Online</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 3. MAIN CONTENT AREA (Hanya di atas kolom konten) -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-page">
+
+    <!-- TOP BAR (48px, putih, borderBottom hairline) -->
+    <header class="h-[48px] bg-panel border-b border-border flex items-center justify-between px-4 flex-shrink-0 z-10">
+      <!-- Breadcrumb mono di kiri -->
+      <div class="flex items-center gap-2">
+        <span class="text-[13px] font-semibold text-primary">Pull Requests</span>
+        <span class="font-mono text-[11px] text-quaternary">/</span>
+        <span class="font-mono text-[11px] text-tertiary">semua-pr</span>
+      </div>
+
+      <!-- Compact Search + Filter + User Avatar -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-2.5 text-quaternary icon-16 pointer-events-none">search</span>
+          <input 
+            type="text" 
+            placeholder="Cari judul, repo, penulis..." 
+            class="w-64 h-8 pl-8 pr-3 text-[12px] bg-panel border border-border rounded-md text-primary placeholder-quaternary focus:outline-none focus:border-accent"
+          />
+        </div>
+        <button class="h-8 px-2.5 border border-border rounded-md flex items-center gap-1.5 text-[12px] text-secondary bg-panel hover:bg-hover transition-colors">
+          <span class="material-symbols-outlined icon-16">filter_list</span>
+          <span>Filter</span>
+        </button>
+        <div class="w-7 h-7 rounded-full bg-sunken flex items-center justify-center font-mono text-[11px] font-semibold text-secondary ml-1 border border-border">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- TOOLBAR (44px, borderBottom hairline) -->
+    <div class="h-[44px] bg-panel border-b border-border flex items-center justify-between px-4 flex-shrink-0 z-10">
+      <!-- Left Controls: Segment status + chips severity + rentang tanggal -->
+      <div class="flex items-center gap-3">
+        <!-- Segment Status -->
+        <div class="flex items-center bg-sunken p-0.5 rounded-md text-[12px]">
+          <button class="px-2.5 py-1 rounded bg-panel font-medium text-primary shadow-sm flex items-center gap-1.5">
+            <span>Semua</span>
+            <span class="font-mono text-[11px] text-secondary">14</span>
+          </button>
+          <button class="px-2.5 py-1 rounded text-secondary hover:text-primary flex items-center gap-1.5">
+            <span>Menunggu</span>
+            <span class="font-mono text-[11px] text-tertiary">5</span>
+          </button>
+          <button class="px-2.5 py-1 rounded text-secondary hover:text-primary flex items-center gap-1.5">
+            <span>Ada Kritis</span>
+            <span class="font-mono text-[11px] text-critical font-medium">3</span>
+          </button>
+          <button class="px-2.5 py-1 rounded text-secondary hover:text-primary flex items-center gap-1.5">
+            <span>Selesai</span>
+            <span class="font-mono text-[11px] text-tertiary">6</span>
+          </button>
+        </div>
+
+        <div class="h-4 w-px bg-border"></div>
+
+        <!-- Chips Severity -->
+        <div class="flex items-center gap-1.5 text-[11px]">
+          <span class="text-quaternary font-mono uppercase text-[10px] mr-0.5">Filter Isu:</span>
+          <button class="px-2 py-0.5 rounded-full border border-critical text-critical bg-critical-bg font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-critical"></span>
+            <span>Kritis</span>
+            <span class="font-mono text-[10px] ml-0.5">3</span>
+          </button>
+          <button class="px-2 py-0.5 rounded-full border border-border text-secondary bg-panel hover:bg-hover flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
+            <span>Tinggi</span>
+            <span class="font-mono text-[10px] ml-0.5">12</span>
+          </button>
+        </div>
+
+        <div class="h-4 w-px bg-border"></div>
+
+        <!-- Rentang Tanggal -->
+        <button class="flex items-center gap-1.5 text-[12px] text-secondary bg-panel hover:bg-hover px-2 py-1 rounded border border-border">
+          <span class="material-symbols-outlined icon-16 text-quaternary">calendar_today</span>
+          <span>7 hari terakhir</span>
+          <span class="material-symbols-outlined icon-16 text-quaternary">arrow_drop_down</span>
+        </button>
+      </div>
+
+      <!-- Right Controls: Aksi di kanan -->
+      <div class="flex items-center gap-2">
+        <button class="h-7 px-2.5 rounded border border-border bg-panel text-[12px] text-secondary hover:bg-hover flex items-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined icon-16">file_download</span>
+          <span>Ekspor CSV</span>
+        </button>
+        <button class="h-7 px-2.5 rounded bg-accent hover:bg-accent-hover text-[12px] text-white font-medium flex items-center gap-1.5 transition-colors shadow-sm">
+          <span class="material-symbols-outlined icon-16">refresh</span>
+          <span>Pindai Ulang Semua</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABEL SCROLL (Satu-satunya pane yang scroll, header kolom sticky) -->
+    <div class="flex-1 overflow-y-auto bg-panel">
+      <table class="w-full text-left border-collapse">
+        <!-- Sticky Header (Kolom: Checkbox/PR# | Judul | Penulis | Status | Total temuan | Kritis | Tinggi) -->
+        <thead class="sticky top-0 bg-page border-b border-border z-10 text-[11px] font-mono uppercase text-quaternary">
+          <tr>
+            <th class="w-16 px-4 py-2.5 text-center font-normal">
+              <input type="checkbox" class="rounded border-border text-accent focus:ring-0 cursor-pointer" title="Pilih Semua">
+            </th>
+            <th class="w-24 px-3 py-2.5 font-normal">PR#</th>
+            <th class="px-4 py-2.5 font-normal min-w-[280px]">Judul</th>
+            <th class="px-4 py-2.5 font-normal w-52">Penulis</th>
+            <th class="px-4 py-2.5 font-normal w-36">Status</th>
+            <th class="px-4 py-2.5 text-right font-normal w-32">Total temuan</th>
+            <th class="px-4 py-2.5 text-right font-normal w-24">Kritis</th>
+            <th class="px-4 py-2.5 text-right font-normal w-24">Tinggi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border text-[13px]">
+
+          <!-- Row 1: Ada kritis -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">1</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#142</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">fix: sanitasi unescaped raw SQL query pada gateway filter</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">portico-gateway-service &bull; branch: fix/sql-injection-sec004</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  AR
+                </div>
+                <span class="text-secondary truncate">Agung Rahardjo</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-critical-bg text-critical font-medium">
+                ada kritis
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">9</td>
+            <td class="px-4 py-2 text-right font-mono text-critical font-semibold">2</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">4</td>
+          </tr>
+
+          <!-- Row 2: Ada kritis -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">2</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#139</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">feat: rotasi token & parsing payload webhook transfer</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">webhook-dispatcher &bull; branch: feature/webhook-rotator</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  DA
+                </div>
+                <span class="text-secondary truncate">Dewi Anggraeni</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-critical-bg text-critical font-medium">
+                ada kritis
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">6</td>
+            <td class="px-4 py-2 text-right font-mono text-critical font-semibold">1</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">3</td>
+          </tr>
+
+          <!-- Row 3: Menunggu -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">3</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#138</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">refactor: perbaikan leak memory pada goroutine OCR worker</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">worker-pipeline-ocr &bull; branch: refactor/goroutine-pool</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  TH
+                </div>
+                <span class="text-secondary truncate">Taufik Hidayat</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-sunken text-secondary font-medium">
+                menunggu
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">4</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">2</td>
+          </tr>
+
+          <!-- Row 4: Menunggu -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">4</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#137</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">feat: integrasi SSO OAuth2 provider Google Workspace</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">identity-auth-engine &bull; branch: feat/sso-google</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  BS
+                </div>
+                <span class="text-secondary truncate">Budi Santoso</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-sunken text-secondary font-medium">
+                menunggu
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">2</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">1</td>
+          </tr>
+
+          <!-- Row 5: Selesai -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">5</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#136</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">chore: update shared design tokens & typography scaling</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">shared-ui-tokens &bull; branch: chore/v2.4-tokens</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  SR
+                </div>
+                <span class="text-secondary truncate">Siti Rahmawati</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-success-bg text-success font-medium">
+                selesai
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">0</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+          </tr>
+
+          <!-- Row 6: Selesai -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">6</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#135</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">test: coverage unit test handler ticket dispatching SLA</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">helpdesk-frontend-web &bull; branch: test/sla-dispatch</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  AF
+                </div>
+                <span class="text-secondary truncate">Ahmad Fauzi</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-success-bg text-success font-medium">
+                selesai
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">1</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+          </tr>
+
+          <!-- Row 7: Selesai -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">7</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#134</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">fix: penanganan timeout saat sinkronisasi ledger erp</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">erp-sync-service &bull; branch: fix/sync-retry-backoff</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  MW
+                </div>
+                <span class="text-secondary truncate">Maya Wulandari</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-success-bg text-success font-medium">
+                selesai
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">3</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">1</td>
+          </tr>
+
+          <!-- Row 8: Menunggu -->
+          <tr class="table-row h-12 hover:bg-hover transition-colors cursor-pointer group">
+            <td class="px-4 py-2 text-center" onclick="event.stopPropagation()">
+              <input type="checkbox" class="row-checkbox rounded border-border text-accent focus:ring-0 cursor-pointer">
+              <span class="row-index font-mono text-[11px] text-quaternary">8</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-tertiary font-medium">#133</td>
+            <td class="px-4 py-2">
+              <div class="flex flex-col">
+                <span class="font-medium text-primary group-hover:text-accent-hover transition-colors">feat: canvas visual builder node runtime drag and drop</span>
+                <span class="font-mono text-[11px] text-quaternary mt-0.5">platform-builder-core &bull; branch: feat/dnd-canvas</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-[26px] h-[26px] rounded-full bg-sunken flex items-center justify-center font-mono text-[10px] text-secondary font-medium border border-border">
+                  DL
+                </div>
+                <span class="text-secondary truncate">Dewi Lestari</span>
+              </div>
+            </td>
+            <td class="px-4 py-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[11px] bg-sunken text-secondary font-medium">
+                menunggu
+              </span>
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-primary font-medium">5</td>
+            <td class="px-4 py-2 text-right font-mono text-quaternary">0</td>
+            <td class="px-4 py-2 text-right font-mono text-warning font-semibold">2</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TABLE FOOTER / STATUS BAR (compact 32px) -->
+    <div class="h-8 bg-panel border-t border-border flex items-center justify-between px-4 flex-shrink-0 text-[11px] font-mono text-quaternary">
+      <div>Menampilkan 8 dari 14 pull request aktif</div>
+      <div class="flex items-center gap-4">
+        <span>Kritis: <strong class="text-critical font-semibold">3 isu</strong></span>
+        <span class="w-px h-3 bg-border"></span>
+        <span>Tinggi: <strong class="text-warning font-semibold">12 isu</strong></span>
+        <span class="w-px h-3 bg-border"></span>
+        <span>Terakhir sinkronisasi: 2 menit lalu</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

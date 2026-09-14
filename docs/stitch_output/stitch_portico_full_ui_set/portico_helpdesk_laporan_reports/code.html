@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portico Helpdesk — Laporan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#101014",
+            secondary: "#4b5058",
+            tertiary: "#62676f",
+            neutral: "#f7f7f8",
+            accent: "#6e5ae6",
+            "accent-hover": "#5b46d6",
+            "surface-page": "#f7f7f8",
+            "surface-panel": "#ffffff",
+            "surface-hover": "#f1f1f3",
+            "surface-sunken": "#ededf0",
+            "surface-accent-tint": "#f2f0fe",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "text-primary": "#101014",
+            "text-secondary": "#4b5058",
+            "text-tertiary": "#62676f",
+            "text-quaternary": "#9aa0aa",
+            danger: "#dc2626",
+            "danger-solid": "#dc2626",
+            success: "#16a34a"
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #101014;
+      background-color: #f7f7f8;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-feature-settings: "tnum";
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.12);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.22);
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-row overflow-hidden select-none">
+
+  <!-- 1. RAIL ICON (56px, Full Height, Fixed App Switcher) -->
+  <aside class="w-14 flex-none bg-surface-panel border-r border-border-standard flex flex-col items-center justify-between py-3 z-30">
+    <!-- Portofolio Switcher Icons: [A] Platform, [B] Helpdesk (Active), [C] Code Review -->
+    <div class="flex flex-col items-center gap-3 w-full">
+      <!-- Platform -->
+      <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-tertiary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Platform">
+        <span class="material-symbols-outlined text-[18px]">hub</span>
+      </a>
+
+      <!-- Helpdesk (Active) -->
+      <a href="#" class="w-8 h-8 rounded-lg bg-surface-accent-tint text-accent-hover flex items-center justify-center font-medium transition-colors" title="Portico Helpdesk">
+        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+      </a>
+
+      <!-- Code Review -->
+      <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-tertiary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Code Review">
+        <span class="material-symbols-outlined text-[18px]">code_blocks</span>
+      </a>
+    </div>
+
+    <!-- Bottom Settings Divider & Icon -->
+    <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-border-standard">
+      <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-tertiary hover:bg-surface-hover hover:text-text-primary transition-colors" title="Pengaturan Sistem">
+        <span class="material-symbols-outlined text-[18px]">settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- 2. SIDEBAR (236px, Putih, Full Height, Hairline Border) -->
+  <aside class="w-[236px] flex-none bg-surface-panel border-r border-border-standard flex flex-col justify-between overflow-hidden z-20">
+    <!-- Header Wordmark & Nav Groups -->
+    <div class="flex flex-col flex-1 overflow-y-auto">
+      <!-- Wordmark -->
+      <div class="h-12 flex items-center px-4 border-b border-border-subtle flex-none">
+        <span class="font-semibold text-[14px] tracking-tight text-text-primary">Portico Helpdesk</span>
+      </div>
+
+      <div class="p-3 space-y-5">
+        <!-- Group: PRODUK -->
+        <div>
+          <div class="px-2.5 pb-1 text-[11px] font-mono uppercase tracking-wider text-text-quaternary font-medium">
+            Produk
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">inbox</span>
+                <span>Tiket Masuk</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">18</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">assignment_ind</span>
+                <span>Ditugaskan ke Saya</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">6</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">schedule</span>
+                <span>Menunggu Respon</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">9</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Group: VIEWS -->
+        <div>
+          <div class="px-2.5 pb-1 text-[11px] font-mono uppercase tracking-wider text-text-quaternary font-medium">
+            Views
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-[#dc2626]">warning</span>
+                <span>SLA Hampir Lewat</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-[#fdecec] text-[#b91c1c] font-medium">4</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">task_alt</span>
+                <span>Selesai Minggu Ini</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">82</span>
+            </a>
+
+            <!-- Active Menu: Laporan (Reports) -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] bg-surface-accent-tint text-accent-hover font-medium transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-accent-hover">query_stats</span>
+                <span>Laporan & Kinerja</span>
+              </div>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">archive</span>
+                <span>Arsip</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">310</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Group: WORKSPACE -->
+        <div>
+          <div class="px-2.5 pb-1 text-[11px] font-mono uppercase tracking-wider text-text-quaternary font-medium">
+            Workspace
+          </div>
+          <nav class="space-y-0.5 mt-1">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">group</span>
+                <span>Anggota Tim</span>
+              </div>
+              <span class="font-mono text-[11px] px-1.5 py-0.5 rounded-full bg-surface-sunken text-text-secondary">12</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[16px] text-text-tertiary">tune</span>
+                <span>Pengaturan & SLA</span>
+              </div>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profil User di Bawah (Fixed) -->
+    <div class="h-14 border-t border-border-standard px-3.5 flex items-center justify-between bg-surface-panel flex-none">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+          SR
+        </div>
+        <div class="min-w-0 flex flex-col">
+          <span class="text-[13px] font-medium text-text-primary truncate leading-tight">Siti Rahmawati</span>
+          <span class="text-[11px] text-text-tertiary truncate leading-tight mt-0.5">Support Lead</span>
+        </div>
+      </div>
+      <button class="text-text-quaternary hover:text-text-primary p-1 rounded transition-colors">
+        <span class="material-symbols-outlined text-[16px]">more_vert</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 3. MAIN CONTENT CONTAINER: TOP BAR + REPORTS PANE -->
+  <main class="flex-1 flex flex-col h-full bg-surface-page overflow-hidden">
+
+    <!-- TOP BAR (48px, Hanya membentang di atas konten, Border Bottom Hairline) -->
+    <header class="h-12 bg-surface-panel border-b border-border-standard px-5 flex items-center justify-between flex-none z-10">
+      <!-- Kiri: Judul "Laporan" + Live Status -->
+      <div class="flex items-center gap-3">
+        <h1 class="text-[14px] font-semibold text-text-primary">Laporan</h1>
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-sunken">
+          <span class="w-2 h-2 rounded-full bg-success"></span>
+          <span class="text-[11px] font-mono text-text-secondary">Live · 2 menit lalu</span>
+        </div>
+      </div>
+
+      <!-- Kanan: Search Compact + Filter + Avatar -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative w-64">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-quaternary text-[15px]">search</span>
+          <input 
+            type="text" 
+            placeholder="Cari metrik, agen, tiket..." 
+            class="w-full h-8 pl-8 pr-3 text-[12px] bg-surface-page border border-border-standard rounded-md text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-accent focus:bg-white transition-colors"
+          />
+        </div>
+
+        <button class="h-8 px-2.5 flex items-center gap-1.5 bg-surface-panel border border-border-standard rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-hover text-[12px] transition-colors">
+          <span class="material-symbols-outlined text-[15px]">filter_list</span>
+          <span>Filter</span>
+        </button>
+
+        <div class="w-7 h-7 rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center border border-border-standard ml-1">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- TOOLBAR (44px, Sticky, Hairline Border) -->
+    <div class="h-11 bg-surface-panel border-b border-border-standard px-5 flex items-center justify-between flex-none">
+      <!-- Filter Sisi Kiri: Rentang Waktu & Agen -->
+      <div class="flex items-center gap-3">
+        <!-- Date Range Selector -->
+        <div class="flex items-center gap-1.5 h-7 px-2.5 bg-surface-page border border-border-standard rounded text-[12px] text-text-primary cursor-pointer hover:bg-surface-hover transition-colors">
+          <span class="material-symbols-outlined text-[14px] text-text-tertiary">calendar_today</span>
+          <span class="font-medium">30 Hari Terakhir</span>
+          <span class="text-text-quaternary text-[11px] font-mono ml-1">25 Sep – 24 Okt 2024</span>
+          <span class="material-symbols-outlined text-[14px] text-text-tertiary ml-1">expand_more</span>
+        </div>
+
+        <!-- Agent Dropdown Selector -->
+        <div class="flex items-center gap-1.5 h-7 px-2.5 bg-surface-page border border-border-standard rounded text-[12px] text-text-primary cursor-pointer hover:bg-surface-hover transition-colors">
+          <span class="material-symbols-outlined text-[14px] text-text-tertiary">person</span>
+          <span>Semua Agen (6)</span>
+          <span class="material-symbols-outlined text-[14px] text-text-tertiary ml-1">expand_more</span>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex items-center gap-1.5 h-7 px-2 bg-surface-page border border-border-standard rounded text-[12px] text-text-secondary cursor-pointer hover:bg-surface-hover transition-colors">
+          <span>Semua Kategori</span>
+          <span class="material-symbols-outlined text-[14px] text-text-tertiary">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Kanan: Tombol Sekunder "Ekspor CSV" -->
+      <div class="flex items-center gap-2">
+        <button class="h-7 px-3 flex items-center gap-1.5 bg-surface-panel border border-border-standard rounded text-[12px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors shadow-xs">
+          <span class="material-symbols-outlined text-[14px]">download</span>
+          <span>Ekspor CSV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- REPORT PANE BODY (Scroll Sendiri, Full Density) -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+
+      <!-- SECTION 1: BARIS KPI SEBAGAI BARIS TABEL (BUKAN KARTU IKON) -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden shadow-xs">
+        <div class="px-4 py-2.5 border-b border-border-subtle bg-surface-page flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-text-tertiary font-medium">Ringkasan KPI Layanan</span>
+            <span class="text-[11px] text-text-quaternary font-mono">· Periode terpilih vs 30 hari sebelumnya</span>
+          </div>
+          <span class="text-[11px] font-mono text-text-quaternary">Diperbarui 14:32 WIB</span>
+        </div>
+
+        <div class="divide-y divide-border-subtle">
+          <!-- KPI 1: Tiket Selesai -->
+          <div class="flex items-center justify-between px-4 py-3 hover:bg-surface-hover transition-colors">
+            <div class="w-64">
+              <div class="text-[12px] font-medium text-text-secondary">Tiket Selesai</div>
+              <div class="text-[11px] text-text-quaternary">Volume tiket terselesaikan dengan konfirmasi requester</div>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <div class="mono-num text-[20px] font-medium text-text-primary">1.284</div>
+              <div class="w-28 text-right">
+                <span class="mono-num text-[11px] text-success font-medium">↑ +14,2% (naik)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 2: Rata-rata First Response -->
+          <div class="flex items-center justify-between px-4 py-3 hover:bg-surface-hover transition-colors">
+            <div class="w-64">
+              <div class="text-[12px] font-medium text-text-secondary">Rata-rata First Response</div>
+              <div class="text-[11px] text-text-quaternary">Waktu sejak tiket dibuat hingga respon staf pertama</div>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <div class="mono-num text-[20px] font-medium text-text-primary">18m 40s</div>
+              <div class="w-28 text-right">
+                <span class="mono-num text-[11px] text-success font-medium">↓ -3m 12s (cepat)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 3: Rata-rata Resolusi -->
+          <div class="flex items-center justify-between px-4 py-3 hover:bg-surface-hover transition-colors">
+            <div class="w-64">
+              <div class="text-[12px] font-medium text-text-secondary">Rata-rata Resolusi</div>
+              <div class="text-[11px] text-text-quaternary">Durasi penanganan tuntas end-to-end</div>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <div class="mono-num text-[20px] font-medium text-text-primary">2j 45m</div>
+              <div class="w-28 text-right">
+                <span class="mono-num text-[11px] text-success font-medium">↓ -18m (cepat)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 4: Tingkat Pelanggaran SLA -->
+          <div class="flex items-center justify-between px-4 py-3 hover:bg-surface-hover transition-colors">
+            <div class="w-64">
+              <div class="text-[12px] font-medium text-text-secondary">Tingkat Pelanggaran SLA</div>
+              <div class="text-[11px] text-text-quaternary">Persentase tiket yang melewati batas SLA Tier 1 / 2</div>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <div class="mono-num text-[20px] font-medium text-text-primary">1,8%</div>
+              <div class="w-28 text-right">
+                <span class="mono-num text-[11px] text-[#b91c1c] font-medium">↑ +0,3% (naik)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 5: CSAT -->
+          <div class="flex items-center justify-between px-4 py-3 hover:bg-surface-hover transition-colors">
+            <div class="w-64">
+              <div class="text-[12px] font-medium text-text-secondary">CSAT (Kepuasan Pengguna)</div>
+              <div class="text-[11px] text-text-quaternary">Skor survei 5 skala dari 412 responden</div>
+            </div>
+            <div class="flex items-baseline gap-4">
+              <div class="mono-num text-[20px] font-medium text-text-primary">4,82 / 5,0</div>
+              <div class="w-28 text-right">
+                <span class="mono-num text-[11px] text-success font-medium">↑ +0,08 (naik)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: TABEL KINERJA PER AGEN -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden shadow-xs">
+        <div class="px-4 py-3 border-b border-border-standard flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h2 class="text-[13px] font-semibold text-text-primary">Kinerja Per Agen</h2>
+            <span class="text-[11px] font-mono text-text-quaternary">· 6 agen terdaftar</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-[11px] font-mono text-text-tertiary">Target SLA: 98,0%</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="h-9 bg-surface-page border-b border-border-standard text-[11px] font-mono uppercase tracking-wider text-text-tertiary">
+                <th class="px-4 font-medium">Agen</th>
+                <th class="px-4 font-medium text-right">Tiket Selesai</th>
+                <th class="px-4 font-medium text-right">First Response</th>
+                <th class="px-4 font-medium text-right">Resolusi</th>
+                <th class="px-4 font-medium text-right">SLA Breach</th>
+                <th class="px-4 font-medium text-right">CSAT</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-subtle text-[13px]">
+              <!-- Row 1: Siti Rahmawati -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      SR
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Siti Rahmawati</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">siti.rahmawati@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">342</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">12m 10s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">1j 48m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="font-mono text-[11px] text-text-quaternary">0</span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,95</td>
+              </tr>
+
+              <!-- Row 2: Ahmad Fauzi -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      AF
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Ahmad Fauzi</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">ahmad.fauzi@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">289</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">16m 04s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">2j 15m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[11px] bg-[#fdecec] text-[#b91c1c] font-medium">
+                    2 tiket
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,88</td>
+              </tr>
+
+              <!-- Row 3: Dewi Anggraeni -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      DA
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Dewi Anggraeni</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">dewi.anggraeni@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">251</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">19m 22s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">2j 52m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[11px] bg-[#fdecec] text-[#b91c1c] font-medium">
+                    1 tiket
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,80</td>
+              </tr>
+
+              <!-- Row 4: Taufik Hidayat -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      TH
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Taufik Hidayat</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">taufik.h@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">214</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">22m 15s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">3j 10m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[11px] bg-[#fdecec] text-[#b91c1c] font-medium">
+                    4 tiket
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,71</td>
+              </tr>
+
+              <!-- Row 5: Maya Wulandari -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      MW
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Maya Wulandari</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">maya.wulandari@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">112</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">15m 40s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">2j 30m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="font-mono text-[11px] text-text-quaternary">0</span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,89</td>
+              </tr>
+
+              <!-- Row 6: Rian Kurniawan -->
+              <tr class="h-12 hover:bg-surface-hover transition-colors">
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-mono font-medium flex items-center justify-center flex-none">
+                      RK
+                    </div>
+                    <div>
+                      <div class="font-medium text-text-primary text-[13px] leading-tight">Rian Kurniawan</div>
+                      <div class="text-[11px] text-text-quaternary font-mono">rian.kurniawan@perkasa.co.id</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">76</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">28m 10s</td>
+                <td class="px-4 py-2 text-right mono-num text-text-secondary">3j 45m</td>
+                <td class="px-4 py-2 text-right">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[11px] bg-[#fdecec] text-[#b91c1c] font-medium">
+                    1 tiket
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right mono-num text-text-primary font-medium">4,65</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="h-10 bg-surface-page border-t border-border-standard text-[12px] font-medium text-text-primary">
+                <td class="px-4 font-semibold">Total / Rata-rata Tim</td>
+                <td class="px-4 text-right mono-num font-semibold">1.284</td>
+                <td class="px-4 text-right mono-num text-text-secondary">18m 40s</td>
+                <td class="px-4 text-right mono-num text-text-secondary">2j 45m</td>
+                <td class="px-4 text-right">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[11px] bg-[#fdecec] text-[#b91c1c] font-semibold">
+                    8 tiket (1,8%)
+                  </span>
+                </td>
+                <td class="px-4 text-right mono-num font-semibold text-text-primary">4,82</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- AUDIT LOG / DISTRIBUSI SLA RINGKAS (Tabular Hairline, No Chart) -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden shadow-xs">
+        <div class="px-4 py-2.5 border-b border-border-subtle bg-surface-page flex items-center justify-between">
+          <span class="text-[11px] font-mono uppercase tracking-wider text-text-tertiary font-medium">Rincian SLA Berdasarkan Kategori Tiket</span>
+          <span class="text-[11px] font-mono text-text-quaternary">Target First Response: &lt; 30m · Resolusi: &lt; 4j</span>
+        </div>
+        <div class="divide-y divide-border-subtle text-[12px]">
+          <div class="flex items-center justify-between px-4 py-2.5 hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              <span class="font-medium text-text-primary">Integrasi & API Webhook</span>
+            </div>
+            <div class="flex items-center gap-8 font-mono text-[11px]">
+              <span class="text-text-secondary">412 tiket</span>
+              <span class="text-text-secondary">First: 14m</span>
+              <span class="text-text-secondary">Resolusi: 2j 10m</span>
+              <span class="text-[#b91c1c] font-medium">4 pelanggaran</span>
+              <span class="text-success font-medium">99,0% SLA terpenuhi</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between px-4 py-2.5 hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              <span class="font-medium text-text-primary">Autentikasi & SSO Hub</span>
+            </div>
+            <div class="flex items-center gap-8 font-mono text-[11px]">
+              <span class="text-text-secondary">284 tiket</span>
+              <span class="text-text-secondary">First: 09m</span>
+              <span class="text-text-secondary">Resolusi: 1j 15m</span>
+              <span class="text-text-quaternary">0 pelanggaran</span>
+              <span class="text-success font-medium">100,0% SLA terpenuhi</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between px-4 py-2.5 hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              <span class="font-medium text-text-primary">Alur Kerja & Workflow Automation</span>
+            </div>
+            <div class="flex items-center gap-8 font-mono text-[11px]">
+              <span class="text-text-secondary">358 tiket</span>
+              <span class="text-text-secondary">First: 21m</span>
+              <span class="text-text-secondary">Resolusi: 3j 05m</span>
+              <span class="text-[#b91c1c] font-medium">3 pelanggaran</span>
+              <span class="text-success font-medium">99,1% SLA terpenuhi</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between px-4 py-2.5 hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              <span class="font-medium text-text-primary">Billing & Kuota Token</span>
+            </div>
+            <div class="flex items-center gap-8 font-mono text-[11px]">
+              <span class="text-text-secondary">230 tiket</span>
+              <span class="text-text-secondary">First: 18m</span>
+              <span class="text-text-secondary">Resolusi: 2j 20m</span>
+              <span class="text-[#b91c1c] font-medium">1 pelanggaran</span>
+              <span class="text-success font-medium">99,5% SLA terpenuhi</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>

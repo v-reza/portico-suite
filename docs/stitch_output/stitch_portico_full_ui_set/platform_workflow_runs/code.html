@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Platform - Workflow Runs (Eksekusi)</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#42474f",
+            "text-tertiary": "#62676f",
+            "overlay": "rgba(16,16,20,0.40)",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "surface-tint": "#5f5e63",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "diff-context-bg": "#fbfbfc",
+            "on-tertiary-fixed": "#171c23",
+            "on-primary-container": "#858388",
+            "surface-container-high": "#e8e8e9",
+            "surface-accent-tint": "#f2f0fe",
+            "on-tertiary-container": "#7f848c",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "surface-variant": "#e2e2e3",
+            "danger-solid": "#dc2626",
+            "surface-container": "#eeeeef",
+            "on-primary": "#ffffff",
+            "surface-bright": "#f9f9fa",
+            "surface-canvas": "#f1f1f4",
+            "error": "#ba1a1a",
+            "on-background": "#1a1c1d",
+            "success": "#16a34a",
+            "critical": "#b91c1c",
+            "primary-container": "#1b1b1f",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "on-secondary-container": "#60656d",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "surface-hover": "#f1f1f3",
+            "accent-hover": "#5b46d6",
+            "warning": "#d97706",
+            "background": "#f9f9fa",
+            "on-tertiary-fixed-variant": "#42474f",
+            "outline": "#78767b",
+            "on-tertiary": "#ffffff",
+            "error-container": "#ffdad6",
+            "tertiary": "#000000",
+            "on-primary-fixed-variant": "#47464b",
+            "inverse-surface": "#2f3132",
+            "accent": "#6e5ae6",
+            "secondary": "#5a5f67",
+            "surface-container-lowest": "#ffffff",
+            "on-surface-variant": "#47464b",
+            "on-error-container": "#93000a",
+            "info": "#6e5ae6",
+            "text-primary": "#101014",
+            "tertiary-container": "#171c23",
+            "tertiary-fixed": "#dee3ec",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "primary-fixed": "#e4e1e7",
+            "text-secondary": "#4b5058",
+            "surface-container-highest": "#e2e2e3",
+            "primary": "#000000",
+            "on-primary-fixed": "#1b1b1f",
+            "secondary-container": "#dee2ec",
+            "danger": "#dc2626",
+            "text-quaternary": "#9aa0aa",
+            "on-secondary": "#ffffff",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "on-surface": "#1a1c1d",
+            "inverse-primary": "#c8c5cb",
+            "surface-container-low": "#f3f3f4",
+            "secondary-fixed": "#dee2ec",
+            "outline-variant": "#c8c5cb",
+            "surface-sunken": "#ededf0",
+            "surface-elevated": "#ffffff",
+            "secondary-fixed-dim": "#c2c7d0",
+            "on-secondary-fixed": "#171c23",
+            "primary-fixed-dim": "#c8c5cb",
+            "surface-panel": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-page": "#f7f7f8",
+            "surface": "#f9f9fa",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-dim": "#dadadb"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "12px",
+            "space-lg": "16px",
+            "space-xl": "24px",
+            "margin": "24px",
+            "space-xs": "4px",
+            "gutter": "16px",
+            "space-sm": "8px",
+            "space-3xl": "48px",
+            "space-2xl": "32px"
+          },
+          "fontFamily": {
+            "label": ["Inter"],
+            "heading-card": ["Inter"],
+            "body": ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "body-small": ["Inter"],
+            "heading-section": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "display-xl": ["Inter"],
+            "caption": ["Inter"]
+          },
+          "fontSize": {
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-surface-page text-text-primary h-screen w-screen overflow-hidden flex m-0 p-0 font-body antialiased select-none">
+<!-- 1. NAVIGATION RAIL (56px) -->
+<aside class="w-[56px] min-w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between items-center py-3 z-30">
+<div class="flex flex-col items-center gap-2 w-full">
+<!-- App 1: Platform (Active) -->
+<button class="w-10 h-10 rounded-lg bg-surface-accent-tint text-accent-hover flex items-center justify-center transition-colors" title="Platform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">layers</span>
+</button>
+<!-- App 2: Helpdesk (Inactive) -->
+<button class="w-10 h-10 rounded-lg text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Helpdesk">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</button>
+<!-- App 3: Code Review (Inactive) -->
+<button class="w-10 h-10 rounded-lg text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Code Review">
+<span class="material-symbols-outlined text-[20px]">code_blocks</span>
+</button>
+</div>
+<!-- Rail Bottom / Settings -->
+<div class="w-full flex flex-col items-center gap-2 pt-3 border-t border-border-standard">
+<button class="w-10 h-10 rounded-lg text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors" title="Pengaturan Sistem">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</aside>
+<!-- 2. CONTEXTUAL SIDEBAR (236px) -->
+<aside class="w-[236px] min-w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between z-20">
+<!-- Top Header & Navigation -->
+<div class="flex flex-col min-h-0">
+<!-- Wordmark -->
+<div class="px-4 py-3.5 border-b border-border-standard flex items-center">
+<span class="font-semibold text-base text-text-primary tracking-tight">Platform</span>
+</div>
+<!-- Navigation Tree -->
+<div class="overflow-y-auto px-2 py-2 flex flex-col gap-0.5 text-xs">
+<!-- Group: APPS -->
+<div class="px-2 pt-2.5 pb-1 font-mono text-[11px] font-medium text-text-quaternary tracking-wider uppercase">
+          APPS
+        </div>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Semua Apps</span>
+<span class="font-mono text-[11px] text-text-quaternary">6</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Data</span>
+<span class="font-mono text-[11px] text-text-quaternary">1</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Komponen</span>
+<span class="font-mono text-[11px] text-text-quaternary">18</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Integrasi</span>
+<span class="font-mono text-[11px] text-text-quaternary">9</span>
+</a>
+<!-- Group: WORKFLOW -->
+<div class="px-2 pt-4 pb-1 font-mono text-[11px] font-medium text-text-quaternary tracking-wider uppercase">
+          WORKFLOW
+        </div>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Alur Kerja</span>
+<span class="font-mono text-[11px] text-text-quaternary">24</span>
+</a>
+<!-- Active Nav: Eksekusi -->
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-surface-accent-tint text-accent-hover font-medium font-label transition-colors" href="#">
+<span>Eksekusi</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-sunken text-accent-hover font-medium">142</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Model &amp; LLM</span>
+<span class="font-mono text-[11px] text-text-quaternary">4</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label transition-colors" href="#">
+<span>Kunci API</span>
+</a>
+</div>
+</div>
+<!-- Footer: User Profile -->
+<div class="p-3 border-t border-border-standard flex items-center gap-2.5 bg-surface-panel">
+<div class="w-8 h-8 rounded-full bg-surface-sunken border border-border-standard flex items-center justify-center font-mono text-xs font-semibold text-text-secondary">
+        SR
+      </div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-medium text-text-primary truncate">Siti Rahmawati</span>
+<span class="text-[11px] text-text-tertiary truncate">Platform Admin</span>
+</div>
+</div>
+</aside>
+<!-- 3. MAIN WORKSPACE CONTAINER -->
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-surface-page">
+<!-- Top Bar (48px) -->
+<header class="h-[48px] min-h-[48px] bg-surface-panel border-b border-border-standard px-6 flex items-center justify-between">
+<div class="flex items-baseline gap-3">
+<h1 class="text-sm font-semibold text-text-primary">Eksekusi</h1>
+<span class="font-mono text-[11px] text-text-tertiary">Riwayat jalannya alur kerja otomatisasi</span>
+</div>
+<div class="flex items-center gap-2.5">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined text-text-quaternary absolute left-2.5 pointer-events-none text-[16px]">search</span>
+<input class="h-7 pl-8 pr-2.5 text-xs bg-surface-page border border-border-standard rounded focus:outline-none focus:border-accent text-text-primary placeholder:text-text-quaternary w-44 transition-colors" placeholder="Cari eksekusi..." type="text"/>
+</div>
+<button class="w-7 h-7 rounded border border-border-standard flex items-center justify-center text-text-secondary hover:bg-surface-hover transition-colors" title="Filter">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+<div class="w-6 h-6 rounded-full bg-surface-accent-tint text-accent-hover flex items-center justify-center text-[10px] font-mono font-medium border border-border-standard">
+          SR
+        </div>
+</div>
+</header>
+<!-- Execution Canvas Split: Table (Left) + Detail Drawer (Right) -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Table Column -->
+<section class="flex-1 flex flex-col overflow-hidden bg-surface-panel border-r border-border-standard">
+<!-- Table Toolbar (44px) -->
+<div class="h-[44px] min-h-[44px] px-4 border-b border-border-standard flex items-center justify-between gap-3 bg-surface-panel">
+<div class="flex items-center gap-2">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined text-text-quaternary absolute left-2.5 pointer-events-none text-[16px]">search</span>
+<input class="h-7 pl-8 pr-3 text-xs bg-surface-panel border border-border-standard rounded focus:outline-none focus:border-accent text-text-primary placeholder:text-text-quaternary w-60" placeholder="Cari nama workflow atau ID..." type="text"/>
+</div>
+<!-- Filter: Status Dropdown -->
+<button class="h-7 px-2.5 border border-border-standard rounded bg-surface-panel hover:bg-surface-hover flex items-center gap-1.5 text-xs text-text-secondary transition-colors">
+<span>Status: Semua</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+<!-- Filter: Time Range -->
+<button class="h-7 px-2.5 border border-border-standard rounded bg-surface-panel hover:bg-surface-hover flex items-center gap-1.5 text-xs text-text-secondary transition-colors">
+<span>24 Jam Terakhir</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+<!-- Secondary Action: Export -->
+<button class="h-7 px-3 border border-border-standard rounded text-xs font-medium text-text-secondary hover:bg-surface-hover transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">download</span>
+<span>Ekspor CSV</span>
+</button>
+</div>
+<!-- Table Container -->
+<div class="flex-1 overflow-y-auto min-h-0">
+<table class="w-full border-collapse text-left">
+<thead class="sticky top-0 bg-surface-page border-b border-border-standard z-10">
+<tr class="h-9 text-[11px] font-mono text-text-tertiary uppercase tracking-wider">
+<th class="px-3 text-right font-medium w-24">WAKTU MULAI</th>
+<th class="px-4 font-medium">WORKFLOW</th>
+<th class="px-3 font-medium">PEMICU</th>
+<th class="px-3 text-right font-medium w-20">DURASI</th>
+<th class="px-3 text-center font-medium w-20">LANGKAH</th>
+<th class="px-3 font-medium w-24">STATUS</th>
+<th class="px-4 text-right font-medium w-28">BIAYA TOKEN</th>
+<th class="w-8 pr-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle font-body text-xs">
+<!-- Row 1: Selected (Active) -->
+<tr class="h-12 border-l-2 border-accent bg-[#f2f0fe]/40 hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">14:28:45</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Ekstraksi Dokumen Pajak (OCR)</span>
+<span class="font-mono text-[11px] text-text-tertiary">v2.0</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Upload File</td>
+<td class="px-3 text-right font-mono text-text-secondary">4.12s</td>
+<td class="px-3 text-center font-mono text-text-secondary">2/4</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#fdecec] text-[#b91c1c]">
+                    Gagal
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">840 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">14:32:08</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Intake Vendor &amp; Validasi NIB</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.2</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Webhook Form</td>
+<td class="px-3 text-right font-mono text-text-secondary">1.84s</td>
+<td class="px-3 text-center font-mono text-text-secondary">5/5</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f6ee] text-[#15803d]">
+                    Sukses
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">1.240 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">14:25:10</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Sinkronisasi Ledger ERP Gudang</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.0</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Jadwal Berkala</td>
+<td class="px-3 text-right font-mono text-text-secondary">12.40s</td>
+<td class="px-3 text-center font-mono text-text-secondary">3/6</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#ededf0] text-[#4b5058]">
+                    Berjalan
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">520 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">14:10:02</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Notifikasi Persetujuan Cuti</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.4</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Event Aplikasi</td>
+<td class="px-3 text-right font-mono text-text-secondary">0.62s</td>
+<td class="px-3 text-center font-mono text-text-secondary">3/3</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f6ee] text-[#15803d]">
+                    Sukses
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">120 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">13:58:19</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Klaim Biaya &amp; Audit Struk</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.1</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Webhook Mobile</td>
+<td class="px-3 text-right font-mono text-text-secondary">2.75s</td>
+<td class="px-3 text-center font-mono text-text-secondary">4/4</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f6ee] text-[#15803d]">
+                    Sukses
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">980 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">13:45:00</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Analisis Sentimen Survei HR</span>
+<span class="font-mono text-[11px] text-text-tertiary">v2.1</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Jadwal Harian</td>
+<td class="px-3 text-right font-mono text-text-secondary">10.05s</td>
+<td class="px-3 text-center font-mono text-text-secondary">1/5</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#fdecec] text-[#b91c1c]">
+                    Gagal
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">410 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">13:30:14</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Intake Vendor &amp; Validasi NIB</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.2</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Webhook Form</td>
+<td class="px-3 text-right font-mono text-text-secondary">1.79s</td>
+<td class="px-3 text-center font-mono text-text-secondary">5/5</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f6ee] text-[#15803d]">
+                    Sukses
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">1.150 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="h-12 border-l-2 border-transparent hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-3 text-right font-mono text-text-secondary">13:12:40</td>
+<td class="px-4">
+<div class="flex items-center gap-2">
+<span class="font-medium text-text-primary">Agregasi Laporan Harian Tim</span>
+<span class="font-mono text-[11px] text-text-tertiary">v1.0</span>
+</div>
+</td>
+<td class="px-3 text-text-secondary">Jadwal Berkala</td>
+<td class="px-3 text-right font-mono text-text-secondary">3.40s</td>
+<td class="px-3 text-center font-mono text-text-secondary">4/4</td>
+<td class="px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f6ee] text-[#15803d]">
+                    Sukses
+                  </span>
+</td>
+<td class="px-4 text-right font-mono text-text-secondary">640 tok</td>
+<td class="pr-3 text-center text-text-quaternary">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination (40px) -->
+<div class="h-10 min-h-10 px-4 border-t border-border-standard flex items-center justify-between text-xs text-text-tertiary bg-surface-panel">
+<span>Menampilkan 1–8 dari 142 eksekusi</span>
+<div class="flex items-center gap-1">
+<button class="w-6 h-6 rounded border border-border-standard flex items-center justify-center text-text-quaternary hover:bg-surface-hover disabled:opacity-40" disabled="">
+<span class="material-symbols-outlined text-[14px]">chevron_left</span>
+</button>
+<span class="px-2 font-mono text-[11px] text-text-primary font-medium">1</span>
+<button class="w-6 h-6 rounded border border-border-standard flex items-center justify-center text-text-secondary hover:bg-surface-hover">
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 4. RIGHT EXECUTION DRAWER (420px) -->
+<aside class="w-[420px] min-w-[420px] bg-surface-panel overflow-y-auto flex flex-col p-5 border-l border-border-standard">
+<!-- Drawer Header Section -->
+<div class="flex flex-col gap-1.5 pb-4 border-b border-border-standard">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs text-text-secondary font-medium">RUN-98214</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#fdecec] text-[#b91c1c]">
+                Gagal
+              </span>
+</div>
+<button class="text-text-tertiary hover:text-text-primary transition-colors p-1 rounded hover:bg-surface-hover">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<h2 class="text-base font-semibold text-text-primary tracking-tight mt-1">
+            Ekstraksi Dokumen Pajak (OCR)
+          </h2>
+<div class="font-mono text-[11px] text-text-tertiary flex items-center gap-1.5">
+<span>Mulai: 14:28:45</span>
+<span>•</span>
+<span>Total: 4.12s</span>
+<span>•</span>
+<span>Token: 840</span>
+</div>
+</div>
+<!-- Drawer Body: Timeline Steps -->
+<div class="py-4 flex flex-col min-h-0">
+<div class="font-mono text-[11px] font-medium text-text-quaternary uppercase tracking-wider mb-4">
+            TIMELINE LANGKAH ALUR
+          </div>
+<div class="flex flex-col gap-4">
+<!-- Step 1: Success -->
+<div class="relative flex gap-3">
+<!-- Vertical Line connector -->
+<div class="absolute left-[3px] top-3 bottom-0 w-[2px] bg-border-standard"></div>
+<!-- Status Indicator Dot -->
+<div class="w-2 h-2 rounded-full bg-[#15803d] ring-4 ring-[#e8f6ee] z-10 mt-1"></div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-text-primary">1. Terima Berkas Unggahan</span>
+<span class="font-mono text-[11px] text-text-tertiary">0.32s</span>
+</div>
+<!-- Payload Sunken Box -->
+<div class="bg-surface-sunken rounded p-2.5 text-xs font-mono text-text-secondary mt-1.5 break-all">
+                  {"file_name": "faktur_0982.pdf", "size_kb": 412, "mime": "application/pdf"}
+                </div>
+</div>
+</div>
+<!-- Step 2: Failed -->
+<div class="relative flex gap-3 pt-2">
+<!-- Vertical Line connector -->
+<div class="absolute left-[3px] top-3 bottom-0 w-[2px] bg-border-standard"></div>
+<!-- Status Indicator Dot -->
+<div class="w-2 h-2 rounded-full bg-[#b91c1c] ring-4 ring-[#fdecec] z-10 mt-1"></div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-text-primary">2. Panggil AI OCR (Vision Pro)</span>
+<span class="font-mono text-[11px] text-text-tertiary">3.80s</span>
+</div>
+<div class="text-[11px] text-text-tertiary mt-0.5">
+                  Model: gemini-1.5-pro • Ekstraksi teks &amp; tabel
+                </div>
+<!-- Error Callout Box -->
+<div class="bg-[#fdecec] border border-[#dc2626]/20 rounded p-3 text-xs text-[#b91c1c] mt-2">
+<p class="leading-relaxed">
+                    Error 504: Gateway Timeout. Eksekusi model melebihi batas waktu respon node (3500ms). Sambungan ke vision worker terputus saat merender halaman 3.
+                  </p>
+<button class="bg-surface-panel border border-border-standard text-text-primary px-3 py-1.5 rounded text-xs font-medium hover:bg-surface-hover mt-2.5 inline-flex items-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[14px]">replay</span>
+<span>Coba lagi dari langkah ini</span>
+</button>
+</div>
+<!-- Input Payload Box -->
+<div class="bg-surface-sunken rounded p-2.5 text-xs font-mono text-text-secondary mt-2 break-all">
+                  {"node_id": "ocr_vision_02", "prompt": "Ekstrak nomor faktur, NPWP, dan total PPN", "tokens_spent": 840}
+                </div>
+</div>
+</div>
+<!-- Step 3: Skipped -->
+<div class="relative flex gap-3 pt-2">
+<!-- Vertical Line connector -->
+<div class="absolute left-[3px] top-3 bottom-0 w-[2px] bg-border-standard"></div>
+<!-- Status Indicator Dot -->
+<div class="w-2 h-2 rounded-full bg-text-quaternary z-10 mt-1"></div>
+<div class="flex-1 min-w-0">
+<div class="text-xs text-text-quaternary">
+<span class="font-medium">3. Validasi Format &amp; NPWP</span>
+<span class="text-[11px] block mt-0.5 text-text-quaternary">(Dilewati karena langkah sebelumnya gagal)</span>
+</div>
+</div>
+</div>
+<!-- Step 4: Skipped -->
+<div class="relative flex gap-3 pt-2">
+<!-- Status Indicator Dot -->
+<div class="w-2 h-2 rounded-full bg-text-quaternary z-10 mt-1"></div>
+<div class="flex-1 min-w-0">
+<div class="text-xs text-text-quaternary">
+<span class="font-medium">4. Simpan ke Database &amp; Notifikasi</span>
+<span class="text-[11px] block mt-0.5 text-text-quaternary">(Dilewati karena langkah sebelumnya gagal)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Bottom Action Panel -->
+<div class="border-t border-border-standard pt-4 mt-auto flex items-center justify-between">
+<button class="text-xs text-text-secondary hover:text-text-primary transition-colors font-medium">
+            Lihat Raw Log
+          </button>
+<button class="bg-accent hover:bg-accent-hover text-white text-xs px-3.5 py-2 rounded font-medium transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+<span>Jalankan Ulang Alur</span>
+</button>
+</div>
+</aside>
+</div>
+</main>
+</body></html>

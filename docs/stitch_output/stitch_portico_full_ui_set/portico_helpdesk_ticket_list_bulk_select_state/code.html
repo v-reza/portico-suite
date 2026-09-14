@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portico Helpdesk — Tiket Masuk (Bulk-Select)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#1a1c1d",
+            "on-surface-variant": "#47464b",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#5f5e63",
+            "on-primary-fixed": "#1b1b1f",
+            "secondary": "#5a5f67",
+            "surface": "#f9f9fa",
+            "info": "#6e5ae6",
+            "overlay": "rgba(16,16,20,0.40)",
+            "on-tertiary-container": "#7f848c",
+            "on-primary-container": "#858388",
+            "surface-hover": "#f1f1f3",
+            "secondary-container": "#dee2ec",
+            "on-secondary-fixed": "#171c23",
+            "danger-solid": "#dc2626",
+            "outline": "#78767b",
+            "inverse-primary": "#c8c5cb",
+            "secondary-fixed-dim": "#c2c7d0",
+            "text-primary": "#101014",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "accent-hover": "#5b46d6",
+            "tertiary-container": "#171c23",
+            "surface-elevated": "#ffffff",
+            "surface-accent-tint": "#f2f0fe",
+            "primary-fixed-dim": "#c8c5cb",
+            "surface-container-lowest": "#ffffff",
+            "text-quaternary": "#9aa0aa",
+            "surface-bright": "#f9f9fa",
+            "text-secondary": "#4b5058",
+            "on-tertiary": "#ffffff",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "text-tertiary": "#62676f",
+            "on-primary": "#ffffff",
+            "surface-container": "#eeeeef",
+            "accent": "#6e5ae6",
+            "tertiary-fixed": "#dee3ec",
+            "inverse-surface": "#2f3132",
+            "on-secondary-container": "#60656d",
+            "danger": "#dc2626",
+            "surface-container-low": "#f3f3f4",
+            "on-secondary-fixed-variant": "#42474f",
+            "success": "#16a34a",
+            "surface-container-highest": "#e2e2e3",
+            "on-background": "#1a1c1d",
+            "surface-canvas": "#f1f1f4",
+            "primary-fixed": "#e4e1e7",
+            "surface-variant": "#e2e2e3",
+            "primary-container": "#1b1b1f",
+            "inverse-on-surface": "#f0f1f2",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "surface-page": "#f7f7f8",
+            "error-container": "#ffdad6",
+            "warning": "#d97706",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "background": "#f9f9fa",
+            "surface-panel": "#ffffff",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "surface-dim": "#dadadb",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "critical": "#b91c1c",
+            "primary": "#000000",
+            "outline-variant": "#c8c5cb",
+            "on-tertiary-fixed-variant": "#42474f",
+            "on-primary-fixed-variant": "#47464b",
+            "on-error-container": "#93000a",
+            "secondary-fixed": "#dee2ec",
+            "on-error": "#ffffff",
+            "diff-context-bg": "#fbfbfc",
+            "tertiary": "#000000",
+            "error": "#ba1a1a",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "surface-container-high": "#e8e8e9",
+            "surface-sunken": "#ededf0",
+            "on-tertiary-fixed": "#171c23"
+          },
+          borderRadius: {
+            DEFAULT: "0.125rem",
+            lg: "0.25rem",
+            xl: "0.5rem",
+            full: "0.75rem"
+          },
+          spacing: {
+            "space-3xl": "48px",
+            gutter: "16px",
+            "space-xl": "24px",
+            "space-xs": "4px",
+            margin: "24px",
+            "space-md": "12px",
+            "space-2xl": "32px",
+            "space-sm": "8px",
+            "space-lg": "16px"
+          },
+          fontFamily: {
+            caption: ["Inter"],
+            "heading-section": ["Inter"],
+            label: ["Inter"],
+            "body-small": ["Inter"],
+            body: ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "display-xl": ["Inter"],
+            mono: ["JetBrains Mono"],
+            "heading-card": ["Inter"]
+          },
+          fontSize: {
+            caption: ["0.75rem", { lineHeight: "1.4", fontWeight: "450" }],
+            "heading-section": ["1.25rem", { lineHeight: "1.33", letterSpacing: "-0.24px", fontWeight: "590" }],
+            label: ["0.813rem", { lineHeight: "1.5", letterSpacing: "-0.13px", fontWeight: "560" }],
+            "body-small": ["0.813rem", { lineHeight: "1.5", fontWeight: "400" }],
+            body: ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "mono-label": ["0.75rem", { lineHeight: "1.4", fontWeight: "500" }],
+            "display-xl": ["2rem", { lineHeight: "1.13", letterSpacing: "-0.704px", fontWeight: "590" }],
+            mono: ["0.813rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "heading-card": ["1rem", { lineHeight: "1.5", letterSpacing: "-0.165px", fontWeight: "560" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.12);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 23, 42, 0.24);
+    }
+  </style>
+</head>
+<body class="bg-surface-page text-text-primary antialiased font-body text-body selection:bg-surface-accent-tint selection:text-accent overflow-hidden h-screen w-screen flex m-0 p-0">
+<!-- KOLOM 1: RAIL (56px) -->
+<aside class="w-[56px] min-w-[56px] max-w-[56px] h-screen bg-surface-panel border-r border-border-standard flex flex-col justify-between items-center py-space-md z-30 select-none">
+<div class="flex flex-col items-center gap-space-sm w-full">
+<!-- App Switcher A: Platform -->
+<button class="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-text-secondary hover:bg-surface-hover transition-colors duration-150 active:scale-[0.98]" title="Portico Platform" type="button">
+<span class="material-symbols-outlined" data-icon="deployed_code">deployed_code</span>
+</button>
+<!-- App Switcher B: Helpdesk (AKTIF) -->
+<button class="w-[38px] h-[38px] rounded-lg flex items-center justify-center bg-surface-accent-tint text-accent-hover font-medium" title="Portico Helpdesk" type="button">
+<span class="material-symbols-outlined" data-icon="support_agent" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</button>
+<!-- App Switcher C: Code Review -->
+<button class="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-text-secondary hover:bg-surface-hover transition-colors duration-150 active:scale-[0.98]" title="Portico Code Review" type="button">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<!-- Divider Tipis -->
+<div class="w-6 h-[1px] bg-border-standard my-space-xs"></div>
+</div>
+<!-- Settings di paling bawah -->
+<div class="w-full flex justify-center">
+<button class="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-text-secondary hover:bg-surface-hover transition-colors duration-150 active:scale-[0.98]" title="Pengaturan Global" type="button">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</aside>
+<!-- KOLOM 2: SIDEBAR (236px) -->
+<nav class="w-[236px] min-w-[236px] max-w-[236px] h-screen bg-surface-panel border-r border-border-standard flex flex-col justify-between z-20 select-none">
+<div class="flex flex-col h-[calc(100vh-65px)] overflow-y-auto">
+<!-- Sidebar Header -->
+<div class="h-12 px-space-lg flex items-center border-b border-border-standard shrink-0">
+<span class="font-heading-card text-heading-card font-semibold text-text-primary tracking-tight">Portico Helpdesk</span>
+</div>
+<!-- Navigation Sections -->
+<div class="p-space-sm flex flex-col gap-space-md">
+<!-- GRUP: PRODUK -->
+<div>
+<div class="px-space-sm py-1 font-mono-label text-[11px] uppercase tracking-wider text-text-quaternary select-none">
+            PRODUK
+          </div>
+<div class="flex flex-col gap-0.5 mt-1">
+<!-- Tiket Masuk (Aktif) -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg bg-surface-accent-tint text-accent-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="inbox" style="font-variation-settings: 'FILL' 1;">inbox</span>
+<span>Tiket Masuk</span>
+</div>
+<span class="font-mono-label text-caption font-medium px-1.5 py-0.5 rounded bg-surface-panel text-accent border border-border-subtle">18</span>
+</a>
+<!-- Ditugaskan ke Saya -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="assignment_ind">assignment_ind</span>
+<span>Ditugaskan ke Saya</span>
+</div>
+<span class="font-mono-label text-caption text-text-tertiary">6</span>
+</a>
+<!-- Menunggu Respon -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span>Menunggu Respon</span>
+</div>
+<span class="font-mono-label text-caption text-text-tertiary">9</span>
+</a>
+</div>
+</div>
+<!-- GRUP: VIEWS -->
+<div>
+<div class="px-space-sm py-1 font-mono-label text-[11px] uppercase tracking-wider text-text-quaternary select-none">
+            VIEWS
+          </div>
+<div class="flex flex-col gap-0.5 mt-1">
+<!-- SLA Hampir Lewat -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-critical" data-icon="timer">timer</span>
+<span>SLA Hampir Lewat</span>
+</div>
+<span class="font-mono-label text-[11px] font-semibold px-1.5 py-0.2 rounded bg-[#fdecec] text-[#b91c1c]">4</span>
+</a>
+<!-- Selesai Minggu Ini -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="task_alt">task_alt</span>
+<span>Selesai Minggu Ini</span>
+</div>
+<span class="font-mono-label text-caption text-text-tertiary">82</span>
+</a>
+<!-- Arsip -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="archive">archive</span>
+<span>Arsip</span>
+</div>
+<span class="font-mono-label text-caption text-text-tertiary">310</span>
+</a>
+</div>
+</div>
+<!-- GRUP: WORKSPACE -->
+<div>
+<div class="px-space-sm py-1 font-mono-label text-[11px] uppercase tracking-wider text-text-quaternary select-none">
+            WORKSPACE
+          </div>
+<div class="flex flex-col gap-0.5 mt-1">
+<!-- Anggota Tim -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="group">group</span>
+<span>Anggota Tim</span>
+</div>
+<span class="font-mono-label text-caption text-text-tertiary">12</span>
+</a>
+<!-- Aturan & Routing SLA -->
+<a class="flex items-center justify-between px-space-sm py-1.5 rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="alt_route">alt_route</span>
+<span class="truncate">Aturan &amp; Routing SLA</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Profil User Bawah -->
+<div class="h-[64px] border-t border-border-standard px-space-md flex items-center gap-3 bg-surface-panel shrink-0">
+<div class="w-8 h-8 rounded-full bg-surface-accent-tint text-accent font-semibold font-label text-caption flex items-center justify-center border border-border-standard">
+        SR
+      </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label text-label font-medium text-text-primary truncate leading-tight">Siti Rahmawati</span>
+<span class="font-caption text-caption text-text-tertiary truncate leading-tight">Support Lead</span>
+</div>
+</div>
+</nav>
+<!-- CONTAINER KANAN (TOP BAR + DUA PANEL KONTEN) -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
+<!-- TOP BAR (48px) - HANYA DI ATAS PANEL LIST DAN DETAIL -->
+<header class="h-12 min-h-[48px] max-h-[48px] bg-surface-panel border-b border-border-standard px-space-lg flex items-center justify-between shrink-0 z-10">
+<!-- Kiri: Judul Tiket + Dot Live -->
+<div class="flex items-center gap-3">
+<h1 class="font-heading-card text-heading-card font-semibold text-text-primary tracking-tight">Tiket</h1>
+<div class="h-3.5 w-[1px] bg-border-standard"></div>
+<div class="flex items-center gap-1.5 text-text-secondary font-caption text-caption">
+<span class="w-2 h-2 rounded-full bg-success inline-block"></span>
+<span>Live · 2m lalu</span>
+</div>
+</div>
+<!-- Kanan: Search compact + Filter + Avatar User SR -->
+<div class="flex items-center gap-2">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-2.5 text-text-quaternary pointer-events-none" data-icon="search">search</span>
+<input class="w-56 h-8 pl-8 pr-2.5 bg-surface-panel border border-border-standard rounded-lg font-body-small text-body-small text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors" placeholder="Cari tiket, ID, requester..." type="text"/>
+</div>
+<button class="h-8 px-2.5 bg-surface-panel border border-border-standard rounded-lg flex items-center gap-1 text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" type="button">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="filter_list">filter_list</span>
+<span>Filter</span>
+</button>
+<div class="w-7 h-7 rounded-full bg-surface-accent-tint text-accent font-semibold font-label text-[11px] flex items-center justify-center border border-border-standard ml-1">
+          SR
+        </div>
+</div>
+</header>
+<!-- CONTENT WRAPPER: 2 KOLOM (PANEL LIST TIKET 340px & DETAIL FLEX-1) -->
+<div class="flex-1 flex flex-row h-[calc(100vh-48px)] overflow-hidden">
+<!-- KOLOM 3: PANEL LIST TIKET (340px) -->
+<section class="w-[340px] min-w-[340px] max-w-[340px] h-full bg-surface-panel border-r border-border-standard flex flex-col shrink-0">
+<!-- HEADER KONDISI BULK-SELECT -->
+<div class="p-space-sm border-b border-border-standard bg-surface-panel flex flex-col gap-2 shrink-0">
+<div class="flex items-center justify-between pt-0.5">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<span class="font-label text-label font-medium text-text-primary">3 dipilih</span>
+</div>
+<!-- Tombol Aksi Massal Ringkas -->
+<div class="flex items-center gap-1">
+<button class="h-7 px-2 bg-surface-panel border border-border-standard rounded text-text-secondary hover:bg-surface-hover font-label text-caption transition-colors" type="button">
+                Tugaskan
+              </button>
+<button class="h-7 px-2 bg-surface-panel border border-border-standard rounded text-text-secondary hover:bg-surface-hover font-label text-caption transition-colors" type="button">
+                Tutup
+              </button>
+<button class="h-7 px-2 bg-surface-panel border border-border-standard rounded text-text-secondary hover:bg-surface-hover font-label text-caption transition-colors" type="button">
+                Batal
+              </button>
+</div>
+</div>
+<!-- Search antrean tiket compact -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-2 text-text-quaternary text-[16px] pointer-events-none" data-icon="filter_alt">filter_alt</span>
+<input class="w-full h-7 pl-7 pr-2 bg-surface-page border border-border-standard rounded font-body-small text-caption text-text-primary placeholder:text-text-quaternary focus:outline-none focus:bg-surface-panel focus:border-accent transition-colors" placeholder="Saring antrean..." type="text"/>
+</div>
+</div>
+<!-- DAFTAR TIKET (Scrollable) -->
+<div class="flex-1 overflow-y-auto divide-y divide-border-standard">
+<!-- ITEM 1: TERCENTANG (Budi Rahardjo) -->
+<div class="p-space-md bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Budi Rahardjo</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">4m lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Gagal verifikasi webhook transfer batch #921 (504 Gateway Timeout)
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-critical font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                  Tinggi
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 42m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2231</span>
+</div>
+</div>
+</div>
+<!-- ITEM 2: TERCENTANG (Dewi Anggraeni) -->
+<div class="p-space-md bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Dewi Anggraeni</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">18m lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Penambahan kuota token model LLM prod per cluster inference gateway #04
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-text-secondary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Normal
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 2j 10m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2230</span>
+</div>
+</div>
+</div>
+<!-- ITEM 3: TERCENTANG (Taufik Hidayat) -->
+<div class="p-space-md bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input checked="" class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Taufik Hidayat</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">35m lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Koneksi postgres timeout pada intake vendor sinkronisasi katalog internal
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-critical font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                  Tinggi
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 1j 05m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2229</span>
+</div>
+</div>
+</div>
+<!-- ITEM 4: TIDAK TERCENTANG (Andi Saputra) -->
+<div class="p-space-md hover:bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Andi Saputra</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">48m lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Permintaan rotasi sertifikat TLS wildcard domain api.internal.corp
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-text-secondary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Normal
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 4j 20m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2228</span>
+</div>
+</div>
+</div>
+<!-- ITEM 5: TIDAK TERCENTANG (Maya Wulandari) -->
+<div class="p-space-md hover:bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Maya Wulandari</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">1j lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Akses role dev read-only staging cluster gagal di-provisioning
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-text-quaternary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-border-standard"></span>
+                  Rendah
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 7j 50m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2227</span>
+</div>
+</div>
+</div>
+<!-- ITEM 6: TIDAK TERCENTANG (Rian Kurniawan) -->
+<div class="p-space-md hover:bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Rian Kurniawan</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">1j 30m lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Notifikasi webhook PagerDuty tidak ter-dispatch ke kanal Slack Incident
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-critical font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                  Tinggi
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 1j 40m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2226</span>
+</div>
+</div>
+</div>
+<!-- ITEM 7: TIDAK TERCENTANG (Santi Susanti) -->
+<div class="p-space-md hover:bg-surface-hover transition-colors flex items-start gap-2.5 cursor-pointer">
+<div class="pt-0.5">
+<input class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label text-label font-medium text-text-primary truncate">Santi Susanti</span>
+<span class="font-mono-label text-caption text-text-quaternary shrink-0">2j lalu</span>
+</div>
+<p class="font-body-small text-caption text-text-secondary line-clamp-2 leading-snug mb-2">
+                Audit trail ekspor log autentikasi periode Q2 tertahan di processing queue
+              </p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-mono-label text-[11px] text-text-secondary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Normal
+                </span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-tertiary">SLA 5j 15m</span>
+<span class="text-border-standard">•</span>
+<span class="font-mono-label text-[11px] text-text-quaternary">#TKT-2225</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- KOLOM 4: AREA DETAIL / BULK ACTION PANEL (Flex-1, bg-[#f7f7f8], scrollable) -->
+<main class="flex-1 h-full overflow-y-auto bg-surface-page p-6 md:p-8 flex flex-col min-w-0">
+<!-- HEADER PANEL BULK -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-space-lg border-b border-border-standard shrink-0">
+<div>
+<div class="flex items-center gap-3">
+<h2 class="font-heading-section text-heading-section font-semibold text-text-primary">3 Tiket Dipilih</h2>
+<span class="px-2 py-0.5 bg-surface-panel border border-border-standard rounded font-mono-label text-caption text-text-secondary">
+                Mode Aksi Massal
+              </span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="font-caption text-caption text-text-tertiary">ID Tiket:</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2 py-0.5 bg-surface-panel border border-border-standard rounded font-mono-label text-[11px] text-text-secondary font-medium">#TKT-2231</span>
+<span class="px-2 py-0.5 bg-surface-panel border border-border-standard rounded font-mono-label text-[11px] text-text-secondary font-medium">#TKT-2230</span>
+<span class="px-2 py-0.5 bg-surface-panel border border-border-standard rounded font-mono-label text-[11px] text-text-secondary font-medium">#TKT-2229</span>
+</div>
+</div>
+</div>
+<!-- Tombol Aksi Header Utama -->
+<div class="flex items-center gap-2.5 shrink-0">
+<button class="h-8 px-3.5 bg-surface-panel border border-border-standard rounded-lg text-text-secondary hover:bg-surface-hover font-label text-label transition-colors" type="button">
+              Batal Pilih
+            </button>
+<button class="h-8 px-3.5 bg-danger-solid text-white rounded-lg hover:opacity-90 font-label text-label flex items-center gap-1.5 transition-opacity" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="close">close</span>
+<span>Tutup Tiket (3)</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-space-xl mt-space-lg">
+<!-- KARTU 1: TINDAKAN MASSAL -->
+<div class="bg-surface-panel border border-border-standard rounded-lg p-5">
+<div class="flex items-center justify-between pb-space-md border-b border-border-standard mb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent" data-icon="tune">tune</span>
+<span class="font-label text-label font-semibold text-text-primary uppercase tracking-wider text-[11px] font-mono-label">
+                  TINDAKAN MASSAL
+                </span>
+</div>
+<span class="font-caption text-caption text-text-tertiary">Perubahan akan langsung diterapkan ke 3 tiket terpilih</span>
+</div>
+<!-- Form Pilihan Massal (Grid 3 Kolom) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-lg">
+<!-- Field 1: Tugaskan ke Agen -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label text-label font-medium text-text-primary flex items-center justify-between">
+<span>Tugaskan ke Agen</span>
+<span class="font-caption text-caption text-text-quaternary font-normal">Penerima</span>
+</label>
+<div class="relative">
+<select class="w-full h-9 pl-3 pr-8 bg-surface-panel border border-border-standard rounded-lg font-body-small text-body-small text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent cursor-pointer transition-colors">
+<option value="">Pilih agen penanggung jawab...</option>
+<option selected="" value="sr">Siti Rahmawati (Support Lead)</option>
+<option value="af">Ahmad Fauzi (Platform Eng)</option>
+<option value="da">Dewi Anggraeni (Tier 2)</option>
+<option value="th">Taufik Hidayat (Infra)</option>
+</select>
+</div>
+</div>
+<!-- Field 2: Ubah Status -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label text-label font-medium text-text-primary flex items-center justify-between">
+<span>Ubah Status</span>
+<span class="font-caption text-caption text-text-quaternary font-normal">Siklus Hidup</span>
+</label>
+<div class="relative">
+<select class="w-full h-9 pl-3 pr-8 bg-surface-panel border border-border-standard rounded-lg font-body-small text-body-small text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent cursor-pointer transition-colors">
+<option value="">Pertahankan status masing-masing</option>
+<option value="menunggu">Menunggu Respon</option>
+<option selected="" value="dikerjakan">Sedang Dikerjakan</option>
+<option value="ditunda">Ditunda</option>
+<option value="selesai">Selesai</option>
+</select>
+</div>
+</div>
+<!-- Field 3: Ubah Prioritas -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label text-label font-medium text-text-primary flex items-center justify-between">
+<span>Ubah Prioritas</span>
+<span class="font-caption text-caption text-text-quaternary font-normal">Urgency</span>
+</label>
+<div class="relative">
+<select class="w-full h-9 pl-3 pr-8 bg-surface-panel border border-border-standard rounded-lg font-body-small text-body-small text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent cursor-pointer transition-colors">
+<option value="">Pertahankan prioritas masing-masing</option>
+<option value="rendah">Rendah</option>
+<option value="normal">Normal</option>
+<option selected="" value="p1">Tinggi (P1)</option>
+<option value="p0">Kritis (P0)</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Form Balasan Massal / Catatan Internal Bersama -->
+<div class="bg-surface-page border border-border-standard rounded-lg p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label text-label font-medium text-text-primary">
+                  Balasan Massal / Catatan Internal Bersama
+                </span>
+<!-- Toggle Checkbox Internal -->
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded border-border-standard text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<span class="font-caption text-caption font-medium text-text-secondary">Jadikan catatan internal</span>
+</label>
+</div>
+<textarea class="w-full p-space-sm bg-surface-panel border border-border-standard rounded-lg font-body-small text-body-small text-text-primary placeholder:text-text-quaternary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors resize-none leading-relaxed" placeholder="Tulis catatan bersama atau balasan template untuk 3 tiket ini..." rows="4">Investigasi bersama sedang berjalan terkait timeout jaringan &amp; penambahan kuota pod downstream. Patch deployment scheduled pukul 16:30 WIB.</textarea>
+<div class="flex items-center justify-between pt-1">
+<button class="h-8 px-3 bg-surface-panel border border-border-standard rounded-lg text-text-secondary hover:bg-surface-hover font-label text-caption flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-tertiary" data-icon="bolt">bolt</span>
+<span>Terapkan Makro Jawaban</span>
+</button>
+<button class="h-8 px-4 bg-accent text-white rounded-lg hover:bg-accent-hover font-label text-label font-medium flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="done_all">done_all</span>
+<span>Terapkan ke 3 Tiket</span>
+</button>
+</div>
+</div>
+</div>
+<!-- KARTU 2: RINCIAN TIKET TERPILIH -->
+<div class="bg-surface-panel border border-border-standard rounded-lg p-5">
+<div class="flex items-center justify-between pb-space-md border-b border-border-standard mb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="checklist">checklist</span>
+<span class="font-label text-label font-semibold text-text-primary uppercase tracking-wider text-[11px] font-mono-label">
+                  RINCIAN TIKET TERPILIH
+                </span>
+</div>
+<span class="font-caption text-caption text-text-tertiary">3 item dalam antrean aktif</span>
+</div>
+<!-- Tabel Ringkas Tiket -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-border-standard bg-surface-page">
+<th class="py-2.5 px-3 font-mono-label text-caption text-text-tertiary font-medium">ID</th>
+<th class="py-2.5 px-3 font-mono-label text-caption text-text-tertiary font-medium">Requester</th>
+<th class="py-2.5 px-3 font-mono-label text-caption text-text-tertiary font-medium">Subjek</th>
+<th class="py-2.5 px-3 font-mono-label text-caption text-text-tertiary font-medium">Prioritas</th>
+<th class="py-2.5 px-3 font-mono-label text-caption text-text-tertiary font-medium">Sisa SLA</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-standard font-body-small text-body-small">
+<!-- Baris 1 -->
+<tr class="hover:bg-surface-hover transition-colors">
+<td class="py-3 px-3 font-mono-label text-caption font-medium text-accent">
+                      #TKT-2231
+                    </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-sunken text-text-secondary text-[10px] font-semibold flex items-center justify-center">
+                          BR
+                        </div>
+<span class="font-medium text-text-primary">Budi Rahardjo</span>
+</div>
+</td>
+<td class="py-3 px-3 max-w-xs truncate text-text-secondary">
+                      Gagal verifikasi webhook transfer batch #921 (504 Gateway Timeout)
+                    </td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#fdecec] text-[#b91c1c] font-mono-label text-[11px] font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                        Tinggi
+                      </span>
+</td>
+<td class="py-3 px-3 font-mono-label text-caption text-critical font-medium">
+                      42m tersisa
+                    </td>
+</tr>
+<!-- Baris 2 -->
+<tr class="hover:bg-surface-hover transition-colors">
+<td class="py-3 px-3 font-mono-label text-caption font-medium text-accent">
+                      #TKT-2230
+                    </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-sunken text-text-secondary text-[10px] font-semibold flex items-center justify-center">
+                          DA
+                        </div>
+<span class="font-medium text-text-primary">Dewi Anggraeni</span>
+</div>
+</td>
+<td class="py-3 px-3 max-w-xs truncate text-text-secondary">
+                      Penambahan kuota token model LLM prod per cluster inference gateway #04
+                    </td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-page text-text-secondary border border-border-standard font-mono-label text-[11px] font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                        Normal
+                      </span>
+</td>
+<td class="py-3 px-3 font-mono-label text-caption text-text-secondary">
+                      2j 10m tersisa
+                    </td>
+</tr>
+<!-- Baris 3 -->
+<tr class="hover:bg-surface-hover transition-colors">
+<td class="py-3 px-3 font-mono-label text-caption font-medium text-accent">
+                      #TKT-2229
+                    </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-sunken text-text-secondary text-[10px] font-semibold flex items-center justify-center">
+                          TH
+                        </div>
+<span class="font-medium text-text-primary">Taufik Hidayat</span>
+</div>
+</td>
+<td class="py-3 px-3 max-w-xs truncate text-text-secondary">
+                      Koneksi postgres timeout pada intake vendor sinkronisasi katalog internal
+                    </td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#fdecec] text-[#b91c1c] font-mono-label text-[11px] font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                        Tinggi
+                      </span>
+</td>
+<td class="py-3 px-3 font-mono-label text-caption text-critical font-medium">
+                      1j 05m tersisa
+                    </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

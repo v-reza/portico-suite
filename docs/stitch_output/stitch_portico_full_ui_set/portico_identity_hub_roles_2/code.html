@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portico Identity - Hub Roles</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#101014",
+            secondary: "#4b5058",
+            tertiary: "#62676f",
+            neutral: "#f7f7f8",
+            accent: "#6e5ae6",
+            "accent-hover": "#5b46d6",
+            info: "#6e5ae6",
+            success: "#16a34a",
+            warning: "#d97706",
+            danger: "#dc2626",
+            "danger-solid": "#dc2626",
+            "surface-page": "#f7f7f8",
+            "surface-panel": "#ffffff",
+            "surface-elevated": "#ffffff",
+            "surface-hover": "#f1f1f3",
+            "surface-sunken": "#ededf0",
+            "surface-canvas": "#f1f1f4",
+            "surface-accent-tint": "#f2f0fe",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "text-primary": "#101014",
+            "text-secondary": "#4b5058",
+            "text-tertiary": "#62676f",
+            "text-quaternary": "#9aa0aa"
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #101014;
+      background-color: #f7f7f8;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill-1 {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex bg-surface-page select-none">
+
+  <!-- APP SHELL: RAIL 56px -->
+  <aside class="w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col items-center justify-between py-3 shrink-0 z-30">
+    <!-- Top Icons: Portico (active) + 3 apps (Platform, Helpdesk, Code Review) -->
+    <div class="flex flex-col items-center gap-2">
+      <!-- Portico Identity Suite Icon (Active) -->
+      <button title="Portico Hub" class="w-9 h-9 rounded-md flex items-center justify-center bg-surface-accent-tint text-accent transition-colors">
+        <span class="material-symbols-outlined text-[20px]">hub</span>
+      </button>
+
+      <div class="w-6 h-[1px] bg-border-subtle my-1"></div>
+
+      <!-- App A: Platform -->
+      <button title="Platform" class="w-9 h-9 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+        <span class="material-symbols-outlined text-[20px]">layers</span>
+      </button>
+
+      <!-- App B: Helpdesk -->
+      <button title="Helpdesk" class="w-9 h-9 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+      </button>
+
+      <!-- App C: Code Review -->
+      <button title="Code Review" class="w-9 h-9 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+        <span class="material-symbols-outlined text-[20px]">code</span>
+      </button>
+    </div>
+
+    <!-- Bottom Icon: Settings -->
+    <div class="flex flex-col items-center gap-2">
+      <button title="Pengaturan Sistem" class="w-9 h-9 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- APP SHELL: SIDEBAR 236px -->
+  <aside class="w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between p-3 shrink-0 z-20">
+    <div class="flex flex-col">
+      <!-- Header / Wordmark -->
+      <div class="h-9 flex items-center px-2 mb-3">
+        <span class="font-semibold text-[15px] tracking-tight text-text-primary">Portico</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-1">
+        <!-- Pengguna (Inactive) -->
+        <a href="javascript:void(0)" class="h-8 px-2.5 rounded-md flex items-center gap-2 text-[13px] font-normal text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+          <span class="material-symbols-outlined text-[18px]">group</span>
+          <span>Pengguna</span>
+        </a>
+
+        <!-- Peran (Active) -->
+        <a href="javascript:void(0)" class="h-8 px-2.5 rounded-md flex items-center gap-2 text-[13px] font-medium bg-surface-accent-tint text-accent-hover transition-colors">
+          <span class="material-symbols-outlined text-[18px]">badge</span>
+          <span>Peran</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom User Info -->
+    <div class="pt-3 border-t border-border-subtle flex items-center gap-2 px-1">
+      <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken flex items-center justify-center text-[11px] font-medium text-text-secondary shrink-0 mono">
+        SR
+      </div>
+      <div class="flex flex-col min-w-0 flex-1">
+        <span class="text-[12px] font-medium text-text-primary truncate leading-tight">Siti Rahmawati</span>
+        <span class="text-[11px] text-text-tertiary truncate leading-tight">siti.rahmawati@acme.corp</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEW AREA: TOP BAR + SPLIT PANE -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden">
+    
+    <!-- TOP BAR 48px -->
+    <header class="h-[48px] bg-surface-panel border-b border-border-standard flex items-center justify-between px-5 shrink-0 z-10">
+      <div class="flex items-center">
+        <h1 class="text-[14px] font-medium text-text-primary">Peran</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken flex items-center justify-center text-[11px] font-medium text-text-secondary mono">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY: 2-COLUMN SPLIT (Roles List 300px + Permission Matrix Pane) -->
+    <div class="flex-1 flex h-[calc(100vh-48px)] overflow-hidden bg-surface-page">
+      
+      <!-- LEFT PANE: DAFTAR PERAN DIKELOMPOKKAN PER APP (300px) -->
+      <section class="w-[300px] h-full bg-surface-panel border-r border-border-standard flex flex-col overflow-y-auto shrink-0">
+        <div class="p-3 flex flex-col gap-5">
+          
+          <!-- GROUP 1: PLATFORM -->
+          <div class="flex flex-col">
+            <div class="px-2 pb-1.5 mono text-[11px] font-medium text-text-quaternary uppercase tracking-wider">
+              PLATFORM
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <!-- Platform: Admin (Selected) -->
+              <button onclick="selectRole('platform', 'admin')" id="role-btn-platform-admin" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between bg-surface-accent-tint text-text-primary text-left transition-colors border border-accent/20">
+                <span class="text-[14px] font-medium text-text-primary">admin</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">12</span>
+                  <span class="material-symbols-outlined text-[18px] text-accent">chevron_right</span>
+                </div>
+              </button>
+
+              <!-- Platform: Builder -->
+              <button onclick="selectRole('platform', 'builder')" id="role-btn-platform-builder" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] text-text-primary">builder</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">24</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+
+              <!-- Platform: Viewer -->
+              <button onclick="selectRole('platform', 'viewer')" id="role-btn-platform-viewer" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] text-text-primary">viewer</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">38</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- GROUP 2: HELPDESK -->
+          <div class="flex flex-col">
+            <div class="px-2 pb-1.5 mono text-[11px] font-medium text-text-quaternary uppercase tracking-wider">
+              HELPDESK
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <!-- Helpdesk: Admin -->
+              <button onclick="selectRole('helpdesk', 'admin')" id="role-btn-helpdesk-admin" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] text-text-primary">admin</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">8</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+
+              <!-- Helpdesk: Agent -->
+              <button onclick="selectRole('helpdesk', 'agent')" id="role-btn-helpdesk-agent" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] text-text-primary">agent</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">19</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+
+              <!-- Helpdesk: Customer -->
+              <button onclick="selectRole('helpdesk', 'customer')" id="role-btn-helpdesk-customer" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] text-text-primary">customer</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-tertiary">145</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- GROUP 3: CODE REVIEW -->
+          <div class="flex flex-col">
+            <div class="px-2 pb-1.5 mono text-[11px] font-medium text-text-quaternary uppercase tracking-wider">
+              CODE REVIEW
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <!-- Code Review: Akses per repo (Item tunggal yang valid) -->
+              <button onclick="selectRole('codereview', 'repo')" id="role-btn-codereview-repo" class="role-row w-full h-[48px] px-3 rounded-md flex items-center justify-between hover:bg-surface-hover text-text-primary text-left transition-colors">
+                <span class="text-[14px] italic text-text-secondary">Akses per repo</span>
+                <div class="flex items-center gap-2">
+                  <span class="mono text-[12px] text-text-quaternary">—</span>
+                  <span class="material-symbols-outlined text-[18px] text-text-quaternary">chevron_right</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RIGHT PANE: MATRIKS PERMISSION BACA-SAJA (Card di atas background #f7f7f8) -->
+      <main class="flex-1 p-6 overflow-y-auto bg-surface-page flex flex-col">
+        
+        <!-- CARD UTAMA MATRIKS PERMISSION -->
+        <div class="w-full max-w-4xl bg-surface-panel border border-border-standard rounded-lg p-6 shadow-sm flex flex-col gap-5">
+          
+          <!-- Header Matriks -->
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2.5">
+              <h2 id="matrix-title" class="text-[16px] font-semibold text-text-primary">Akses peran: Platform</h2>
+              <span class="mono text-[10px] uppercase font-medium bg-surface-sunken text-text-tertiary px-1.5 py-0.5 rounded">BACA-SAJA</span>
+            </div>
+            <p class="text-[12px] text-text-tertiary leading-normal">
+              Matriks ini merupakan dokumentasi hak akses terpadu sistem, bukan editor konfigurasi interaktif.
+            </p>
+          </div>
+
+          <!-- TABEL KEPUTUSAN MATRIKS (BACA-SAJA, TIDAK BISA DIKLIK) -->
+          <div id="matrix-table-container" class="border border-border-standard rounded-md overflow-hidden bg-surface-panel">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface-page border-b border-border-standard">
+                  <th class="py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-text-tertiary font-medium w-[45%]">
+                    AKSI / HAK AKSES
+                  </th>
+                  <th id="col-role-1" class="py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-center text-text-primary font-medium w-[18%] bg-surface-accent-tint/30">
+                    ADMIN
+                  </th>
+                  <th id="col-role-2" class="py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-center text-text-tertiary font-medium w-[18%]">
+                    BUILDER
+                  </th>
+                  <th id="col-role-3" class="py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-center text-text-tertiary font-medium w-[19%]">
+                    VIEWER
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="matrix-tbody" class="divide-y divide-border-subtle text-[13px]">
+                <!-- Row 1 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Kelola infrastruktur & kluster Kubernetes
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Buat dan konfigurasikan alur kerja AI (Workflows)
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Eksekusi uji coba (test runs) dan evaluasi node
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Deploy model LLM & endpoint produksi
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Kelola API keys, secret vault, dan environment vars
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                  <td class="py-3 px-4 text-center text-text-quaternary mono">—</td>
+                </tr>
+
+                <!-- Row 6 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Akses observabilitas, log eksekusi, dan metriks tracing
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                </tr>
+
+                <!-- Row 7 -->
+                <tr class="hover:bg-surface-page/50 transition-colors">
+                  <td class="py-3 px-4 text-text-primary font-normal">
+                    Lihat dashboard monitoring dan alur kerja (Read-only)
+                  </td>
+                  <td class="py-3 px-4 text-center bg-surface-accent-tint/20">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                  <td class="py-3 px-4 text-center">
+                    <span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- FOOTER / CATATAN INTEGRASI APLIKASI (Latar #f7f7f8) -->
+          <div class="bg-surface-page border border-border-standard rounded-md p-3.5 flex items-start gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-text-tertiary shrink-0 mt-0.5">info</span>
+            <div class="flex flex-col gap-0.5 text-[12px] text-text-secondary leading-relaxed">
+              <span class="font-medium text-text-primary">Catatan Integrasi Aplikasi:</span>
+              <p id="integration-note">
+                Akses untuk <span class="mono text-[11px] text-text-primary font-semibold">CODE REVIEW</span> tidak dikonfigurasi melalui hierarki peran Hub. Akses diberikan per repositori melalui GitHub App installation dan integrasi izin Git.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <script>
+    const dataByApp = {
+      platform: {
+        title: "Akses peran: Platform",
+        roles: ["ADMIN", "BUILDER", "VIEWER"],
+        activeCol: 0,
+        rows: [
+          { action: "Kelola infrastruktur & kluster Kubernetes", r1: true, r2: false, r3: false },
+          { action: "Buat dan konfigurasikan alur kerja AI (Workflows)", r1: true, r2: true, r3: false },
+          { action: "Eksekusi uji coba (test runs) dan evaluasi node", r1: true, r2: true, r3: false },
+          { action: "Deploy model LLM & endpoint produksi", r1: true, r2: true, r3: false },
+          { action: "Kelola API keys, secret vault, dan environment vars", r1: true, r2: false, r3: false },
+          { action: "Akses observabilitas, log eksekusi, dan metriks tracing", r1: true, r2: true, r3: true },
+          { action: "Lihat dashboard monitoring dan alur kerja (Read-only)", r1: true, r2: true, r3: true }
+        ],
+        note: "Akses untuk <span class='mono text-[11px] text-text-primary font-semibold'>CODE REVIEW</span> tidak dikonfigurasi melalui hierarki peran Hub. Akses diberikan per repositori melalui GitHub App installation dan integrasi izin Git."
+      },
+      helpdesk: {
+        title: "Akses peran: Helpdesk",
+        roles: ["ADMIN", "AGENT", "CUSTOMER"],
+        activeCol: 0,
+        rows: [
+          { action: "Konfigurasi SLA, jam operasional & routing antrean", r1: true, r2: false, r3: false },
+          { action: "Kelola makro, integrasi webhook & webhook API", r1: true, r2: false, r3: false },
+          { action: "Lihat laporan performa tim dan analitik CSAT", r1: true, r2: false, r3: false },
+          { action: "Tanggapi tiket, ubah status & prioritas (P1–P4)", r1: true, r2: true, r3: false },
+          { action: "Tulis internal note dan assign tiket antar agen", r1: true, r2: true, r3: false },
+          { action: "Publikasikan artikel ke basis pengetahuan internal", r1: true, r2: true, r3: false },
+          { action: "Buat tiket baru & lacak progres tiket mandiri", r1: true, r2: true, r3: true }
+        ],
+        note: "Peran Helpdesk diterapkan langsung pada workspace tiket Portico Helpdesk. Peran <span class='mono text-[11px] text-text-primary font-semibold'>customer</span> hanya memiliki izin baca-tulis pada tiket yang dibuat sendiri."
+      },
+      codereview: {
+        title: "Akses peran: Code Review",
+        roles: ["KONTRIBUTOR", "REVIEWER", "ADMIN REPO"],
+        activeCol: -1,
+        rows: [
+          { action: "Tinjau diff Pull Request & komentar inline", r1: true, r2: true, r3: true },
+          { action: "Jalankan inspeksi statis linter & security check", r1: true, r2: true, r3: true },
+          { action: "Approve atau minta revisi pada PR", r1: false, r2: true, r3: true },
+          { action: "Atur ambang batas toleransi temuan kritis (CWE/CVE)", r1: false, r2: false, r3: true },
+          { action: "Hubungkan repositori Git baru & konfigurasi webhook", r1: false, r2: false, r3: true }
+        ],
+        note: "Akses untuk <span class='mono text-[11px] text-text-primary font-semibold'>CODE REVIEW</span> tidak dikonfigurasi melalui hierarki peran Hub. Hak akses diturunkan langsung dari integrasi akun GitHub App per-repositori."
+      }
+    };
+
+    function selectRole(app, role) {
+      // Highlight sidebar button
+      document.querySelectorAll('.role-row').forEach(el => {
+        el.classList.remove('bg-surface-accent-tint', 'border', 'border-accent/20', 'font-medium');
+        const chevron = el.querySelector('.material-symbols-outlined');
+        if (chevron) {
+          chevron.classList.remove('text-accent');
+          chevron.classList.add('text-text-quaternary');
+        }
+      });
+
+      const activeBtn = document.getElementById(`role-btn-${app}-${role}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-surface-accent-tint', 'border', 'border-accent/20', 'font-medium');
+        const chevron = activeBtn.querySelector('.material-symbols-outlined');
+        if (chevron) {
+          chevron.classList.remove('text-text-quaternary');
+          chevron.classList.add('text-accent');
+        }
+      }
+
+      // Update right matrix
+      const conf = dataByApp[app];
+      if (!conf) return;
+
+      document.getElementById('matrix-title').textContent = conf.title;
+      document.getElementById('integration-note').innerHTML = conf.note;
+
+      // Update column headers
+      const col1 = document.getElementById('col-role-1');
+      const col2 = document.getElementById('col-role-2');
+      const col3 = document.getElementById('col-role-3');
+
+      col1.textContent = conf.roles[0];
+      col2.textContent = conf.roles[1];
+      col3.textContent = conf.roles[2];
+
+      let targetIdx = 0;
+      if (app === 'platform') {
+        if (role === 'admin') targetIdx = 0;
+        if (role === 'builder') targetIdx = 1;
+        if (role === 'viewer') targetIdx = 2;
+      } else if (app === 'helpdesk') {
+        if (role === 'admin') targetIdx = 0;
+        if (role === 'agent') targetIdx = 1;
+        if (role === 'customer') targetIdx = 2;
+      } else {
+        targetIdx = -1;
+      }
+
+      [col1, col2, col3].forEach((c, idx) => {
+        if (idx === targetIdx) {
+          c.className = "py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-center text-text-primary font-medium w-[18%] bg-surface-accent-tint/30";
+        } else {
+          c.className = "py-2.5 px-4 mono text-[11px] uppercase tracking-wider text-center text-text-tertiary font-medium w-[18%]";
+        }
+      });
+
+      // Populate tbody
+      const tbody = document.getElementById('matrix-tbody');
+      tbody.innerHTML = '';
+
+      conf.rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-surface-page/50 transition-colors";
+
+        const tdAction = document.createElement('td');
+        tdAction.className = "py-3 px-4 text-text-primary font-normal";
+        tdAction.textContent = r.action;
+        tr.appendChild(tdAction);
+
+        [r.r1, r.r2, r.r3].forEach((val, idx) => {
+          const td = document.createElement('td');
+          const isHighlighted = idx === targetIdx;
+          td.className = `py-3 px-4 text-center ${isHighlighted ? 'bg-surface-accent-tint/20' : ''}`;
+
+          if (val) {
+            td.innerHTML = '<span class="material-symbols-outlined text-[18px] text-accent font-semibold">check</span>';
+          } else {
+            td.innerHTML = '<span class="text-text-quaternary mono">—</span>';
+          }
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>

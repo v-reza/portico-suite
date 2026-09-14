@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Platform - Onboarding</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "accent": "#6e5ae6",
+            "warning": "#d97706",
+            "tertiary-fixed": "#dee3ec",
+            "on-primary-container": "#858388",
+            "tertiary": "#000000",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "surface-container-low": "#f3f3f4",
+            "surface-page": "#f7f7f8",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-hover": "#f1f1f3",
+            "accent-hover": "#5b46d6",
+            "surface-tint": "#5f5e63",
+            "inverse-primary": "#c8c5cb",
+            "danger-solid": "#dc2626",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "primary": "#000000",
+            "text-tertiary": "#62676f",
+            "secondary-container": "#dee2ec",
+            "text-quaternary": "#9aa0aa",
+            "surface-container-lowest": "#ffffff",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "critical": "#b91c1c",
+            "on-background": "#1a1c1d",
+            "surface-panel": "#ffffff",
+            "success": "#16a34a",
+            "on-tertiary-fixed-variant": "#42474f",
+            "surface-elevated": "#ffffff",
+            "error-container": "#ffdad6",
+            "danger": "#dc2626",
+            "on-tertiary-container": "#7f848c",
+            "primary-container": "#1b1b1f",
+            "surface-container-high": "#e8e8e9",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "outline": "#78767b",
+            "on-primary-fixed-variant": "#47464b",
+            "surface-container-highest": "#e2e2e3",
+            "on-surface-variant": "#47464b",
+            "text-secondary": "#4b5058",
+            "secondary": "#5a5f67",
+            "surface-canvas": "#f1f1f4",
+            "surface-dim": "#dadadb",
+            "surface-bright": "#f9f9fa",
+            "on-secondary": "#ffffff",
+            "on-surface": "#1a1c1d",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#2f3132",
+            "surface": "#f9f9fa",
+            "on-tertiary-fixed": "#171c23",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "tertiary-container": "#171c23",
+            "diff-context-bg": "#fbfbfc",
+            "overlay": "rgba(16,16,20,0.40)",
+            "primary-fixed": "#e4e1e7",
+            "surface-sunken": "#ededf0",
+            "secondary-fixed": "#dee2ec",
+            "primary-fixed-dim": "#c8c5cb",
+            "secondary-fixed-dim": "#c2c7d0",
+            "on-secondary-fixed-variant": "#42474f",
+            "on-error-container": "#93000a",
+            "surface-accent-tint": "#f2f0fe",
+            "surface-container": "#eeeeef",
+            "surface-variant": "#e2e2e3",
+            "background": "#f9f9fa",
+            "on-primary-fixed": "#1b1b1f",
+            "on-secondary-fixed": "#171c23",
+            "info": "#6e5ae6",
+            "on-error": "#ffffff",
+            "text-primary": "#101014",
+            "outline-variant": "#c8c5cb",
+            "on-secondary-container": "#60656d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "4px",
+            "space-xl": "24px",
+            "space-lg": "16px",
+            "space-3xl": "48px",
+            "space-md": "12px",
+            "space-2xl": "32px",
+            "gutter": "16px",
+            "space-sm": "8px",
+            "margin": "24px"
+          },
+          "fontFamily": {
+            "label": ["Inter"],
+            "body-small": ["Inter"],
+            "heading-card": ["Inter"],
+            "heading-section": ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "caption": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "display-xl": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          },
+          "boxShadow": {
+            "card-soft": "0 1px 3px rgba(15,23,42,0.06), 0 4px 12px rgba(15,23,42,0.04)"
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface-page min-h-screen w-full flex items-center justify-center p-space-lg antialiased">
+<!-- Blueprint D Standalone Onboarding Card -->
+<main class="w-full max-w-[560px] bg-surface-panel border border-border-standard rounded-xl p-8 shadow-card-soft">
+<!-- Card Header -->
+<header class="text-left">
+<h1 class="font-heading-section text-heading-section text-text-primary tracking-tight">Platform</h1>
+<p class="font-body-small text-body-small text-text-tertiary mt-1.5 mb-6">Pilih cara mulai memakai Platform.</p>
+</header>
+<!-- Stacked 1-Column Options -->
+<div class="flex flex-col">
+<!-- Option Card 1: Buat workspace baru -->
+<div class="bg-surface-panel hover:bg-surface-hover border border-border-standard rounded-lg p-4 cursor-pointer transition-colors duration-150 flex items-center justify-between">
+<div class="text-left pr-space-md">
+<div class="font-label text-label text-text-primary font-medium text-[0.875rem]">Buat workspace baru</div>
+<div class="font-body-small text-body-small text-text-tertiary mt-0.5">Siapkan ruang kerja mandiri untuk mengelola aplikasi & alur kerja</div>
+</div>
+<span class="material-symbols-outlined text-text-tertiary text-sm select-none" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Option Card 2: Saya punya undangan -->
+<div class="bg-surface-panel border border-border-standard rounded-lg p-5 mt-4 space-y-4 text-left">
+<div>
+<h2 class="font-label text-label text-text-primary font-medium text-[0.875rem]">Saya punya undangan</h2>
+<p class="font-body-small text-body-small text-text-tertiary mt-0.5">Gunakan email yang didaftarkan untuk memeriksa undangan masuk</p>
+</div>
+<!-- Form Search Row -->
+<div class="flex gap-2 items-center">
+<input class="bg-surface-panel border border-border-standard rounded-lg px-3 py-2 font-body text-body text-text-primary flex-1 outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors" readonly="" type="email" value="siti.rahmawati@acme.corp"/>
+<button class="bg-surface-panel hover:bg-surface-hover text-text-secondary border border-border-standard rounded-lg px-3.5 py-2 font-label text-label font-medium transition-colors duration-150 flex-shrink-0" type="button">
+            Cari undangan
+          </button>
+</div>
+<!-- Pending Invitation Item -->
+<div class="bg-surface-page border border-border-subtle rounded-lg p-3.5 flex items-center justify-between">
+<div class="flex items-center flex-wrap gap-y-1">
+<span class="font-label text-label text-text-primary font-medium text-[0.875rem]">Acme Corp Production</span>
+<span class="bg-surface-accent-tint text-accent-hover font-mono-label text-mono-label px-2 py-0.5 rounded ml-2.5">BUILDER</span>
+</div>
+<button class="bg-accent hover:bg-accent-hover text-on-primary font-label text-label font-medium px-4 py-1.5 rounded-lg transition-colors duration-150 flex-shrink-0 ml-3" type="button">
+            Terima
+          </button>
+</div>
+</div>
+</div>
+<!-- Bottom Caption -->
+<span class="font-caption text-caption text-text-tertiary text-center mt-6 block">
+      Peran ditentukan pemilik workspace, bukan dipilih di sini.
+    </span>
+</main>
+</body></html>

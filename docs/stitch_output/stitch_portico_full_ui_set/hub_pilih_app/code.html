@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portico — Hub Pilih App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'portico-page': '#f7f7f8',
+            'portico-panel': '#ffffff',
+            'portico-hover': '#f1f1f3',
+            'portico-primary': '#101014',
+            'portico-secondary': '#4b5058',
+            'portico-tertiary': '#62676f',
+            'portico-quaternary': '#9aa0aa',
+            'portico-accent': '#6e5ae6',
+            'portico-border': 'rgba(15,23,42,0.10)',
+          },
+          boxShadow: {
+            'portico-card': '0 1px 2px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f7f8;
+      color: #101014;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hairline-border {
+      border: 1px solid rgba(15, 23, 42, 0.10);
+    }
+    .heading-section {
+      font-size: 1.25rem;
+      font-weight: 590;
+      line-height: 1.33;
+      letter-spacing: -0.24px;
+      color: #101014;
+    }
+    .app-title {
+      font-size: 1rem;
+      font-weight: 560;
+      line-height: 1.5;
+      letter-spacing: -0.165px;
+      color: #101014;
+    }
+    .app-desc {
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #62676f;
+    }
+    .caption-muted {
+      font-size: 0.75rem;
+      font-weight: 450;
+      line-height: 1.4;
+      color: #62676f;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-4">
+
+  <!-- Main Card: Blueprint D, 560px width, centered viewport, white panel -->
+  <main class="w-full max-w-[560px] bg-white rounded-[8px] p-6 hairline-border shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)]">
+    
+    <!-- Header -->
+    <header class="mb-5">
+      <h1 class="heading-section">Lanjutkan ke aplikasi</h1>
+    </header>
+
+    <!-- App List (Single Column) -->
+    <section class="flex flex-col gap-3" aria-label="Daftar Aplikasi">
+
+      <!-- App 1: Platform (Active) -->
+      <a href="?redirect=platform&auth_code=ptc_auth_8f93a21" 
+         class="group block w-full bg-white rounded-[8px] p-4 hairline-border shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)] hover:bg-[#f1f1f3] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#6e5ae6]/40 cursor-pointer">
+        <div class="flex items-center justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="app-title truncate">Platform</div>
+            <div class="app-desc truncate">Bangun alur kerja AI tanpa kode</div>
+          </div>
+          <div class="flex-shrink-0 text-[#9aa0aa] group-hover:text-[#101014] transition-colors" aria-hidden="true">
+            <svg class="w-5 h-5 stroke-[1.75]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 2: Helpdesk (Active) -->
+      <a href="?redirect=helpdesk&auth_code=ptc_auth_b4129e0" 
+         class="group block w-full bg-white rounded-[8px] p-4 hairline-border shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)] hover:bg-[#f1f1f3] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#6e5ae6]/40 cursor-pointer">
+        <div class="flex items-center justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="app-title truncate">Helpdesk</div>
+            <div class="app-desc truncate">Kelola tiket dan basis pengetahuan</div>
+          </div>
+          <div class="flex-shrink-0 text-[#9aa0aa] group-hover:text-[#101014] transition-colors" aria-hidden="true">
+            <svg class="w-5 h-5 stroke-[1.75]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 3: Code Review (Disabled) -->
+      <div class="w-full bg-white rounded-[8px] p-4 hairline-border shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)] opacity-55 cursor-not-allowed select-none"
+           aria-disabled="true">
+        <div class="flex items-center justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="app-title truncate text-[#101014]">Code Review</div>
+            <div class="app-desc truncate">Tinjau pull request secara otomatis</div>
+            <div class="caption-muted mt-1">Belum punya akses - minta undangan</div>
+          </div>
+          <!-- Chevron hidden as per specifications -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

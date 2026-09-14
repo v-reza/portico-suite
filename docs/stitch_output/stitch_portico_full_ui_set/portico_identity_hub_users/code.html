@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portico Hub - Pengguna</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary": "#5a5f67",
+            "diff-added-gutter": "rgba(22,163,74,0.22)",
+            "tertiary-fixed": "#dee3ec",
+            "inverse-primary": "#c8c5cb",
+            "surface-dim": "#dadadb",
+            "surface-accent-tint": "#f2f0fe",
+            "inverse-surface": "#2f3132",
+            "on-surface": "#1a1c1d",
+            "danger-solid": "#dc2626",
+            "on-secondary-container": "#60656d",
+            "error": "#ba1a1a",
+            "on-tertiary-container": "#7f848c",
+            "warning": "#d97706",
+            "on-primary-fixed": "#1b1b1f",
+            "diff-removed-bg": "rgba(220,38,38,0.08)",
+            "on-primary-fixed-variant": "#47464b",
+            "secondary-container": "#dee2ec",
+            "surface-hover": "#f1f1f3",
+            "accent-hover": "#5b46d6",
+            "on-tertiary-fixed": "#171c23",
+            "diff-context-bg": "#fbfbfc",
+            "on-secondary": "#ffffff",
+            "text-primary": "#101014",
+            "success": "#16a34a",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#47464b",
+            "tertiary-container": "#171c23",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-container-highest": "#e2e2e3",
+            "text-secondary": "#4b5058",
+            "surface-canvas": "#f1f1f4",
+            "diff-removed-gutter": "rgba(220,38,38,0.22)",
+            "background": "#f9f9fa",
+            "accent": "#6e5ae6",
+            "surface-page": "#f7f7f8",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "secondary-fixed-dim": "#c2c7d0",
+            "primary-fixed-dim": "#c8c5cb",
+            "primary-fixed": "#e4e1e7",
+            "surface-container": "#eeeeef",
+            "text-quaternary": "#9aa0aa",
+            "on-primary-container": "#858388",
+            "on-primary": "#ffffff",
+            "danger": "#dc2626",
+            "surface": "#f9f9fa",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "surface-container-high": "#e8e8e9",
+            "on-secondary-fixed-variant": "#42474f",
+            "surface-sunken": "#ededf0",
+            "info": "#6e5ae6",
+            "surface-tint": "#5f5e63",
+            "primary-container": "#1b1b1f",
+            "outline-variant": "#c8c5cb",
+            "on-tertiary-fixed-variant": "#42474f",
+            "surface-container-low": "#f3f3f4",
+            "surface-panel": "#ffffff",
+            "surface-variant": "#e2e2e3",
+            "primary": "#000000",
+            "critical": "#b91c1c",
+            "on-error": "#ffffff",
+            "diff-added-bg": "rgba(22,163,74,0.10)",
+            "surface-bright": "#f9f9fa",
+            "surface-elevated": "#ffffff",
+            "secondary-fixed": "#dee2ec",
+            "on-secondary-fixed": "#171c23",
+            "overlay": "rgba(16,16,20,0.40)",
+            "outline": "#78767b",
+            "on-error-container": "#93000a",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#1a1c1d",
+            "text-tertiary": "#62676f",
+            "tertiary-fixed-dim": "#c2c7d0",
+            "error-container": "#ffdad6",
+            "tertiary": "#000000"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-3xl": "48px",
+            "space-2xl": "32px",
+            "gutter": "16px",
+            "margin": "24px",
+            "space-lg": "16px",
+            "space-xs": "4px",
+            "space-md": "12px",
+            "space-sm": "8px",
+            "space-xl": "24px"
+          },
+          "fontFamily": {
+            "display-xl": ["Inter"],
+            "caption": ["Inter"],
+            "heading-section": ["Inter"],
+            "mono-label": ["JetBrains Mono"],
+            "label": ["Inter"],
+            "heading-card": ["Inter"],
+            "body": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "body-small": ["Inter"]
+          },
+          "fontSize": {
+            "display-xl": ["2rem", { "lineHeight": "1.13", "letterSpacing": "-0.704px", "fontWeight": "590" }],
+            "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "450" }],
+            "heading-section": ["1.25rem", { "lineHeight": "1.33", "letterSpacing": "-0.24px", "fontWeight": "590" }],
+            "mono-label": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "label": ["0.813rem", { "lineHeight": "1.5", "letterSpacing": "-0.13px", "fontWeight": "560" }],
+            "heading-card": ["1rem", { "lineHeight": "1.5", "letterSpacing": "-0.165px", "fontWeight": "560" }],
+            "body": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "mono": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "body-small": ["0.813rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary antialiased h-screen w-screen overflow-hidden flex selection:bg-surface-accent-tint selection:text-accent">
+<!-- 1. APP SHELL: Rail (56px) -->
+<aside class="w-[56px] min-w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between items-center py-space-md z-20 select-none">
+<div class="flex flex-col items-center gap-space-sm w-full">
+<!-- Portico Logo Active Item -->
+<a class="w-10 h-10 rounded-md bg-surface-accent-tint flex items-center justify-center text-accent transition-colors" href="#" title="Portico Identity Hub">
+<span class="material-symbols-outlined" data-icon="domain" style="font-size: 22px;">domain</span>
+</a>
+<!-- App Switcher Items -->
+<a class="w-10 h-10 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" href="#" title="Platform">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</a>
+<a class="w-10 h-10 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" href="#" title="Helpdesk">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+</a>
+<a class="w-10 h-10 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" href="#" title="Code Review">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</a>
+</div>
+<div class="flex flex-col items-center gap-space-sm w-full">
+<div class="w-6 h-[1px] bg-border-standard my-1"></div>
+<a class="w-10 h-10 rounded-md flex items-center justify-center text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors" href="#" title="Settings">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</a>
+</div>
+</aside>
+<!-- 2. APP SHELL: Contextual Sidebar (236px) -->
+<aside class="w-[236px] min-w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between z-10 select-none">
+<div class="flex flex-col">
+<!-- Header Wordmark -->
+<div class="h-12 px-space-lg flex items-center border-b border-border-subtle">
+<span class="font-heading-section text-heading-section text-text-primary tracking-tight">Portico</span>
+</div>
+<!-- Nav List -->
+<nav class="p-space-sm flex flex-col gap-1">
+<!-- Pengguna (Active) -->
+<a class="relative flex items-center gap-2.5 px-[10px] py-[6px] rounded-md bg-surface-accent-tint text-accent-hover font-label text-label transition-colors" href="#">
+<div class="absolute left-0 top-1 bottom-1 w-[2px] bg-accent rounded-r"></div>
+<span class="material-symbols-outlined text-accent" data-icon="group">group</span>
+<span>Pengguna</span>
+</a>
+<!-- Peran (Inactive) -->
+<a class="flex items-center gap-2.5 px-[10px] py-[6px] rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary font-label text-label transition-colors" href="#">
+<span class="material-symbols-outlined text-text-tertiary" data-icon="shield_person">shield_person</span>
+<span>Peran</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom User Profile -->
+<div class="p-space-sm border-t border-border-standard">
+<div class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-surface-hover transition-colors cursor-pointer">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken flex items-center justify-center text-text-secondary text-[11px] font-mono font-medium shrink-0">
+          SR
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label text-label text-text-primary truncate">Siti Rahmawati</span>
+<span class="font-caption text-caption text-text-tertiary truncate">Acme Corp</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- 3. MAIN PANE WRAPPER -->
+<div class="flex-1 flex flex-col h-full min-w-0 bg-surface-page overflow-hidden">
+<!-- Top Bar 48px: Only over content pane -->
+<header class="h-12 min-h-[48px] px-space-xl bg-surface-panel border-b border-border-standard flex items-center justify-between z-10 shrink-0">
+<h1 class="font-heading-card text-heading-card text-text-primary font-medium">Pengguna</h1>
+<div class="flex items-center">
+<div class="w-7 h-7 rounded-full bg-surface-sunken border border-border-standard flex items-center justify-center text-text-secondary text-caption font-mono font-medium" title="Siti Rahmawati (Super Admin)">
+          SR
+        </div>
+</div>
+</header>
+<!-- CONTENT CANVAS WITH DRAWER -->
+<div class="flex-1 flex h-[calc(100vh-48px)] min-h-0 overflow-hidden">
+<!-- Primary Data Pane -->
+<main class="flex-1 flex flex-col p-space-xl overflow-y-auto min-w-0">
+<!-- Toolbar (44px) -->
+<div class="h-11 flex items-center justify-between mb-space-lg shrink-0 gap-space-md">
+<!-- Search Input -->
+<div class="relative w-80 max-w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-quaternary pointer-events-none" data-icon="search">search</span>
+<input class="w-full h-9 pl-9 pr-3 text-body font-body text-text-primary bg-surface-panel border border-border-standard rounded-md placeholder:text-text-quaternary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all" placeholder="Cari nama atau email..." type="text"/>
+</div>
+<!-- Single Primary Action -->
+<button class="h-9 px-[14px] bg-accent hover:bg-accent-hover text-on-primary font-label text-label rounded-md flex items-center gap-1.5 shadow-sm transition-colors shrink-0">
+<span class="material-symbols-outlined" data-icon="person_add" style="font-size: 16px;">person_add</span>
+<span>Undang user</span>
+</button>
+</div>
+<!-- Tabel Pengguna Container -->
+<div class="bg-surface-panel rounded-lg border border-border-standard overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[760px]">
+<!-- Table Header: 36px, surface-page, JetBrains Mono 12px -->
+<thead>
+<tr class="h-9 bg-surface-page border-b border-border-standard select-none">
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider w-[220px]">NAMA</th>
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider w-[210px]">EMAIL</th>
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider">AKSES APP</th>
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider w-[160px]">STATUS</th>
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider text-right w-[120px]">DIBUAT</th>
+<th class="px-space-md font-mono-label text-mono-label text-text-tertiary uppercase tracking-wider text-center w-[50px]">AKSI</th>
+</tr>
+</thead>
+<!-- Table Body -->
+<tbody class="divide-y divide-border-standard">
+<!-- Row 1: Siti Rahmawati (SELECTED/ACTIVE ROW) -->
+<tr class="h-12 bg-diff-context-bg border-l-2 border-l-accent hover:bg-surface-accent-tint/40 cursor-pointer transition-colors">
+<td class="px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-accent-tint text-accent text-caption font-mono font-medium flex items-center justify-center shrink-0">
+                        SR
+                      </div>
+<span class="font-body text-body font-medium text-text-primary truncate">Siti Rahmawati</span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="font-mono text-mono text-text-secondary truncate">siti.rahmawati@acme.corp</span>
+</td>
+<td class="px-space-md">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Platform
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Helpdesk
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-sunken text-text-tertiary">
+                        Code Review
+                      </span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium bg-[#e8f6ee] text-[#15803d]">
+                      Aktif
+                    </span>
+</td>
+<td class="px-space-md text-right font-mono text-mono text-text-tertiary">
+                    12 Jan 2024
+                  </td>
+<td class="px-space-md text-center">
+<button class="w-7 h-7 inline-flex items-center justify-center rounded hover:bg-surface-hover text-text-secondary transition-colors" title="Aksi">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-size: 16px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Ahmad Fauzi -->
+<tr class="h-12 bg-surface-panel hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-caption font-mono font-medium flex items-center justify-center shrink-0">
+                        AF
+                      </div>
+<span class="font-body text-body font-medium text-text-primary truncate">Ahmad Fauzi</span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="font-mono text-mono text-text-secondary truncate">ahmad.f@acme.corp</span>
+</td>
+<td class="px-space-md">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Platform
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-sunken text-text-tertiary">
+                        Helpdesk
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Code Review
+                      </span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium bg-[#e8f6ee] text-[#15803d]">
+                      Aktif
+                    </span>
+</td>
+<td class="px-space-md text-right font-mono text-mono text-text-tertiary">
+                    04 Feb 2024
+                  </td>
+<td class="px-space-md text-center">
+<button class="w-7 h-7 inline-flex items-center justify-center rounded hover:bg-surface-hover text-text-secondary transition-colors" title="Aksi">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-size: 16px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Budi Santoso -->
+<tr class="h-12 bg-surface-panel hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-caption font-mono font-medium flex items-center justify-center shrink-0">
+                        BS
+                      </div>
+<span class="font-body text-body font-medium text-text-primary truncate">Budi Santoso</span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="font-mono text-mono text-text-secondary truncate">budi.s@acme.corp</span>
+</td>
+<td class="px-space-md">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Platform
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-sunken text-text-tertiary">
+                        Helpdesk
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-sunken text-text-tertiary">
+                        Code Review
+                      </span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium bg-[#fdf1e3] text-[#b45309]">
+                      Menunggu undangan
+                    </span>
+</td>
+<td class="px-space-md text-right font-mono text-mono text-text-tertiary">
+                    18 Feb 2024
+                  </td>
+<td class="px-space-md text-center">
+<button class="w-7 h-7 inline-flex items-center justify-center rounded hover:bg-surface-hover text-text-secondary transition-colors" title="Aksi">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-size: 16px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Dewi Lestari -->
+<tr class="h-12 bg-surface-panel hover:bg-surface-hover cursor-pointer transition-colors">
+<td class="px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-caption font-mono font-medium flex items-center justify-center shrink-0">
+                        DL
+                      </div>
+<span class="font-body text-body font-medium text-text-primary truncate">Dewi Lestari</span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="font-mono text-mono text-text-secondary truncate">dewi.l@acme.corp</span>
+</td>
+<td class="px-space-md">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Platform
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Helpdesk
+                      </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-accent-tint text-accent border border-accent/20">
+                        Code Review
+                      </span>
+</div>
+</td>
+<td class="px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium bg-[#e8f6ee] text-[#15803d]">
+                      Aktif
+                    </span>
+</td>
+<td class="px-space-md text-right font-mono text-mono text-text-tertiary">
+                    01 Mar 2024
+                  </td>
+<td class="px-space-md text-center">
+<button class="w-7 h-7 inline-flex items-center justify-center rounded hover:bg-surface-hover text-text-secondary transition-colors" title="Aksi">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-size: 16px;">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- 4. RIGHT DRAWER (420px): Attached to right side of content pane -->
+<aside class="w-[420px] min-w-[420px] bg-surface-panel border-l border-border-standard flex flex-col justify-between shadow-[-4px_0_16px_rgba(15,23,42,0.04)] z-20 overflow-hidden">
+<!-- Drawer Header -->
+<div class="p-space-lg border-b border-border-standard flex items-start justify-between bg-surface-panel shrink-0">
+<div class="flex flex-col">
+<h2 class="font-heading-card text-heading-card font-semibold text-text-primary">Siti Rahmawati</h2>
+<span class="font-mono text-[12px] text-text-tertiary mt-0.5">siti.rahmawati@acme.corp</span>
+</div>
+<button class="w-7 h-7 rounded hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors" title="Tutup">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Drawer Content (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-space-lg flex flex-col gap-space-xl">
+<!-- SEKSI 1: AKSES APLIKASI -->
+<section class="flex flex-col gap-space-sm">
+<h3 class="font-mono-label text-[11px] uppercase tracking-wider text-text-tertiary">AKSES APLIKASI</h3>
+<div class="flex flex-col gap-2">
+<!-- Kartu Platform -->
+<div class="p-3 rounded-md border border-border-standard bg-surface-panel flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-accent-tint text-accent flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="layers" style="font-size: 18px;">layers</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-label text-text-primary">Platform</span>
+<span class="font-caption text-[11px] text-text-tertiary">Deploy & Cloud Infrastructure</span>
+</div>
+</div>
+<!-- Toggle Active -->
+<button aria-checked="true" class="w-9 h-5 bg-accent rounded-full relative p-0.5 transition-colors cursor-pointer" role="switch" type="button">
+<span class="w-4 h-4 bg-white rounded-full block shadow-sm transform translate-x-4 transition-transform"></span>
+</button>
+</div>
+<!-- Kartu Helpdesk -->
+<div class="p-3 rounded-md border border-border-standard bg-surface-panel flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-accent-tint text-accent flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="support_agent" style="font-size: 18px;">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-label text-text-primary">Helpdesk</span>
+<span class="font-caption text-[11px] text-text-tertiary">Ticketing & Customer Ops</span>
+</div>
+</div>
+<!-- Toggle Active -->
+<button aria-checked="true" class="w-9 h-5 bg-accent rounded-full relative p-0.5 transition-colors cursor-pointer" role="switch" type="button">
+<span class="w-4 h-4 bg-white rounded-full block shadow-sm transform translate-x-4 transition-transform"></span>
+</button>
+</div>
+<!-- Kartu Code Review -->
+<div class="p-3 rounded-md border border-border-standard bg-surface-panel flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-sunken text-text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="terminal" style="font-size: 18px;">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-label text-text-primary">Code Review</span>
+<span class="font-caption text-[11px] text-text-tertiary">Git Pull Requests & CI</span>
+</div>
+</div>
+<!-- Toggle Inactive -->
+<button aria-checked="false" class="w-9 h-5 bg-surface-dim rounded-full relative p-0.5 transition-colors cursor-pointer" role="switch" type="button">
+<span class="w-4 h-4 bg-white rounded-full block shadow-sm transform translate-x-0 transition-transform"></span>
+</button>
+</div>
+</div>
+</section>
+<!-- SEKSI 2: PERAN -->
+<section class="flex flex-col gap-space-md">
+<h3 class="font-mono-label text-[11px] uppercase tracking-wider text-text-tertiary">PERAN</h3>
+<!-- Peran Platform Field -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label text-label text-text-secondary">Peran Platform</label>
+<div class="relative">
+<select class="w-full h-9 pl-3 pr-8 bg-surface-panel border border-border-standard rounded-md font-body text-body text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent appearance-none cursor-pointer">
+<option selected="" value="admin">Admin (Akses penuh cluster & environments)</option>
+<option value="builder">Builder</option>
+<option value="viewer">Viewer</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-text-quaternary pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Peran Helpdesk Field -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label text-label text-text-secondary">Peran Helpdesk</label>
+<div class="relative">
+<select class="w-full h-9 pl-3 pr-8 bg-surface-panel border border-border-standard rounded-md font-body text-body text-text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent appearance-none cursor-pointer">
+<option selected="" value="agent">Agent (Merespon & assign tiket)</option>
+<option value="admin">Admin</option>
+<option value="customer">Customer</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-text-quaternary pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Peran Code Review Info Box -->
+<div class="p-3 bg-surface-page rounded-md border border-border-standard flex items-start gap-2.5">
+<span class="material-symbols-outlined text-accent shrink-0 mt-0.5" data-icon="info" style="font-size: 16px;">info</span>
+<p class="font-caption text-caption text-text-secondary leading-relaxed">
+                Akses Code Review dikelola per-repositori melalui izin Git dan Branch Protection Rules, bukan melalui penetapan peran global.
+              </p>
+</div>
+</section>
+<!-- SEKSI 3: INFORMASI TAMBAHAN -->
+<section class="flex flex-col gap-space-sm pt-space-xs border-t border-border-subtle">
+<h3 class="font-mono-label text-[11px] uppercase tracking-wider text-text-tertiary">INFORMASI TAMBAHAN</h3>
+<div class="flex flex-col gap-2 font-body text-body">
+<div class="flex justify-between items-center py-1">
+<span class="text-text-secondary text-caption">Dibuat</span>
+<span class="font-mono text-mono text-text-primary">12 Jan 2024</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="text-text-secondary text-caption">Terakhir aktif</span>
+<span class="font-mono text-mono text-text-primary">10 mnt lalu</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Drawer Footer -->
+<div class="p-space-lg border-t border-border-standard bg-surface-panel flex items-center justify-end gap-space-sm shrink-0">
+<button class="h-9 px-4 py-2 bg-surface-panel hover:bg-surface-hover text-text-secondary border border-border-standard font-label text-label rounded-md transition-colors" type="button">
+            Batal
+          </button>
+<button class="h-9 px-4 py-2 bg-accent hover:bg-accent-hover text-on-primary font-label text-label rounded-md transition-colors shadow-sm" type="button">
+            Simpan
+          </button>
+</div>
+</aside>
+</div>
+</div>
+</body></html>

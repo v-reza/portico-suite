@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform — Metrik</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#101014",
+            secondary: "#4b5058",
+            tertiary: "#62676f",
+            neutral: "#f7f7f8",
+            accent: "#6e5ae6",
+            "accent-hover": "#5b46d6",
+            "surface-page": "#f7f7f8",
+            "surface-panel": "#ffffff",
+            "surface-elevated": "#ffffff",
+            "surface-hover": "#f1f1f3",
+            "surface-sunken": "#ededf0",
+            "surface-accent-tint": "#f2f0fe",
+            "border-subtle": "rgba(15,23,42,0.06)",
+            "border-standard": "rgba(15,23,42,0.10)",
+            "text-primary": "#101014",
+            "text-secondary": "#4b5058",
+            "text-tertiary": "#62676f",
+            "text-quaternary": "#9aa0aa",
+            "success": "#16a34a",
+            "warning": "#d97706",
+            "danger": "#dc2626",
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #101014;
+      background-color: #f7f7f8;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-surface-page text-text-primary text-[14px]">
+
+  <!-- RAIL (56px) -->
+  <aside class="w-[56px] min-w-[56px] h-full bg-surface-panel border-r border-border-standard flex flex-col items-center justify-between py-3 select-none z-20">
+    <div class="flex flex-col items-center gap-2 w-full">
+      <!-- App [A]: Platform (AKTIF) -->
+      <a href="#" title="Platform" class="w-9 h-9 rounded-md bg-surface-accent-tint text-[#5b46d6] flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined text-[20px]">hub</span>
+      </a>
+      <!-- App [B]: Helpdesk -->
+      <a href="#" title="Helpdesk" class="w-9 h-9 rounded-md text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+      </a>
+      <!-- App [C]: Code Review -->
+      <a href="#" title="Code Review" class="w-9 h-9 rounded-md text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined text-[20px]">code</span>
+      </a>
+    </div>
+
+    <div class="flex flex-col items-center gap-2 w-full">
+      <div class="w-6 h-[1px] bg-border-standard my-1"></div>
+      <a href="#" title="Pengaturan Sistem" class="w-9 h-9 rounded-md text-text-tertiary hover:bg-surface-hover hover:text-text-primary flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR (236px) -->
+  <aside class="w-[236px] min-w-[236px] h-full bg-surface-panel border-r border-border-standard flex flex-col justify-between select-none z-10">
+    <div class="flex flex-col h-full overflow-y-auto">
+      <!-- Header / Wordmark -->
+      <div class="h-12 px-4 flex items-center border-b border-border-standard">
+        <span class="font-semibold text-[15px] tracking-tight text-text-primary">Platform</span>
+      </div>
+
+      <!-- Navigation Menu -->
+      <div class="p-3 space-y-5">
+        <!-- Group: APPS -->
+        <div>
+          <div class="px-2 mb-1.5 font-mono text-[11px] uppercase tracking-wider text-text-quaternary font-medium">
+            APPS
+          </div>
+          <nav class="space-y-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                <span>Semua Apps</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">6</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">database</span>
+                <span>Data</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">1</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">widgets</span>
+                <span>Komponen</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">18</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">sync_alt</span>
+                <span>Integrasi</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">9</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Group: WORKFLOW -->
+        <div>
+          <div class="px-2 mb-1.5 font-mono text-[11px] uppercase tracking-wider text-text-quaternary font-medium">
+            WORKFLOW
+          </div>
+          <nav class="space-y-0.5">
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">schema</span>
+                <span>Alur Kerja</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">24</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                <span>Eksekusi</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">142</span>
+            </a>
+            <!-- Item AKTIF: Metrik -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] bg-surface-accent-tint text-[#5b46d6] font-medium transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">monitoring</span>
+                <span>Metrik</span>
+              </span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">memory</span>
+                <span>Model & LLM</span>
+              </span>
+              <span class="font-mono text-[11px] text-text-tertiary">4</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">key</span>
+                <span>Kunci API</span>
+              </span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Card (Bawah Sidebar) -->
+    <div class="p-3 border-t border-border-standard">
+      <div class="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-surface-hover transition-colors cursor-pointer">
+        <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-medium flex items-center justify-center border border-border-standard">
+          SR
+        </div>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[12px] font-medium text-text-primary truncate">Siti Rahmawati</span>
+          <span class="text-[11px] text-text-tertiary truncate">Platform Admin</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA (Top Bar + Pane Isi) -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-surface-page">
+    
+    <!-- TOP BAR (48px - Hanya di atas pane isi) -->
+    <header class="h-12 min-h-[48px] bg-surface-panel border-b border-border-standard px-6 flex items-center justify-between select-none">
+      <div class="flex items-center gap-2">
+        <h1 class="text-[15px] font-semibold text-text-primary tracking-tight">Metrik</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-[26px] h-[26px] rounded-full bg-surface-sunken text-text-secondary text-[11px] font-medium flex items-center justify-center border border-border-standard">
+          SR
+        </div>
+      </div>
+    </header>
+
+    <!-- PANE ISI (Scroll Mandiri) -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+      
+      <!-- 1. SATU BARIS KPI SEBAGAI BARIS TABEL (Bukan kartu ikon) -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden">
+        <div class="grid grid-cols-5 divide-x divide-border-standard">
+          <!-- Col 1 -->
+          <div class="px-4 py-3.5 flex flex-col justify-between">
+            <span class="text-[12px] text-text-tertiary">Aplikasi aktif</span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span class="font-mono text-[20px] font-medium text-text-primary leading-none">12</span>
+              <span class="font-mono text-[11px] text-success leading-none">+2</span>
+            </div>
+          </div>
+          <!-- Col 2 -->
+          <div class="px-4 py-3.5 flex flex-col justify-between">
+            <span class="text-[12px] text-text-tertiary">Alur berjalan</span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span class="font-mono text-[20px] font-medium text-text-primary leading-none">1.284</span>
+              <span class="font-mono text-[11px] text-success leading-none">+8%</span>
+            </div>
+          </div>
+          <!-- Col 3 -->
+          <div class="px-4 py-3.5 flex flex-col justify-between">
+            <span class="text-[12px] text-text-tertiary">Token terpakai</span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span class="font-mono text-[20px] font-medium text-text-primary leading-none">4,2 jt</span>
+              <span class="font-mono text-[11px] text-text-secondary leading-none">+12%</span>
+            </div>
+          </div>
+          <!-- Col 4 -->
+          <div class="px-4 py-3.5 flex flex-col justify-between">
+            <span class="text-[12px] text-text-tertiary">Tingkat gagal</span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span class="font-mono text-[20px] font-medium text-text-primary leading-none">1,8%</span>
+              <span class="font-mono text-[11px] text-success leading-none">-0,3%</span>
+            </div>
+          </div>
+          <!-- Col 5 -->
+          <div class="px-4 py-3.5 flex flex-col justify-between">
+            <span class="text-[12px] text-text-tertiary">P95 latensi</span>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span class="font-mono text-[20px] font-medium text-text-primary leading-none">412 ms</span>
+              <span class="font-mono text-[11px] text-danger leading-none">+14 ms</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. TABEL RINCIAN METRIK -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="h-[36px] bg-[#f7f7f8] border-b border-border-standard font-mono text-[11px] text-text-tertiary uppercase tracking-wider">
+                <th class="px-4 font-medium">Metrik</th>
+                <th class="px-4 font-medium text-right">Nilai</th>
+                <th class="px-4 font-medium">Satuan</th>
+                <th class="px-4 font-medium">Jendela Waktu</th>
+                <th class="px-4 font-medium">Catatan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-standard text-[13px]">
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">platform.requests.rate</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">1.420</td>
+                <td class="px-4 text-text-secondary">req/detik</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">5 menit</td>
+                <td class="px-4 text-text-secondary text-[12px]">Puncak pada jam kerja wita/wib</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">workflow.execution.p99</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">840</td>
+                <td class="px-4 text-text-secondary">ms</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">1 jam</td>
+                <td class="px-4 text-text-secondary text-[12px]">Termasuk validasi parsing OCR</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">llm.token.throughput</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">28.450</td>
+                <td class="px-4 text-text-secondary">tok/menit</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">15 menit</td>
+                <td class="px-4 text-text-secondary text-[12px]">Model gemini-1.5-pro mendominasi 74%</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">queue.backlog.depth</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">42</td>
+                <td class="px-4 text-text-secondary">tugas</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">Seketika</td>
+                <td class="px-4 text-text-secondary text-[12px]">Kapasitas klaster aman (batas atas 500)</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">storage.io.read_p95</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">8,4</td>
+                <td class="px-4 text-text-secondary">ms</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">1 jam</td>
+                <td class="px-4 text-text-secondary text-[12px]">Cache hit ratio 94,1% pada Redis</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">http.status_5xx.count</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">3</td>
+                <td class="px-4 text-text-secondary">kejadian</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">24 jam</td>
+                <td class="px-4 text-text-secondary text-[12px]">Timeout upstream webhook vendor eksternal</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">node.worker.cpu_util</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">43,8</td>
+                <td class="px-4 text-text-secondary">%</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">15 menit</td>
+                <td class="px-4 text-text-secondary text-[12px]">8 node aktif di klaster k8s primer</td>
+              </tr>
+              <tr class="h-[48px] hover:bg-surface-hover transition-colors">
+                <td class="px-4 font-mono text-text-primary">auth.session.active</td>
+                <td class="px-4 font-mono text-text-primary text-right font-medium">89</td>
+                <td class="px-4 text-text-secondary">sesi</td>
+                <td class="px-4 font-mono text-text-tertiary text-[12px]">Seketika</td>
+                <td class="px-4 text-text-secondary text-[12px]">Token JWT aktif dari Identity Hub</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. BAGIAN STATUS KOMPONEN -->
+      <section class="bg-surface-panel border border-border-standard rounded-lg overflow-hidden">
+        <div class="h-9 px-4 bg-[#f7f7f8] border-b border-border-standard flex items-center justify-between font-mono text-[11px] text-text-tertiary uppercase tracking-wider">
+          <span>Komponen Sistem</span>
+          <span>Latensi / Status</span>
+        </div>
+        <div class="divide-y divide-border-standard text-[13px]">
+          <!-- Item 1 -->
+          <div class="h-[44px] px-4 flex items-center justify-between hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-success"></span>
+              <span class="font-medium text-text-primary">API Gateway</span>
+            </div>
+            <span class="font-mono text-[12px] text-text-secondary">96 ms</span>
+          </div>
+          <!-- Item 2 -->
+          <div class="h-[44px] px-4 flex items-center justify-between hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-success"></span>
+              <span class="font-medium text-text-primary">Runner Alur</span>
+            </div>
+            <span class="font-mono text-[12px] text-text-secondary">142 ms</span>
+          </div>
+          <!-- Item 3 -->
+          <div class="h-[44px] px-4 flex items-center justify-between hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-success"></span>
+              <span class="font-medium text-text-primary">Penyimpanan</span>
+            </div>
+            <span class="font-mono text-[12px] text-text-secondary">12 ms</span>
+          </div>
+          <!-- Item 4 -->
+          <div class="h-[44px] px-4 flex items-center justify-between hover:bg-surface-hover transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-warning"></span>
+              <span class="font-medium text-text-primary">Antrean</span>
+            </div>
+            <span class="font-mono text-[12px] text-text-tertiary">tidak diketahui</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

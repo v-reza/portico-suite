@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portico Helpdesk — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: {
+              page: '#f7f7f8',
+              panel: '#ffffff',
+              elevated: '#ffffff',
+              hover: '#f1f1f3',
+              sunken: '#ededf0',
+            },
+            accent: {
+              DEFAULT: '#6e5ae6',
+              hover: '#5b46d6',
+            },
+            border: {
+              hairline: 'rgba(15, 23, 42, 0.10)',
+              subtle: 'rgba(15, 23, 42, 0.06)',
+            },
+            text: {
+              primary: '#101014',
+              secondary: '#4b5058',
+              tertiary: '#62676f',
+              quaternary: '#9aa0aa',
+            },
+            danger: {
+              DEFAULT: '#b91c1c',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            card: '0 1px 2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f7f7f8;
+      font-family: 'Inter', sans-serif;
+      color: #101014;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-4">
+  <!-- Blueprint D: Centered card 380px, radius 8px, layered card shadow, hairline border -->
+  <main class="w-full max-w-[380px] bg-white rounded-[8px] p-6 shadow-card border border-[rgba(15,23,42,0.10)]">
+    <!-- 1. Wordmark teks: Inter 1.25rem, #101014 -->
+    <h1 class="text-[1.25rem] leading-[1.33] font-[590] tracking-[-0.24px] text-[#101014] mb-6">
+      Helpdesk
+    </h1>
+
+    <!-- 2. Tombol sekunder full-width "Masuk lewat Hub" -->
+    <button 
+      type="button" 
+      class="w-full h-10 px-3.5 bg-white hover:bg-[#f1f1f3] active:bg-[#ededf0] text-[#101014] text-[0.813rem] font-[560] tracking-[-0.13px] rounded-[6px] border border-[rgba(15,23,42,0.10)] transition-colors flex items-center justify-center cursor-pointer"
+    >
+      Masuk lewat Hub
+    </button>
+
+    <!-- Pemisah tipis "atau login lokal" -->
+    <div class="relative my-5 flex items-center justify-center">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-[rgba(15,23,42,0.10)]"></div>
+      </div>
+      <span class="relative bg-white px-2.5 text-[0.75rem] leading-[1.4] text-[#62676f] font-[450]">
+        atau login lokal
+      </span>
+    </div>
+
+    <!-- 3. Form input email + password lokal -->
+    <form class="space-y-4" onsubmit="event.preventDefault();">
+      <div>
+        <label for="email" class="block text-[0.75rem] leading-[1.4] font-[500] text-[#62676f] mb-1.5">
+          Email
+        </label>
+        <input 
+          id="email" 
+          name="email" 
+          type="email" 
+          autocomplete="email" 
+          placeholder="nama@email.com" 
+          class="w-full h-10 px-3 text-[0.875rem] text-[#101014] bg-white rounded-[6px] border border-[rgba(15,23,42,0.10)] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] transition-colors"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="block text-[0.75rem] leading-[1.4] font-[500] text-[#62676f] mb-1.5">
+          Password
+        </label>
+        <input 
+          id="password" 
+          name="password" 
+          type="password" 
+          autocomplete="current-password" 
+          placeholder="••••••••" 
+          class="w-full h-10 px-3 text-[0.875rem] text-[#101014] bg-white rounded-[6px] border border-[rgba(15,23,42,0.10)] placeholder-[#9aa0aa] focus:outline-none focus:border-[#6e5ae6] transition-colors"
+        />
+      </div>
+
+      <!-- 5. Tombol primer full-width "Masuk" -->
+      <div class="pt-2">
+        <button 
+          type="submit" 
+          class="w-full h-10 px-3.5 bg-[#6e5ae6] hover:bg-[#5b46d6] text-white text-[0.813rem] font-[560] tracking-[-0.13px] rounded-[6px] transition-colors flex items-center justify-center cursor-pointer shadow-sm"
+        >
+          Masuk
+        </button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

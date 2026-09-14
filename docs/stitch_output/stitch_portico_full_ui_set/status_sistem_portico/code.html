@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Sistem — Portico</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;560;590;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f7f7f8;
+      color: #101014;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-mono-jb {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .hairline-border {
+      border: 1px solid rgba(15, 23, 42, 0.10);
+    }
+    .hairline-divide > :not([hidden]) ~ :not([hidden]) {
+      border-top: 1px solid rgba(15, 23, 42, 0.10);
+    }
+    .card-shadow {
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+    .heading-title {
+      font-size: 1.25rem;
+      font-weight: 590;
+      line-height: 1.33;
+      letter-spacing: -0.24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[#f7f7f8] selection:bg-[#f2f0fe] selection:text-[#6e5ae6]">
+
+  <!-- Kartu Status Blueprint D (Lebar 560px) -->
+  <main class="w-full max-w-[560px] bg-white rounded-[8px] hairline-border card-shadow p-6">
+    <!-- Header -->
+    <header class="mb-5">
+      <h1 class="heading-title text-[#101014]">Status sistem</h1>
+      <p class="text-[12px] leading-[1.4] text-[#62676f] mt-1">Pengecekan terakhir: 1 menit yang lalu</p>
+    </header>
+
+    <!-- Daftar Baris Komponen -->
+    <section class="hairline-border rounded-[6px] overflow-hidden hairline-divide">
+      <!-- Portico (Hub) -->
+      <div class="h-[48px] px-4 flex items-center justify-between text-[14px] bg-white">
+        <span class="text-[#101014] font-normal">Portico (Hub)</span>
+        <div class="flex items-center gap-6">
+          <span class="w-[8px] h-[8px] rounded-full bg-[#16a34a] inline-block" title="Operasional"></span>
+          <span class="font-mono-jb text-[13px] text-[#4b5058] w-[90px] text-right">42 ms</span>
+        </div>
+      </div>
+
+      <!-- Platform -->
+      <div class="h-[48px] px-4 flex items-center justify-between text-[14px] bg-white">
+        <span class="text-[#101014] font-normal">Platform</span>
+        <div class="flex items-center gap-6">
+          <span class="w-[8px] h-[8px] rounded-full bg-[#16a34a] inline-block" title="Operasional"></span>
+          <span class="font-mono-jb text-[13px] text-[#4b5058] w-[90px] text-right">38 ms</span>
+        </div>
+      </div>
+
+      <!-- Helpdesk -->
+      <div class="h-[48px] px-4 flex items-center justify-between text-[14px] bg-white">
+        <span class="text-[#101014] font-normal">Helpdesk</span>
+        <div class="flex items-center gap-6">
+          <span class="w-[8px] h-[8px] rounded-full bg-[#16a34a] inline-block" title="Operasional"></span>
+          <span class="font-mono-jb text-[13px] text-[#4b5058] w-[90px] text-right">51 ms</span>
+        </div>
+      </div>
+
+      <!-- Code Review -->
+      <div class="h-[48px] px-4 flex items-center justify-between text-[14px] bg-white">
+        <span class="text-[#101014] font-normal">Code Review</span>
+        <div class="flex items-center gap-6">
+          <span class="w-[8px] h-[8px] rounded-full bg-[#d97706] inline-block" title="Tidak diketahui"></span>
+          <span class="font-mono-jb text-[13px] text-[#62676f] w-[90px] text-right">tidak diketahui</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

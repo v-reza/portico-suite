@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Login — Portico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;560;590;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-feature-settings: "cv01", "ss03";
+      background-color: #f7f7f8;
+      color: #101014;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .card-shadow {
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+    .hairline-border {
+      border: 1px solid rgba(15, 23, 42, 0.10);
+    }
+    .hairline-divider {
+      height: 1px;
+      background-color: rgba(15, 23, 42, 0.10);
+      border: none;
+    }
+  </style>
+</head>
+<body class="bg-[#f7f7f8] flex items-center justify-center min-h-screen p-4 select-none">
+  <!-- Blueprint D — Kartu 380px terpusat di layar -->
+  <main class="w-[380px] bg-white rounded-[8px] hairline-border card-shadow p-8 flex flex-col box-border">
+    <!-- 1. Wordmark TEKS: "Portico", Inter 1.25rem, #101014 -->
+    <h1 class="text-[1.25rem] font-[590] leading-[1.33] tracking-[-0.24px] text-[#101014] m-0 mb-6">
+      Portico
+    </h1>
+
+    <!-- 3. Form input email & password (idle state) -->
+    <form class="flex flex-col gap-4 m-0" onsubmit="return false;">
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-[0.75rem] font-[450] leading-[1.4] text-[#62676f]">
+          Email
+        </label>
+        <input 
+          id="email" 
+          type="email" 
+          placeholder="nama@email.com" 
+          autocomplete="email"
+          class="w-full h-[40px] px-3 bg-white text-[#101014] text-[0.875rem] rounded-[6px] hairline-border outline-none focus:border-[#6e5ae6] transition-colors placeholder:text-[#9aa0aa] box-border"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="password" class="text-[0.75rem] font-[450] leading-[1.4] text-[#62676f]">
+          Password
+        </label>
+        <input 
+          id="password" 
+          type="password" 
+          placeholder="••••••••" 
+          autocomplete="current-password"
+          class="w-full h-[40px] px-3 bg-white text-[#101014] text-[0.875rem] rounded-[6px] hairline-border outline-none focus:border-[#6e5ae6] transition-colors placeholder:text-[#9aa0aa] box-border"
+        />
+      </div>
+
+      <!-- 4. Tombol primer full-width "Masuk" -->
+      <button 
+        type="submit" 
+        class="w-full h-[40px] mt-2 bg-[#6e5ae6] hover:bg-[#5b46d6] active:bg-[#5b46d6] text-white text-[0.813rem] font-[560] leading-none rounded-[6px] transition-colors flex items-center justify-center cursor-pointer border-none"
+      >
+        Masuk
+      </button>
+    </form>
+
+    <!-- 5. Divider tipis + baris caption 12px -->
+    <hr class="hairline-divider w-full mt-6 mb-4" />
+
+    <div class="flex items-center justify-center gap-1.5 text-[12px] text-[#62676f] leading-normal">
+      <span>Belum punya akun?</span>
+      <a href="#" class="text-[#5b46d6] hover:underline font-[500] no-underline">
+        Buat akun
+      </a>
+    </div>
+  </main>
+</body>
+</html>
