@@ -10,6 +10,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "prepare": "npm run tokens:build",
     "tokens:build": "node packages/tokens/build.mjs",
     "tokens:check": "node packages/tokens/build.mjs --check",
     "infra:up": "docker compose -f infra/docker-compose.yml up -d",
