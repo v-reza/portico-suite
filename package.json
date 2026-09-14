@@ -1,0 +1,30 @@
+{
+  "name": "portico-suite",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "tokens:build": "node packages/tokens/build.mjs",
+    "tokens:check": "node packages/tokens/build.mjs --check",
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down",
+    "infra:logs": "docker compose -f infra/docker-compose.yml logs -f",
+    "db:generate": "npm run db:generate --workspaces --if-present",
+    "dev:hub": "npm run dev -w @portico/hub",
+    "dev:platform": "npm run dev -w @portico/platform",
+    "dev:helpdesk": "npm run dev -w @portico/helpdesk",
+    "dev:code-review": "npm run dev -w @portico/code-review",
+    "build:all": "npm run build --workspaces --if-present",
+    "lint:all": "npm run lint --workspaces --if-present",
+    "test:all": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.13"
+  }
+}

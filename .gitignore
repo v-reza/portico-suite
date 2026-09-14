@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+next-env.d.ts
+
+# env — never commit real values
+.env
+.env.local
+.env*.local
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# test artifacts
+apps/*/shots/
+
+# misc build caches
+*.tsbuildinfo
+.turbo/
+dist/

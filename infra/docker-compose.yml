@@ -1,0 +1,41 @@
+# Local dev infrastructure. One Postgres instance, ONE DATABASE PER APP —
+# separate databases, not separate schemas, so no app can read another's tables.
+# Redis is shared because BullMQ queue names are namespaced per app.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: portico-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-portico}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-portico_dev}
+      POSTGRES_DB: postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - portico-pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/10-init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-portico} -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: portico-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - portico-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  portico-pgdata:
+  portico-redisdata:

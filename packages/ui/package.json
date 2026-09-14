@@ -1,0 +1,17 @@
+{
+  "name": "@portico/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared shell + primitives for the Portico suite",
+  "exports": {
+    "./shell": "./src/shell.tsx",
+    "./icons": "./src/icons.tsx"
+  },
+  "dependencies": {
+    "@portico/tokens": "*"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

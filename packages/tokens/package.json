@@ -1,0 +1,16 @@
+{
+  "name": "@portico/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Design tokens generated from docs/PORTICO-SUITE-DESIGN.md",
+  "exports": {
+    ".": "./dist/tokens.ts",
+    "./css": "./dist/tokens.css",
+    "./tailwind-preset": "./tailwind-preset.mjs"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check"
+  }
+}
