@@ -28,6 +28,7 @@ colors:
   text-tertiary: "#62676f"
   overlay: "rgba(16,16,20,0.40)"
   critical: "#b91c1c"
+  critical-tint: "#fdecec"
   text-quaternary: "#9aa0aa"
   diff-added-bg: "rgba(22,163,74,0.10)"
   diff-added-gutter: "rgba(22,163,74,0.22)"
