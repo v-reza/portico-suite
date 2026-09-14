@@ -13,10 +13,17 @@
 set -uo pipefail
 
 WT="$(pwd)"
-# Native path for anything a Windows binary (node, npm) must open: MSYS would
-# otherwise hand node "/c/Users/..." and it resolves to "C:\c\Users\...".
+# Native path for anything a Windows binary (node, npm, mklink) must open:
+# MSYS would otherwise hand node "/c/Users/..." and it resolves to "C:\c\Users\...".
 WT_WIN="$(pwd -W 2>/dev/null || pwd)"
 ROOT="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)/.." && pwd)"
+ROOT_WIN="$(cd "$ROOT" && pwd -W 2>/dev/null || echo "$ROOT")"
+
+# MSYS `ln -s` on a DIRECTORY silently copies it instead of linking, so every
+# link here goes through mklink /J (a real NTFS junction, no admin needed).
+jlink() { # jlink <target> <linkpath>
+  cmd.exe /c "mklink /J \"$(cygpath -w "$2" 2>/dev/null || echo "$2")\" \"$(cygpath -w "$1" 2>/dev/null || echo "$1")\"" >/dev/null 2>&1
+}
 
 if [ ! -f "$WT/package.json" ]; then
   echo "bootstrap: not a portico-suite worktree (no package.json in $WT)" >&2
@@ -27,7 +34,7 @@ if [ ! -d "$ROOT/node_modules" ]; then
   exit 1
 fi
 
-# 1. node_modules — one symlink per top-level entry.
+# 1. node_modules — one junction per top-level entry.
 if [ -e "$WT/node_modules" ]; then
   echo "bootstrap: node_modules already present"
 else
@@ -42,7 +49,7 @@ else
       #     repo's copy of it. Leave @portico out; the next step wires it up.
       "@portico") continue ;;
     esac
-    ln -sfn "$entry" "$WT/node_modules/$name"
+    jlink "$entry" "$WT/node_modules/$name"
     linked=$((linked + 1))
   done
   echo "bootstrap: linked $linked dependencies"
@@ -53,7 +60,9 @@ mkdir -p "$WT/node_modules/@portico"
 for ws in packages/* apps/*; do
   [ -f "$ws/package.json" ] || continue
   name="$(node -p "require('$WT_WIN/$ws/package.json').name" 2>/dev/null)"
-  case "$name" in @portico/*) ln -sfn "$WT/$ws" "$WT/node_modules/@portico/${name#@portico/}" ;; esac
+  case "$name" in
+    @portico/*) jlink "$WT/$ws" "$WT/node_modules/@portico/${name#@portico/}" ;;
+  esac
 done
 echo "bootstrap: wired @portico/* -> worktree"
 
@@ -78,6 +87,17 @@ else
     exit 1
   fi
   echo "bootstrap: built packages/tokens/dist"
+fi
+
+# 4. self-check — the whole point is that the app can run; prove it.
+missing=""
+[ -f "$WT/node_modules/next/package.json" ] || missing="$missing next"
+[ -f "$WT/node_modules/@portico/tokens/dist/tokens.css" ] || missing="$missing @portico/tokens/css"
+[ -f "$WT/node_modules/@portico/ui/package.json" ] || missing="$missing @portico/ui"
+[ -f "$WT/.env" ] || missing="$missing .env"
+if [ -n "$missing" ]; then
+  echo "bootstrap: FAILED — unresolved:$missing" >&2
+  exit 1
 fi
 
 echo "bootstrap: ready"
