@@ -74,9 +74,9 @@ Semua di atas lolos cuma dengan `can(user, [...])`: peran dicek, **kepemilikan t
 
 ## Metode
 
-1. Baca **semua** 19 route handler di `apps/platform/src/app/api/**/route.ts` (bukan sampel).
+1. Baca **semua** 22 route handler di `apps/platform/src/app/**/route.ts` (bukan sampel) — 19 di `api/`, 3 operasional.
 2. Untuk tiap handler catat: cek sesi, cek peran (`can()`), dan **filter `org_id` di query SQL**.
-3. Jalankan probe HTTP nyata (`/tmp/audit-probe.cjs`) terhadap dev server dari worktree ini di port **3011**, dengan dua identitas: admin workspace B (dibuat lewat register) + viewer seed-org-1.
+3. Jalankan probe HTTP nyata (`$LOCALAPPDATA/Temp/audit-probe.cjs` dan `audit-probe2.cjs`) terhadap dev server dari worktree ini di port **3011**, dengan dua identitas: admin workspace B (dibuat lewat register) + viewer seed-org-1.
 4. Fixture dibersihkan; DB dicek balik ke angka seed.
 
 > Server 3001 yang sudah hidup di host ini **nggak punya `PLATFORM_DATABASE_URL`** (`/ready` → `database: down`, login → 500), jadi probe dijalankan di instance sendiri dari worktree. Probe pertama di 3001 menghasilkan 401/500 semua dan itu **bukan bukti apa pun** — dicatat di sini supaya nggak dikira temuan.
