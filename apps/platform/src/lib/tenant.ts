@@ -48,7 +48,14 @@ async function guard(
 }
 
 export function appInOrg(appId: string, user: PlatformUser): Promise<TenantCheck> {
-  return guard('SELECT id, org_id, is_published FROM apps WHERE id = $1', [appId], 'app', user);
+  // `name`/`slug` are carried because the delete path logs what it destroyed
+  // (US-A07 AC5) — reading them afterwards is impossible, the row is gone.
+  return guard(
+    'SELECT id, org_id, name, slug, is_published, archived_at FROM apps WHERE id = $1',
+    [appId],
+    'app',
+    user,
+  );
 }
 
 export function pageInOrg(pageId: string, user: PlatformUser): Promise<TenantCheck> {

@@ -225,10 +225,17 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
       <header className="h-14 bg-[var(--surface-panel)] border-b border-[var(--border-standard)] flex items-center justify-between px-4 z-20 relative w-full">
                 {/* Left: app name + status */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 cursor-pointer group px-1 py-1 rounded hover:bg-[var(--surface-hover)] transition-colors">
+          {/* The reference draws this as a hover-highlighted affordance with the
+              edit glyph and nothing attached. It is the entry point to the app's
+              settings page, which is where US-A07 AC1 (rename) and AC5 (delete)
+              live. Geometry and type unchanged from the reference. */}
+          <a
+            href={`/apps/${app.id}/settings`}
+            className="flex items-center gap-1.5 cursor-pointer group px-1 py-1 rounded hover:bg-[var(--surface-hover)] transition-colors"
+          >
             <span className="font-medium text-[0.875rem] text-[var(--text-primary)]">{app.name}</span>
             <span className="text-[16px] leading-none text-[var(--text-quaternary)] group-hover:text-[var(--text-secondary)] transition-colors">✎</span>
-          </div>
+          </a>
           <span className="bg-[var(--surface-hover)] text-[var(--text-tertiary)] text-[0.75rem] px-2 py-0.5 rounded border border-[var(--border-subtle)]">
             {app.is_published ? 'Terbit' : 'Draft'}
           </span>

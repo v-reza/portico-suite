@@ -20,15 +20,30 @@ function uniqueViolation(e: unknown): string | null {
 const MAX_SLUG_ATTEMPTS = 5;
 
 /**
- * GET /api/apps — list all apps for the user's org.
+ * GET /api/apps — the workspace's app list.
+ *
+ * US-A07 AC2 — an archived app is gone from the **main** list. The archive
+ * filter is a server-side WHERE, not a client-side hide, so a caller who
+ * bypasses the UI still cannot see it in the default view.
+ *
+ * `?status=archived` is the one view that does return them: that is where the
+ * restore entry point lives (US-A07 AC3).
  */
 export async function GET(req: NextRequest) {
   const user = await getSessionUser(req);
   if (!user) return jsonError(401, 'unauthenticated', 'Silakan masuk terlebih dahulu.');
 
+  const status = new URL(req.url).searchParams.get('status');
+  const where =
+    status === 'archived' ? 'archived_at IS NOT NULL'
+    : status === 'published' ? 'archived_at IS NULL AND is_published'
+    : status === 'draft' ? 'archived_at IS NULL AND NOT is_published'
+    : 'archived_at IS NULL';
+
   const apps = await query(
-    `SELECT id, name, slug, description, version, is_published, created_at, updated_at
-     FROM apps WHERE org_id = $1 ORDER BY created_at DESC`,
+    `SELECT id, name, slug, description, version, is_published, archived_at, created_at, updated_at
+       FROM apps WHERE org_id = $1 AND ${where}
+      ORDER BY created_at DESC`,
     [user.org_id],
   );
   return NextResponse.json({ apps: apps.rows });

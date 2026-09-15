@@ -14,10 +14,33 @@ interface AppRow {
   description: string | null;
   version: number;
   is_published: boolean;
+  archived_at: string | null;
   created_at: string;
   /** AC1's "waktu terakhir diubah" — the column the card's timestamp reads. */
   updated_at: string;
 }
+
+type Status = 'semua' | 'terbit' | 'draft' | 'terarsip';
+
+const STATUS_LABEL: Record<Status, string> = {
+  semua: 'Semua',
+  terbit: 'Terbit',
+  draft: 'Draft',
+  terarsip: 'Terarsip',
+};
+
+/**
+ * The status filter is a server-side query, not a client-side hide: an archived
+ * app must be absent from the main list for a caller that bypasses the UI too
+ * (US-A07 AC2). `terarsip` is the one view that lists them, and it is where the
+ * restore entry point lives (US-A07 AC3).
+ */
+const STATUS_QUERY: Record<Status, string> = {
+  semua: '',
+  terbit: '?status=published',
+  draft: '?status=draft',
+  terarsip: '?status=archived',
+};
 
 function timeAgo(iso: string): string {
   const ms = Date.now() - new Date(iso).getTime();
@@ -34,6 +57,8 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
   const [apps, setApps] = useState<AppRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<Status>('semua');
+  const [statusOpen, setStatusOpen] = useState(false);
   const [segment, setSegment] = useState<'semua' | 'saya' | 'tim'>('semua');
   const [showCreate, setShowCreate] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -41,18 +66,22 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
   // `loading`: a skeleton promises the data is coming, and after a failure it
   // is not.
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
 
   /**
    * AC3 — `loading` starts true and is only cleared once the request settles,
    * so the first paint is the skeleton rather than an empty screen.
    * AC4 — a non-2xx or a thrown fetch clears `apps` instead of keeping the
    * previous list: half a list under an error banner reads as real data.
+   *
+   * US-A07 AC2/AC3 — accepts an explicit status query so the status dropdown
+   * drives the server-side filter directly.
    */
-  async function load() {
+  async function load(which: Status = status) {
     setLoading(true);
     setError(null);
     try {
-      const r = await fetch('/api/apps', { cache: 'no-store' });
+      const r = await fetch(`/api/apps${STATUS_QUERY[which]}`, { cache: 'no-store' });
       if (r.status === 401) {
         router.push('/login');
         return;
@@ -72,7 +101,31 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load('semua'); }, []);
+
+  async function pickStatus(next: Status) {
+    setStatus(next);
+    setStatusOpen(false);
+    await load(next);
+  }
+
+  /**
+   * Restore (US-A07 AC3) lives on the archived list, because that is the only
+   * view where the card is reachable. Archive itself is on the app's settings
+   * page, next to the other destructive actions.
+   */
+  async function restore(id: string) {
+    setBusy(id);
+    setError(null);
+    const r = await fetch(`/api/apps/${id}/restore`, { method: 'POST' });
+    const d = await r.json().catch(() => ({}));
+    setBusy(null);
+    if (!r.ok) {
+      setError(d.message ?? 'Gagal memulihkan aplikasi.');
+      return;
+    }
+    await load(status);
+  }
 
   /**
    * US-A05 AC1 — a created app is a draft and the user lands in its editor.
@@ -155,11 +208,43 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
               />
             </div>
             <div className="flex items-center gap-3">
-              {/* Dropdown Status */}
-              <button className="h-9 px-3 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[6px] text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-2 hover:bg-[var(--surface-hover)] transition-colors">
-                <span>Status: <strong className="font-medium text-[var(--text-primary)]">Semua</strong></span>
-                <span className="text-[var(--text-tertiary)] text-sm">▾</span>
-              </button>
+              {/* Dropdown Status — drives the server-side status filter (US-A07 AC2/AC3) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-haspopup="listbox"
+                  aria-expanded={statusOpen}
+                  onClick={() => setStatusOpen((v) => !v)}
+                  className="h-9 px-3 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[6px] text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-2 hover:bg-[var(--surface-hover)] transition-colors"
+                >
+                  <span>Status: <strong className="font-medium text-[var(--text-primary)]">{STATUS_LABEL[status]}</strong></span>
+                  <span className="text-[var(--text-tertiary)] text-sm">▾</span>
+                </button>
+                {statusOpen && (
+                  <div
+                    role="listbox"
+                    className="absolute right-0 top-full mt-1 z-30 w-[160px] bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] shadow-[0_8px_24px_rgba(15,23,42,0.12)] py-1"
+                  >
+                    {(Object.keys(STATUS_LABEL) as Status[]).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        role="option"
+                        aria-selected={status === s}
+                        onClick={() => pickStatus(s)}
+                        className={[
+                          'w-full text-left px-3 py-1.5 text-[13px] transition-colors',
+                          status === s
+                            ? 'bg-[var(--surface-accent-tint)] text-[var(--accent-hover)] font-medium'
+                            : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]',
+                        ].join(' ')}
+                      >
+                        {STATUS_LABEL[s]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               {/* Segment Semua / Saya / Tim */}
               <div className="h-9 p-0.5 bg-[var(--surface-sunken)] rounded-[6px] border border-[var(--border-standard)] flex items-center">
                 {(['semua', 'saya', 'tim'] as const).map((s) => (
@@ -188,12 +273,7 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
           {/* Grid kartu */}
           <div data-state={state}>
           {loading ? (
-            /* AC3 — the design export has no apps-list loading screen, so this is
-             * composed from the one it does have (helpdesk ticket list loading):
-             * `#ededf0` (= --surface-sunken) blocks under a 1.8s opacity pulse,
-             * arranged in the real card's own geometry so the list does not jump
-             * when the data lands. The count and the state live on the wrapper so
-             * a test can tell "still loading" from "loaded, empty". */
+            /* AC3 — helpdesk ticket list loading pattern: `#ededf0` blocks under 1.8s pulse */
             <div className="grid grid-cols-3 gap-3 pt-1" aria-hidden="true">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
@@ -214,15 +294,12 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
               ))}
             </div>
           ) : error ? (
-            /* AC4 — the export's error callout (platform_workflow_runs): critical
-             * tint panel, critical text, panel/hairline retry button with a
-             * replay glyph. `apps` is already empty here, so no half-built card
-             * can sit under the message. */
+            /* AC4 — critical tint callout with retry */
             <div role="alert" className="bg-[var(--critical-tint)] border border-[var(--critical)]/20 rounded-[6px] p-3">
               <p className="text-[12px] leading-relaxed text-[var(--critical)]">{error}</p>
               <button
                 type="button"
-                onClick={load}
+                onClick={() => load(status)}
                 className="bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-primary)] px-3 py-1.5 rounded-[6px] text-[12px] font-medium hover:bg-[var(--surface-hover)] mt-2.5 inline-flex items-center gap-1.5 transition-colors shadow-sm"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -233,12 +310,7 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
               </button>
             </div>
           ) : apps.length === 0 ? (
-            /* AC2 — two actions, no apps. The export draws no apps-list empty
-             * state, so this is composed from the helpdesk empty state (icon
-             * disc + 14px/500 heading + 12px tertiary line, all at the same
-             * density) and the actions reuse the two button treatments already
-             * on this screen: the accent primary from "Aplikasi baru" and the
-             * panel/hairline secondary from that empty state's own button. */
+            /* AC2 — two actions, no apps (empty state) */
             <div className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-12 flex flex-col items-center justify-center text-center select-none">
               <div className="w-10 h-10 rounded-full bg-[var(--surface-hover)] flex items-center justify-center mb-3 text-[var(--text-quaternary)]">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -248,11 +320,15 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
                   <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
                 </svg>
               </div>
-              <h3 className="text-[14px] font-medium text-[var(--text-primary)] mb-1">Belum ada aplikasi</h3>
+              <h3 className="text-[14px] font-medium text-[var(--text-primary)] mb-1">
+                {status === 'terarsip' ? 'Tidak ada aplikasi yang diarsipkan' : 'Belum ada aplikasi'}
+              </h3>
               <p className="text-[12px] text-[var(--text-tertiary)] max-w-[280px] mb-4">
-                Mulai dari satu deskripsi, atau susun sendiri dari kanvas kosong.
+                {status === 'terarsip'
+                  ? 'Aplikasi yang diarsipkan akan muncul di sini dan bisa dipulihkan kapan saja.'
+                  : 'Mulai dari satu deskripsi, atau susun sendiri dari kanvas kosong.'}
               </p>
-              {canCreate && (
+              {canCreate && status !== 'terarsip' && (
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -274,9 +350,7 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
               )}
             </div>
           ) : filtered.length === 0 ? (
-            /* A search that matches nothing is not the empty state: the two
-             * "create" actions would be the wrong answer, and the design's
-             * filter-empty treatment is a single clear action. */
+            /* Search filter matched nothing */
             <div className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-12 text-center">
               <p className="text-[var(--text-tertiary)] text-sm">Tidak ada aplikasi yang cocok dengan pencarian.</p>
               <button
@@ -290,19 +364,10 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
           ) : (
             <div className="grid grid-cols-3 gap-3 pt-1">
               {filtered.map((a) => {
-                return (
-                  /* The reference draws this card as an <article> with no href and
-                   * `cursor-pointer`. It has to navigate, so it is rendered as the
-                   * anchor that owns the same class list — one element, identical
-                   * geometry, no extra wrapper. `data-app-card` is the stable hook
-                   * for the AC1 assertions, which otherwise could not tell a card
-                   * from any other link on the page. */
-                  <a
-                    key={a.id}
-                    data-app-card={a.id}
-                    href={`/apps/${a.id}`}
-                    className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-4 hover:border-[var(--accent)]/40 transition-colors flex flex-col justify-between h-[160px] cursor-pointer shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)]"
-                  >
+                const cardClass =
+                  'bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-4 transition-colors flex flex-col justify-between h-[160px] shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)]';
+                const body = (
+                  <>
                     <div>
                       <h3 className="text-[16px] leading-snug truncate text-[var(--text-primary)]" style={{ fontWeight: 560 }}>{a.name}</h3>
                       <div className="font-mono text-[11px] text-[var(--text-tertiary)] mt-0.5 tracking-tight">app/{a.slug}</div>
@@ -311,15 +376,46 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
                       </p>
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] mt-auto">
-                      <span className={a.is_published
-                        ? 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#e8f6ee] text-[#15803d] font-medium'
-                        : 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium'}>
-                        {a.is_published ? 'Terbit' : 'Draft'}
+                      <span className={
+                        a.archived_at
+                          ? 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--text-tertiary)] font-medium'
+                          : a.is_published
+                            ? 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#e8f6ee] text-[#15803d] font-medium'
+                            : 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium'
+                      }>
+                        {a.archived_at ? 'Terarsip' : a.is_published ? 'Terbit' : 'Draft'}
                       </span>
                       <span className="font-mono text-[11px] text-[var(--text-quaternary)]">
-                        {a.updated_at ? `diubah ${timeAgo(a.updated_at)}` : ''}
+                        diubah {timeAgo(a.updated_at)}
                       </span>
                     </div>
+                  </>
+                );
+
+                if (a.archived_at) {
+                  return (
+                    <article key={a.id} data-app-card={a.id} className={cardClass}>
+                      {body}
+                      <button
+                        type="button"
+                        disabled={busy === a.id}
+                        onClick={() => restore(a.id)}
+                        className="mt-2 h-7 px-3 rounded-[6px] text-[12px] font-medium border border-[var(--border-standard)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors disabled:opacity-50"
+                      >
+                        {busy === a.id ? 'Memulihkan…' : 'Pulihkan'}
+                      </button>
+                    </article>
+                  );
+                }
+
+                return (
+                  <a
+                    key={a.id}
+                    data-app-card={a.id}
+                    href={`/apps/${a.id}`}
+                    className={`${cardClass} hover:border-[var(--accent)]/40 cursor-pointer`}
+                  >
+                    {body}
                   </a>
                 );
               })}
