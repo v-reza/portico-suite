@@ -86,9 +86,16 @@ async function createUser({ email, password, name, role, orgId }) {
   return id;
 }
 
-/** Delete dependents before the parent: users reference organizations (US-A01 schema). */
+/**
+ * Delete dependents before the parent (US-A01 schema): users and organizations
+ * are both referenced by `activity_logs` (US-A05 AC4 writes one per app), so the
+ * audit rows go first. Deleting the user first raises 23503 and aborts the rest
+ * of the teardown, silently leaving the workspace behind.
+ */
 async function dropUserAndOrg(userId, orgId) {
   const pool = await pgPool();
+  if (userId) await pool.query('DELETE FROM activity_logs WHERE user_id = $1', [userId]);
+  if (orgId) await pool.query('DELETE FROM activity_logs WHERE org_id = $1', [orgId]);
   if (userId) await pool.query('DELETE FROM users WHERE id = $1', [userId]);
   if (orgId) await pool.query('DELETE FROM organizations WHERE id = $1', [orgId]);
   await pool.end();
@@ -254,13 +261,149 @@ async function dropUserAndOrg(userId, orgId) {
   });
 }
 
-// ── US-A05/A06: apps ------------------------------------------------------
+// ── US-A05: create an app (draft) ------------------------------------------
+// Every assertion below reads the row back. A 201 on its own cannot tell a
+// draft from a published app, cannot prove the slug was made unique, and cannot
+// prove the audit entry exists — which is exactly what the four ACs ask for.
 {
-  const r = await req('/api/apps', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Test App' }) });
-  record('US-A05 AC1', 'create app returns 201', r.status === 201, `status=${r.status}`);
-  const b = await json(r);
-  record('US-A05 AC1', 'returns app id', !!b?.app?.id, `id=${b?.app?.id}`);
-  createdAppId = b?.app?.id;
+  const tag = Date.now();
+  const appName = `Intake Vendor ${tag}`;
+  const ids = [];
+
+  const listCount = async () => {
+    const b = await json(await req('/api/apps'));
+    return (b?.apps || []).length;
+  };
+  const before = await listCount();
+
+  // AC1 — name in, draft out, and the caller gets the id the editor opens on.
+  let first;
+  {
+    const r = await req('/api/apps', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: appName, description: 'Dibuat oleh e2e.mjs' }),
+    });
+    const b = await json(r);
+    first = b?.app;
+    if (first?.id) ids.push(first.id);
+    record('US-A05 AC1', 'create app returns 201 with a new id',
+      r.status === 201 && !!first?.id, `status=${r.status} id=${first?.id}`);
+    record('US-A05 AC1', 'the created app is a draft (is_published=false)',
+      first?.is_published === false, `is_published=${first?.is_published}`);
+  }
+
+  // AC1 read-back: the draft is persisted, not merely echoed back.
+  {
+    const b = await json(await req('/api/apps'));
+    const row = (b?.apps || []).find((a) => a.id === first?.id);
+    record('US-A05 AC1', 'the draft is readable from the list as a draft',
+      !!row && row.is_published === false && row.name === appName,
+      `found=${!!row} is_published=${row?.is_published}`);
+  }
+
+  // AC1 "dia masuk ke editor": the editor route serves that app to the caller.
+  {
+    const r = await req(`/apps/${first?.id}`);
+    const html = await r.text().catch(() => '');
+    record('US-A05 AC1', 'the created app opens in the editor',
+      r.status === 200 && html.includes(appName),
+      `status=${r.status} carriesAppName=${html.includes(appName)}`);
+  }
+
+  // AC2 — an empty name is refused, and nothing is written. The count is the
+  // assertion: a 400 that still inserted a row would pass a status-only check.
+  {
+    const mid = await listCount();
+    for (const body of [{ name: '' }, { name: '   ' }, {}]) {
+      const r = await req('/api/apps', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const b = await json(r);
+      record('US-A05 AC2', `empty name ${JSON.stringify(body)} -> 400 with a field message`,
+        r.status === 400 && b?.error === 'name_required' && typeof b?.message === 'string' && b.message.length > 0,
+        `status=${r.status} error=${b?.error}`);
+    }
+    record('US-A05 AC2', 'no app row was created by the refused requests',
+      (await listCount()) === mid, `before=${mid} after=${await listCount()}`);
+  }
+
+  // AC3 — the same name again is NOT an error: the slug is made unique.
+  let second;
+  {
+    const r = await req('/api/apps', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: appName }),
+    });
+    const b = await json(r);
+    second = b?.app;
+    if (second?.id) ids.push(second.id);
+    record('US-A05 AC3', 'a duplicate name is accepted (201), not refused',
+      r.status === 201 && !!second?.id, `status=${r.status}`);
+    record('US-A05 AC3', 'the second app got a different, suffixed slug',
+      !!second?.slug && second.slug !== first?.slug && /-\d+$/.test(second.slug),
+      `first=${first?.slug} second=${second?.slug}`);
+  }
+
+  // AC3 under concurrency: five identical names at once. The losers of the slug
+  // race must retry into a fresh value — a lookup-then-INSERT that re-reads the
+  // same answer surfaces here as a 500, which is the failure this probe exists
+  // for. Zero 5xx and five distinct slugs is the pass condition.
+  {
+    const burst = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        req('/api/apps', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name: `Burst App ${tag}` }),
+        }),
+      ),
+    );
+    const bodies = await Promise.all(burst.map(json));
+    const slugs = bodies.map((b) => b?.app?.slug).filter(Boolean);
+    for (const b of bodies) if (b?.app?.id) ids.push(b.app.id);
+    const statuses = burst.map((r) => r.status);
+    record('US-A05 AC3', 'burst of 5 identical names: zero 5xx',
+      statuses.every((s) => s < 500), `statuses=${statuses.join(',')}`);
+    record('US-A05 AC3', 'burst of 5 identical names: all 5 slugs distinct',
+      slugs.length === 5 && new Set(slugs).size === 5, `slugs=${slugs.join(',')}`);
+  }
+
+  // AC4 — the creation is in the activity log, with the actor and the time.
+  {
+    const pool = await pgPool();
+    const admin = await pool.query(`SELECT id FROM users WHERE email = 'admin@seed.dev'`);
+    const logs = await pool.query(
+      `SELECT user_id, action, entity_type, entity_id, created_at
+       FROM activity_logs WHERE entity_id = ANY($1::text[]) ORDER BY created_at`,
+      [ids],
+    );
+    await pool.end();
+    const mine = logs.rows.filter((r) => r.entity_id === first?.id);
+    record('US-A05 AC4', 'creating an app writes an activity_log row',
+      mine.length === 1, `rows=${mine.length}`);
+    record('US-A05 AC4', 'the log entry names the actor (pelaku)',
+      mine[0]?.user_id === admin.rows[0]?.id,
+      `user_id=${mine[0]?.user_id} admin=${admin.rows[0]?.id}`);
+    const age = mine[0] ? Date.now() - new Date(mine[0].created_at).getTime() : Infinity;
+    record('US-A05 AC4', 'the log entry carries the time (waktu) of the action',
+      age >= 0 && age < 120000 && mine[0]?.action === 'app_created',
+      `action=${mine[0]?.action} ageMs=${age}`);
+  }
+
+  // Teardown — this suite's own rows, children first (activity_logs references
+  // the org and the user, apps only the org). Counts are printed so a teardown
+  // that threw halfway cannot look like a clean one.
+  {
+    const pool = await pgPool();
+    const logged = await pool.query('DELETE FROM activity_logs WHERE entity_id = ANY($1::text[])', [ids]);
+    const apps = await pool.query('DELETE FROM apps WHERE id = ANY($1::text[])', [ids]);
+    const left = await pool.query('SELECT count(*)::int n FROM apps WHERE id = ANY($1::text[])', [ids]);
+    const total = await pool.query(`SELECT count(*)::int n FROM apps WHERE org_id = 'seed-org-1'`);
+    await pool.end();
+    record('US-A05 AC1', 'fixtures removed and the org is back to its seed app count',
+      Number(left.rows[0].n) === 0 && Number(total.rows[0].n) === before,
+      `deleted_apps=${apps.rowCount} deleted_logs=${logged.rowCount} remaining=${left.rows[0].n} org_apps=${total.rows[0].n} (was ${before})`);
+  }
 }
 
 {
@@ -530,12 +673,18 @@ async function dropUserAndOrg(userId, orgId) {
 }
 
 // ── teardown: leave no fixture behind --------------------------------------
+// The US-A05 block deletes its own rows by id (and its activity_logs, which a
+// name-based sweep would miss). What is left to check is that nothing this
+// suite created is still around under the seed workspace.
 {
-  const r = await req('/api/apps');
-  const b = await json(r);
-  const mine = (b?.apps || []).filter((a) => a.name === 'Test App');
-  for (const a of mine) await req(`/api/apps/${a.id}`, { method: 'DELETE' });
-  console.log(`  --   teardown: removed ${mine.length} fixture app(s)`);
+  const pool = await pgPool();
+  const stale = await pool.query(
+    `SELECT count(*)::int n FROM apps
+     WHERE org_id = 'seed-org-1' AND (name LIKE 'Intake Vendor %' OR name LIKE 'Burst App %')`,
+  );
+  await pool.end();
+  record('US-A05 AC1', 'teardown: no fixture app left in the seed workspace',
+    Number(stale.rows[0].n) === 0, `leftover=${stale.rows[0].n}`);
 }
 
 console.log(`\n${results.filter(r => r.pass).length}/${results.length} passed`);

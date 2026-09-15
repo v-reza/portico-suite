@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconPlus } from '@portico/ui/icons';
 import { PlatformShell } from './PlatformShell';
+import { CreateAppModal } from './CreateAppModal';
 
 interface AppRow {
   id: string;
@@ -31,9 +32,7 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [segment, setSegment] = useState<'semua' | 'saya' | 'tim'>('semua');
-  const [showForm, setShowForm] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
 
   async function load() {
     const r = await fetch('/api/apps', { cache: 'no-store' });
@@ -48,22 +47,14 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
 
   useEffect(() => { load(); }, []);
 
-  async function createApp(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    const r = await fetch('/api/apps', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name: newName, description: '' }),
-    });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok) {
-      setError(d.message ?? 'Gagal membuat app.');
-      return;
-    }
-    setNewName('');
-    setShowForm(false);
-    await load();
+  /**
+   * US-A05 AC1 — a created app is a draft and the user lands in its editor.
+   * The row is already in the DB (the modal POSTed it), so this only navigates;
+   * no refetch of the list happens behind the user's back.
+   */
+  function onCreated(app: { id: string }) {
+    setShowCreate(false);
+    router.push(`/apps/${app.id}`);
   }
 
   const filtered = apps.filter((a) => {
@@ -114,29 +105,14 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
             </div>
             {canCreate && (
               <button
-                onClick={() => setShowForm(!showForm)}
+                onClick={() => setShowCreate(true)}
                 className="h-8 px-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-[6px] text-[13px] font-medium flex items-center gap-1.5 transition-colors shadow-sm"
               >
-                <IconPlus size={16} />
+                <IconPlus size={18} />
                 <span>Aplikasi baru</span>
               </button>
             )}
           </div>
-
-          {showForm && (
-            <form onSubmit={createApp} className="max-w-xl bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-4 flex items-center gap-3">
-              {error && <p className="text-sm text-[var(--critical)]">{error}</p>}
-              <input
-                type="text"
-                required
-                placeholder="Nama aplikasi (misal: CRM Penjualan)"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                className="flex-1 h-9 px-3 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[6px] text-[13px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-              />
-              <button type="submit" className="h-8 px-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-[6px] text-[13px] font-medium transition-colors">Buat</button>
-            </form>
-          )}
 
           {/* Baris alat */}
           <div className="h-11 flex items-center justify-between gap-3">
@@ -219,6 +195,8 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
           )}
         </div>
       </div>
+
+      <CreateAppModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={onCreated} />
     </PlatformShell>
   );
 }

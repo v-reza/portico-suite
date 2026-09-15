@@ -258,6 +258,19 @@ for (const id of aiAppIds) {
   await req(`/api/apps/${id}`, { method: 'DELETE' });
 }
 
+// The apps are gone but their `activity_logs` rows are not — the log is a
+// product feature, not a cascade, so a suite that deletes its fixtures has to
+// delete their audit entries too or the DB drifts a little further every run.
+{
+  const { Pool } = await import('pg');
+  const pool = new Pool({ connectionString: process.env.PLATFORM_DATABASE_URL });
+  const gone = await pool.query(
+    `DELETE FROM activity_logs WHERE entity_type = 'app'
+       AND NOT EXISTS (SELECT 1 FROM apps a WHERE a.id = activity_logs.entity_id)`);
+  await pool.end();
+  console.log(`  --   teardown: removed ${gone.rowCount} orphaned activity_log row(s)`);
+}
+
 // ── summary ────────────────────────────────────────────────────────────────
 const pass = results.filter((r) => r.pass).length;
 const fail = results.length - pass;

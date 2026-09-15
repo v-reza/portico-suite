@@ -8,7 +8,7 @@
  * Behaviour contract:
  *   - role="dialog" + aria-modal, labelled by the title
  *   - focus moves into the panel on open, returns to the trigger on close
- *   - Escape closes, backdrop click closes
+ *   - Escape closes, backdrop click closes, the header close control closes
  *   - Tab is trapped inside the panel
  *   - background scroll is locked while open
  *   - animation is skipped under `prefers-reduced-motion` (Tailwind motion-safe)
@@ -17,7 +17,8 @@
  * hairline `--border-standard`, 12px radius (modal-only radius per the design
  * spec), backdrop rgba(15,23,42,0.45).
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
+import { IconX } from './icons';
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -29,6 +30,9 @@ export function Modal({
   onClose,
   children,
   footer,
+  panelWidthClass = 'max-w-[440px]',
+  descriptionClassName = 'text-[0.813rem] text-[var(--text-secondary)] mt-1',
+  footerClassName = 'flex justify-end gap-2 mt-6',
 }: {
   open: boolean;
   title: string;
@@ -36,8 +40,26 @@ export function Modal({
   onClose: () => void;
   children?: React.ReactNode;
   footer: React.ReactNode;
+  /**
+   * Panel width. The reference dialogs are not one size: the confirm-style
+   * dialogs are 440px, the create-app form is 560px (both are literal widths in
+   * the Stitch export), so the width is a parameter rather than a new panel.
+   */
+  panelWidthClass?: string;
+  /**
+   * Subtitle and footer treatments are parameters for the same reason as the
+   * width: the reference dialogs are not identical. The create-app dialog has a
+   * 12px `--text-tertiary` subtitle and a ruled footer split left/right; the
+   * confirm-style dialogs keep these defaults. A caller that passes neither is
+   * byte-for-byte unchanged.
+   */
+  descriptionClassName?: string;
+  footerClassName?: string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  // aria-labelledby needs a real id on the heading; useId keeps it unique when
+  // two dialogs exist in one tree.
+  const titleId = useId();
   const restoreRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -46,7 +68,10 @@ export function Modal({
     const panel = panelRef.current;
     // Focus the first control; falling back to the panel keeps the dialog
     // itself reachable for screen readers when it has no focusable child yet.
-    const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
+    // The header close control is skipped so an input dialog opens with the
+    // caret already in its first field rather than on "dismiss".
+    const candidates = Array.from(panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
+    const first = candidates.find((el) => !el.hasAttribute('data-dialog-dismiss'));
     (first ?? panel)?.focus();
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -95,16 +120,31 @@ export function Modal({
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={titleId}
         tabIndex={-1}
-        className="w-full max-w-[440px] bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[12px] shadow-xl p-6 focus:outline-none motion-safe:animate-[po-modal-in_120ms_ease-out]"
+        className={`w-full ${panelWidthClass} bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[12px] shadow-xl p-6 focus:outline-none motion-safe:animate-[po-modal-in_120ms_ease-out]`}
       >
-        <h3 className="text-[1rem] font-semibold text-[var(--text-primary)]">{title}</h3>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h3 id={titleId} className="text-[1.125rem] font-semibold leading-[1.33] text-[var(--text-primary)]">{title}</h3>
+          </div>
+          {/* Reference treatment (platform_apps_list_modal_buat_aplikasi_ai):
+              transparent control, 4px padding, --text-tertiary glyph, 4px radius. */}
+          <button
+            type="button"
+            data-dialog-dismiss
+            onClick={onClose}
+            aria-label="Tutup"
+            className="-mt-1 -mr-1 shrink-0 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            <IconX size={20} />
+          </button>
+        </div>
         {description && (
-          <p className="text-[0.813rem] text-[var(--text-secondary)] mt-2">{description}</p>
+          <p className={descriptionClassName}>{description}</p>
         )}
         {children && <div className="mt-4">{children}</div>}
-        <div className="flex justify-end gap-2 mt-6">{footer}</div>
+        <div className={footerClassName}>{footer}</div>
       </div>
     </div>
   );

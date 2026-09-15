@@ -1,18 +1,30 @@
 import { randomBytes } from 'node:crypto';
 
 /**
- * Workspace slugs (US-A01 AC3).
+ * Slugs — workspace slugs (US-A01 AC3) and app slugs (US-A05 AC3).
  *
- * A workspace name is free text ("Tim  Marketing ANDALAN"); the slug is what the
- * app puts in URLs, so it is derived from the name and stays unique across every
- * workspace. `organizations.slug` is UNIQUE — that constraint, not this lookup,
- * is the authority when two registrations race.
+ * Both are derived from a human name and must stay unique inside their scope:
+ * a workspace slug is globally UNIQUE, an app slug is UNIQUE per `org_id`. The
+ * lookup below is only an optimisation — the UNIQUE constraint is the authority
+ * when two writers race, and the caller retries on the violation.
  */
 
 const MAX_BASE = 48;
 
 /** Any statement runner: the pool, or a client inside a transaction. */
 export type Runner = (text: string, params?: unknown[]) => Promise<{ rows: { slug: string }[] }>;
+
+/**
+ * The tables this helper is allowed to touch, and how their uniqueness is
+ * scoped. A closed union (rather than a table name argument) keeps the
+ * interpolated identifier out of the caller's hands.
+ */
+export interface SlugScope {
+  table: 'organizations' | 'apps';
+  /** Parent column the uniqueness is scoped to. `apps` is unique per org. */
+  scopeColumn?: 'org_id';
+  scopeValue?: string;
+}
 
 /** "  Tim  Marketing ANDALAN!! " -> "tim-marketing-andalan" */
 export function slugify(name: string): string {
@@ -26,17 +38,26 @@ export function slugify(name: string): string {
 }
 
 /**
- * The smallest free slug for `name`: the plain slug when free, else -2, -3, ...
+ * The smallest free slug for `name` inside `scope`: the plain slug when free,
+ * else -2, -3, ... (US-A05 AC3 — a duplicate name gets a unique slug, not an
+ * error.)
  *
  * The lookup is a prefix match so two different names that slugify to the same
- * base can never collide. A concurrent registration can still slip in between
- * the lookup and the INSERT; the caller retries on the UNIQUE violation.
+ * base can never collide. A concurrent writer can still slip in between the
+ * lookup and the INSERT; the caller retries on the UNIQUE violation.
  */
-export async function uniqueSlug(run: Runner, name: string): Promise<string> {
-  const base = slugify(name) || 'workspace';
+export async function uniqueSlugIn(
+  run: Runner,
+  name: string,
+  scope: SlugScope,
+  fallback: string,
+): Promise<string> {
+  const base = slugify(name) || fallback;
+  const scoped = scope.scopeColumn !== undefined;
   const { rows } = await run(
-    `SELECT slug FROM organizations WHERE slug = $1 OR slug ~ ('^' || $1 || '-[0-9]+$')`,
-    [base],
+    `SELECT slug FROM ${scope.table} WHERE ${scoped ? `${scope.scopeColumn} = $2 AND ` : ''}` +
+      `(slug = $1 OR slug ~ ('^' || $1 || '-[0-9]+$'))`,
+    scoped ? [base, scope.scopeValue] : [base],
   );
   const taken = new Set(rows.map((r) => r.slug));
   if (!taken.has(base)) return base;
@@ -46,16 +67,22 @@ export async function uniqueSlug(run: Runner, name: string): Promise<string> {
   }
 }
 
+/** Workspace slug: unique across every workspace (US-A01 AC3). */
+export function uniqueSlug(run: Runner, name: string): Promise<string> {
+  return uniqueSlugIn(run, name, { table: 'organizations' }, 'workspace');
+}
+
 /**
  * A slug that does not depend on winning a race: `base` plus 4 random bytes.
  *
- * `uniqueSlug` is a lookup followed by an INSERT, so N registrations that share
- * one name can all read the same free slug and then fight over it. Retrying the
- * lookup is not enough — the losers re-read the same answer and give up, which
- * surfaced as a 500. This is the retry that always terminates: a 1-in-4-billion
- * collision is worth a second attempt, not another round of contention.
+ * The scoped lookup above is a read followed by an INSERT, so N writers that
+ * share one name can all read the same free slug and then fight over it.
+ * Retrying the lookup is not enough — the losers re-read the same answer and
+ * give up, which surfaced as a 500. This is the retry that always terminates: a
+ * 1-in-4-billion collision is worth a second attempt, not another round of
+ * contention.
  */
-export function randomSlug(name: string): string {
-  const base = slugify(name) || 'workspace';
+export function randomSlug(name: string, fallback = 'workspace'): string {
+  const base = slugify(name) || fallback;
   return `${base}-${randomBytes(4).toString('hex')}`;
 }

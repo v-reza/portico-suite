@@ -1,7 +1,23 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { randomBytes } from 'node:crypto';
-import { query } from '@/lib/db';
+import { pool, query } from '@/lib/db';
 import { getSessionUser, jsonError, can } from '@/lib/auth';
+import { randomSlug, uniqueSlugIn } from '@/lib/slug';
+
+/**
+ * App slugs are unique per workspace, not globally: two teams may both have a
+ * "CRM" (US-A05 AC3 is scoped to "di workspace itu").
+ */
+const APP_SLUG_SCOPE = { table: 'apps', scopeColumn: 'org_id' } as const;
+
+/** 23505 = unique_violation. `constraint` names which one lost the race. */
+function uniqueViolation(e: unknown): string | null {
+  const err = e as { code?: string; constraint?: string };
+  return err?.code === '23505' ? (err.constraint ?? '') : null;
+}
+
+/** How many times the deterministic slug may lose before we stop contending. */
+const MAX_SLUG_ATTEMPTS = 5;
 
 /**
  * GET /api/apps — list all apps for the user's org.
@@ -19,7 +35,18 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * POST /api/apps — create a new app.
+ * POST /api/apps — create a new app (US-A05).
+ *
+ * AC1: the row is written with `is_published = false` (a draft) and the response
+ *      carries the id the editor is opened with.
+ * AC2: an empty name is refused with a field-level error; the client shows the
+ *      message on the name input.
+ * AC3: the slug comes from the name and is made unique inside the workspace —
+ *      a second "CRM" becomes `crm-2`, never a 409.
+ * AC4: the creation is written to `activity_logs` with the actor and the time.
+ *
+ * AC1 + AC4 are one transaction: an app that exists without its audit entry is
+ * exactly the state the AC forbids.
  */
 export async function POST(req: NextRequest) {
   const user = await getSessionUser(req);
@@ -28,24 +55,57 @@ export async function POST(req: NextRequest) {
     return jsonError(403, 'forbidden', 'Anda tidak punya izin membuat app.');
   }
 
-  const { name, slug, description } = await req.json().catch(() => ({}));
-  if (!name) return jsonError(400, 'missing', 'Nama app wajib diisi.');
+  const { name, description } = await req.json().catch(() => ({}));
+  // AC2 — the field is named in the payload so the form can mark the input
+  // itself rather than showing a page-level banner.
+  if (typeof name !== 'string' || !name.trim()) {
+    return jsonError(400, 'name_required', 'Nama aplikasi wajib diisi.');
+  }
+  const appName = name.trim();
 
-  const id = randomBytes(8).toString('hex');
-  const finalSlug = slug?.trim()?.toLowerCase()?.replace(/[^a-z0-9-]/g, '-') ?? id.slice(0, 8);
-
+  const client = await pool.connect();
   try {
-    const result = await query(
-      `INSERT INTO apps (id, org_id, name, slug, description)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, name, slug, description, version, is_published, created_at`,
-      [id, user.org_id, name, finalSlug, description ?? null],
-    );
-    return NextResponse.json({ app: result.rows[0] }, { status: 201 });
-  } catch (e: any) {
-    if (e.code === '23505') {
-      return jsonError(409, 'exists', 'Slug sudah dipakai.');
+    // AC3 under concurrency: a deterministic slug is only unique once the INSERT
+    // has committed, so the loop re-reads after a loss. Past MAX_SLUG_ATTEMPTS
+    // the next value cannot contend at all (randomSlug), which is what stops
+    // this from turning a burst of identical names into 500s.
+    let fallback = false;
+    for (let attempt = 1; ; attempt++) {
+      const appId = randomBytes(8).toString('hex');
+      const slug = fallback
+        ? randomSlug(appName, 'app')
+        : await uniqueSlugIn(
+            (text, params) => client.query(text, params as never),
+            appName,
+            { ...APP_SLUG_SCOPE, scopeValue: user.org_id },
+            'app',
+          );
+
+      await client.query('BEGIN');
+      try {
+        const created = await client.query(
+          `INSERT INTO apps (id, org_id, name, slug, description, is_published)
+           VALUES ($1, $2, $3, $4, $5, false)
+           RETURNING id, name, slug, description, version, is_published, created_at, updated_at`,
+          [appId, user.org_id, appName, slug, description?.trim() || null],
+        );
+        await client.query(
+          `INSERT INTO activity_logs (id, org_id, user_id, action, entity_type, entity_id, meta_json)
+           VALUES ($1, $2, $3, 'app_created', 'app', $4, $5)`,
+          [randomBytes(8).toString('hex'), user.org_id, user.id, appId, JSON.stringify({ name: appName, slug })],
+        );
+        await client.query('COMMIT');
+        return NextResponse.json({ app: created.rows[0] }, { status: 201 });
+      } catch (e) {
+        await client.query('ROLLBACK');
+        const constraint = uniqueViolation(e);
+        if (!constraint) throw e;
+        // `apps_org_id_slug_key` — someone else took the slug. Retry, and stop
+        // contending once the deterministic attempts are exhausted.
+        fallback = attempt >= MAX_SLUG_ATTEMPTS;
+      }
     }
-    throw e;
+  } finally {
+    client.release();
   }
 }
