@@ -148,8 +148,9 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
 
   return (
     <PlatformShell
-      active="apps"
-      user={{ name: user.name, role: user.role }}
+          title="Apps"
+          active="apps"
+          user={{ name: user.name, role: user.role }}
       toolbar={
         <div className="flex items-center gap-3">
           {/* Compact search */}
