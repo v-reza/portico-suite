@@ -1,10 +1,19 @@
 # AUDIT — US-A32 Rate Limiting (Platform)
 
-Card: `t_1a26a90c` · tanggal audit: 2026-09-14 · sifat: **read-only** (nggak ada kode aplikasi yang diubah)
+Card: `t_1a26a90c` · tanggal audit: 2026-09-14 · **direvisi: 2026-09-15 (run kedua card yang sama)**
+sifat: **read-only** (nggak ada kode aplikasi yang diubah)
 
 Verdict singkat: **belum ada kodenya, bukan cuma belum ada testnya.** 6 AC Must, semuanya NO-TEST.
 `check_coverage.py` baris terakhir: `NO-TEST US-A32  [Must   ] AC 0/6`, `stories=32 NO-TEST=18 PARTIAL=14`,
 `orphan-citations=0`.
+
+> **Apa yang run kedua kerjain.** Run pertama (2026-09-14) nulis laporan ini tapi ke-block sebelum sempat
+> `kanban_complete`. Run kedua **nggak nulis ulang analisisnya** — dia **memverifikasi ulang tiap klaim di
+> sini** (grep, redis ping, schema, coverage gate: semua reproduce), lalu:
+> 1. nandain **§4 yang basi** (3 dari 5 butir udah nggak berlaku — itu aktif nyasarin worker berikutnya), dan
+> 2. **mutusin 3 blocker yang di run pertama digantung ke manusia** — lihat **§5**.
+>
+> Kalau lu baca ini sebagai worker implementasi: **mulai dari §5**, jangan dari §4.
 
 ---
 
@@ -125,16 +134,17 @@ Jadi pembagiannya:
 karena AC2/AC3/AC4/AC5/AC6 bisa diuji di endpoint itu. Jalur `POST /api/public/...` masuk card terpisah yang
 jadi parent-nya.
 
-Dua pertanyaan desain yang perlu diputusin SEBELUM nulis kode (bukan sama worker berikutnya):
+Dua pertanyaan desain di bawah **sudah diputusin di §5 (B2)** — jangan digantung lagi sebagai pertanyaan
+terbuka. Ringkasnya tetap ditulis di sini biar konteksnya kebaca berurutan:
 
-1. **Kunci limiter.** Usul: `ip:<ip>` untuk request tanpa sesi, `tok:<user.id>` untuk request bersesi;
+1. **Kunci limiter.** `ip:<ip>` untuk request tanpa sesi, `tok:<user.id>` untuk request bersesi;
    untuk endpoint AI **dua-duanya** (per-IP DAN per-token, sesuai AC1 "per-IP dan per-token"). Kalau token
    dan IP dua-duanya kena, permintaan ke-11 ditolak oleh yang lebih dulu penuh — jangan di-`&&`, biar nggak
-   ada dua permintaan yang saling nunggu.
+   ada dua permintaan yang saling nunggu. **(diputusin: §5 B2)**
 2. **Sumber IP.** `grep x-forwarded-for\|remoteAddress` di `apps/platform/src` → kosong. Belum ada konvensi.
    Di belakang proxy (`PLATFORM_BASE_URL=http://localhost:3001`), `x-forwarded-for` bisa di-spoof klien.
-   Usul: baca `x-forwarded-for` **hanya** kalau `TRUST_PROXY=1`, kalau nggak pakai alamat socket; di dev/test
-   `x-forwarded-for` dipakai supaya test bisa nentuin IP sendiri (biar test bisa isolasi).
+   Baca `x-forwarded-for` **hanya** kalau `TRUST_PROXY=1`, kalau nggak pakai alamat socket; di dev/test
+   `TRUST_PROXY=1` supaya test bisa nentuin IP sendiri (biar test bisa isolasi). **(diputusin: §5 B2)**
 
 ### Q2 — penyimpanan counter di mana?
 
@@ -269,22 +279,74 @@ Semua file di `apps/platform` kecuali disebut lain.
    `PLATFORM_BASE_URL` beda, lalu 5 kiriman ke masing-masing dan kiriman ke-11 harus 429. Kalau cuma satu
    instance yang jalan, AC4 **nggak boleh** ditandai lulus — harus jujur NO-TEST/PARTIAL.
 
-## 4. Blocker & risiko
+## 4. Risiko & prasyarat operasional
 
-- **AC4 nggak bisa diverifikasi tanpa 2 instance jalan.** Perlu diputusin: dua `next dev` port beda
-  (3001 + 3011, port 3000 jangan dipakai — ada proses asing di host ini), atau satu proses yang ngimpor
-  modul limiter dan manggil `consume()` dari dua koneksi Redis. Yang kedua lebih murah dan tetap nguji
-  "store bersama, bukan memori proses", tapi kurang meyakinkan sebagai bukti 2 instance. **Usul gw:
-  dua `next dev` port beda**, karena itu yang ditulis AC-nya.
-- **Worktree `t_1a26a90c` kosong saat audit berjalan.** Pas gw mulai, worktree punya `apps/` + `docs/`;
-  di tengah jalan isinya hilang (tinggal `git status` yang nunjukin `docs/stitch_output/` sebagai untracked
-  di main repo). Gw lanjut baca dari main repo `C:\Users\Reza\Desktop\portfolio-projects\portico-suite`
-  (state git sama, commit `ea4bbfe`). Yang perlu dicek operator: `.worktrees/t_1a26a90c` dan
-  `.worktrees/t_e95f6048` dua-duanya kosong, jadi card implementasi berikutnya perlu worktree di-setup ulang.
-- **`docs/stitch_output/` nggak ada di repo** — ada di `C:\Users\Reza\Desktop\portfolio-projects\stitch_output\`
-  dan sekarang muncul sebagai untracked `docs/stitch_output/` di main repo. Card-card lain nyuruh buka
-  `docs/stitch_output/...`; pastiin jalurnya bener sebelum worker lain nyari dan gagal.
-- **`--critical-tint` nggak ada di token.** `apps/platform/src/app/login/page.tsx:62` pakai
-  `bg-[var(--critical-tint)]` tapi `packages/tokens/dist/tokens.css` cuma punya `--critical: #b91c1c`.
-  Ini bukan scope US-A32, tapi kalau nanti limiter nampilin pesan 429 di UI, jangan niru var yang nggak ada.
-- **Drift FR-A01** (`{ data, error }`) — lihat Q4, card terpisah.
+> **Revisi 2026-09-15 (run `t_1a26a90c` kedua).** Tiga dari lima butir di bawah **sudah nggak berlaku** dan
+> butir yang salah itu aktif nyasarin worker berikutnya, jadi ditandai per butir. Yang masih berlaku tetap
+> ditulis apa adanya.
+
+- **AC4 butuh 2 instance jalan — SUDAH DIPUTUS (lihat §5 B1).** Jangan digantung lagi; keputusannya
+  dan cara jalankannya ada di §5.
+- **[BASI] "Worktree kosong" — jangan dipercaya lagi.** Butir aslinya bilang worktree `t_1a26a90c` dan
+  `t_e95f6048` kosong dan card berikutnya perlu setup ulang. Run 2026-09-15 nemu `t_1a26a90c` **utuh**
+  (semua `apps/`, `docs/`, `scripts/` ada, `git status` bersih, branch == master di `1594910`).
+  **Metode yang bener, bukan state:** worktree `git worktree add` polos itu memang nggak punya
+  `node_modules` / `.env` / `packages/tokens/dist` — itu normal, bukan "kosong", dan itu yang bikin
+  `Cannot find module 'next'` atau `/login` 500. Jalanin `bash scripts/bootstrap-worktree.sh` dari root
+  worktree (harus berakhir `bootstrap: ready`). Sebelum nuduh sesuatu hilang, `ls` dulu path-nya.
+- **[BASI] `docs/stitch_output/` sekarang ADA di repo dan ter-track git.** Ada di
+  `docs/stitch_output/stitch_portico_full_ui_set/<screen>/{code.html,screen.png}`. Nggak perlu nyari ke
+  `Desktop\portfolio-projects\stitch_output\` lagi.
+- **[BASI] `--critical-tint` sekarang ADA.** `docs/PORTICO-SUITE-DESIGN.md:31` mendefinisikan
+  `critical-tint: "#fdecec"` dan `packages/tokens/dist/tokens.css` udah nge-emit var-nya. Diperbaiki di
+  commit `d2daa26` (nilainya diambil dari `badge-danger.backgroundColor`, jadi nge-ekspor nilai design yang
+  sudah ada — bukan bikin token baru). Jadi pesan 429 di UI boleh pakai `var(--critical-tint)`.
+- **Drift FR-A01** (`{ data, error }` vs `{ error, message }`) — **masih berlaku**, lihat Q4. Card terpisah.
+
+## 5. Keputusan atas 3 blocker (diputusin di sini, bukan dieskalasi)
+
+Ketiga butir ini di run pertama ditulis "perlu diputusin SEBELUM nulis kode (bukan sama worker berikutnya)".
+Semuanya bisa diputusin dari dokumen yang sudah ada di repo, dan card body secara eksplisit nyuruh
+"self-improve, bukan eskalasi". Jadi diputusin di sini, **dengan sitasi**, biar card implementasi nggak
+berhenti nanya lagi.
+
+### B1 — AC4: dua instance beneran, bukan simulasi
+
+**Keputusan: dua proses `next dev` terpisah** (`-p 3001` dan `-p 3011`), dua-duanya dari worktree ini,
+dua-duanya `set -a && . ../../.env && set +a`. 5 kiriman bergantian ke masing-masing, kiriman ke-11 → 429.
+
+Alasan: AC4 nulis *"Kalau app berjalan di 2 instance"* — dua koneksi Redis dari satu proses **bukan** yang
+diminta AC, dan nggak membuktikan batas ditegakkan lintas proses. Kalau cuma satu instance yang bisa jalan,
+AC4 **tetap NO-TEST/PARTIAL** — jangan ditandai lulus. Ini keputusan operasional (cara ngejalanin test),
+bukan pertanyaan produk.
+
+Jangan pakai port 3000: `netstat` nunjukin PID asing (2532) masih LISTENING di sana.
+
+### B2 — Kunci limiter + sumber IP
+
+**Keputusan:**
+
+- Kunci `ip:<ip>` buat request **tanpa sesi**; `tok:<user.id>` buat request **bersesi**. Buat endpoint yang
+  kena dua-duanya (AI), **konsumsi dua counter dan tolak dari yang lebih dulu penuh** — jangan `&&` yang
+  bikin satu permintaan nunggu counter lain.
+- `x-forwarded-for` **cuma dipercaya kalau `TRUST_PROXY=1`**; selain itu pakai alamat socket. Di dev/test
+  `TRUST_PROXY=1` supaya test bisa nentuin IP sendiri (itu yang bikin suite bisa isolasi).
+
+Alasan: AC1 nyebut eksplisit *"per-IP dan per-token"*, jadi dua kunci itu memang diminta, bukan pilihan gw.
+Sumber IP belum ada konvensinya di repo (`grep -rn "x-forwarded-for" apps packages` → kosong), jadi ini
+**bikin konvensi baru** — dan konvensinya harus aman: `x-forwarded-for` tanpa gate = klien bisa nge-spoof
+kuncinya dan lolos limit sepenuhnya. Itu sebabnya gate `TRUST_PROXY` bukan opsional.
+
+### B3 — Redis mati: fail-open, tapi kelihatan
+
+**Keputusan: fail-open + `console.warn`, dan jangan diam-diam.** Permintaan tetap dilayani saat Redis mati,
+tapi kejadiannya di-log (tanpa nulis IP/token mentah ke log — itu AC6-nya US-B33).
+
+Alasan: master PRD §5.1 "Aturan kemandirian" — *"Hub mati tidak boleh membuat app A, B, atau C tidak bisa
+dipakai"*. Prinsip yang sama berlaku buat store bersama: fail-closed bikin satu Redis mati = **semua**
+endpoint berlimit mati total, yang lebih parah daripada sementara nggak ada limit. Tapi fail-open berarti
+"nggak ada limit selama Redis mati", jadi itu wajib kelihatan — bukan pilihan diam.
+
+Catatan: `apps/platform/src/app/ready/route.ts` **sekarang cuma nge-probe `db`** (nggak ada komponen
+`redis`). Jadi visibility-nya belum ada; nambah komponen `redis` ke `/ready` itu ranah US-A29 (AC2-nya udah
+minta status per komponen), bukan US-A32. Jangan digabung ke card US-A32.
