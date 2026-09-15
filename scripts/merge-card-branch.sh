@@ -11,16 +11,26 @@
 # Run it from inside your worktree, as the LAST action before kanban_complete.
 #
 # Usage:
-#   bash scripts/merge-card-branch.sh [branch]
+#   bash scripts/merge-card-branch.sh [branch] [--no-push]
 #
 # `branch` defaults to the branch checked out in your worktree. The script
 # always operates on the MAIN repo's working tree, even when invoked from a
 # linked worktree, because a fast-forward merge has to happen where the target
 # branch is checked out.
 #
-# Exit codes: 0 = merged (or already up to date); 1 = refused, reason on stdout.
+# The merge is pushed to `origin` by default, so the work is visible on GitHub
+# without a second step. `--no-push` (or PUSH_REMOTE=somewhere) changes that.
+#
+# Exit codes: 0 = merged and pushed (or already up to date); 1 = refused, reason
+# on stdout, nothing was changed; 3 = merged LOCALLY but the push failed.
 
 set -uo pipefail
+
+# Never let git block on a credential prompt. An unattended worker has no tty,
+# so an unconfigured remote would hang the run until the dispatcher kills it —
+# a silent stall, the worst possible failure. Fail fast and say so instead.
+export GIT_TERMINAL_PROMPT=0
+export GIT_ASKPASS=echo
 
 die() { echo "merge-card-branch: REFUSED — $*"; exit 1; }
 
@@ -52,7 +62,16 @@ MAIN="$(winpath "$(dirname "$COMMON")")"
 [ -d "$MAIN/.git" ] || die "resolved main repo $MAIN has no .git directory"
 
 # --- which branch are we landing? -------------------------------------------
-BRANCH="${1:-}"
+BRANCH=""
+PUSH=1
+for arg in "$@"; do
+    case "$arg" in
+        --no-push) PUSH=0 ;;
+        -*) die "unknown flag '$arg' (supported: --no-push)" ;;
+        *) [ -z "$BRANCH" ] || die "more than one branch given"; BRANCH="$arg" ;;
+    esac
+done
+REMOTE="${PUSH_REMOTE:-origin}"
 if [ -z "$BRANCH" ]; then
     BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 fi
@@ -95,17 +114,46 @@ PRE="$(git -C "$MAIN" rev-parse HEAD)"
 
 if [ "$(git -C "$MAIN" rev-parse "$BRANCH")" = "$PRE" ]; then
     echo "merge-card-branch: already up to date — '$BRANCH' is at $TARGET ($(git -C "$MAIN" rev-parse --short HEAD))"
-    exit 0
+    POST="$PRE"
+else
+    # --- merge --------------------------------------------------------------
+    OUT="$(git -C "$MAIN" merge --ff-only "$BRANCH" 2>&1)" || die "merge failed:
+$(echo "$OUT" | sed 's/^/    /')"
+    POST="$(git -C "$MAIN" rev-parse HEAD)"
 fi
 
-# --- merge ------------------------------------------------------------------
-OUT="$(git -C "$MAIN" merge --ff-only "$BRANCH" 2>&1)" || die "merge failed:
-$(echo "$OUT" | sed 's/^/    /')"
+# --- push --------------------------------------------------------------------
+# Pushed even on the up-to-date path: the target may already be ahead of origin
+# from an earlier local-only merge, and leaving origin behind is the same
+# invisible-work bug this script exists to kill.
+if [ "$PUSH" = "1" ]; then
+    if ! git -C "$MAIN" remote get-url "$REMOTE" >/dev/null 2>&1; then
+        echo "merge-card-branch: NOTE — no '$REMOTE' remote configured, skipping push"
+    else
+        # A stalled network must not eat the rest of an unattended run's budget.
+        if PUSH_OUT="$(timeout 120 git -C "$MAIN" push "$REMOTE" "$TARGET" 2>&1)"; then
+            PUSHED=1
+        else
+            echo "merge-card-branch: MERGED LOCALLY, PUSH FAILED — '$REMOTE/$TARGET' is behind"
+            echo "$PUSH_OUT" | sed 's/^/    /'
+            echo "  local $TARGET is at $(git -C "$MAIN" rev-parse --short "$POST")"
+            echo "  nothing is lost; finish it with:"
+            echo "    git -C \"$MAIN\" push $REMOTE $TARGET"
+            exit 3
+        fi
+    fi
+fi
 
-POST="$(git -C "$MAIN" rev-parse HEAD)"
 echo "merge-card-branch: OK"
 echo "  branch : $BRANCH  ->  $TARGET"
 echo "  before : $(git -C "$MAIN" rev-parse --short "$PRE")"
 echo "  after  : $(git -C "$MAIN" rev-parse --short "$POST")"
+if [ "${PUSHED:-}" = "1" ]; then
+    echo "  pushed : $REMOTE/$TARGET"
+elif [ "$PUSH" = "1" ]; then
+    echo "  pushed : (no remote configured)"
+else
+    echo "  pushed : (--no-push)"
+fi
 echo "  files  :"
 git -C "$MAIN" diff --stat "$PRE" "$POST" | sed 's/^/    /'
