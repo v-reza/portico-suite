@@ -127,7 +127,14 @@ export function Modal({
         aria-labelledby={titleId}
         tabIndex={-1}
         className={`w-full ${panelWidthClass} flex flex-col gap-4 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[12px] p-6 focus:outline-none motion-safe:animate-[po-modal-in_120ms_ease-out]`}
-                style={{ boxShadow: 'var(--elevation-dialog)' }}
+        // The reference panel is `border: 1px solid rgba(15,23,42,0.10)` PLUS a
+        // two-layer shadow. The `--elevation-dialog` token folds a third layer
+        // (`0 0 0 1px` same colour) into the shadow, so using the token verbatim
+        // alongside the border draws the hairline twice and the edge reads
+        // heavier than the reference. Keep the border (it is what makes the
+        // panel 560px border-box, matching the reference's inner width) and use
+        // only the token's two elevation layers here.
+        style={{ boxShadow: '0 16px 48px rgba(15,23,42,0.16), 0 4px 12px rgba(15,23,42,0.08)' }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
