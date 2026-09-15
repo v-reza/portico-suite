@@ -1,6 +1,6 @@
 # AUDIT — Workflow Runner Platform (US-A20 / US-A21)
 
-- Card: `t_f99491b6` · **read-only**: nggak ada file di `apps/*/src` yang diubah
+- Card: `t_f99491b6` · **read-only terhadap kode app**: nol file di `apps/*/src` atau `packages/*/src` yang diubah. Yang ditambah cuma laporan ini + 3 probe di `apps/platform/scripts/`
 - Commit dasar: `1594910` · Branch: `portico-suite/t_f99491b6-audit-workflow-runner-us-a20-a21-apa-yan`
 - PRD yang dibaca dari FILE: `docs/A-platform-PRD.md` → **US-A20** (6 AC, baris 402–410), **US-A21** (5 AC, baris 414–421), plus US-A22..A25/A30 sebagai konteks ketergantungan
 - Design ground truth yang dibaca utuh: `docs/stitch_output/stitch_portico_full_ui_set/platform_workflow_builder/code.html` (447 baris), `platform_workflow_runs/code.html` (610 baris), `platform_metrik/code.html` (379 baris)
@@ -251,16 +251,16 @@ Yang **jangan** dikerjain di card pertama: cron (US-A20 AC3), webhook + HMAC (AC
 
 **Bukti yang harus ada sebelum bilang AC1 lulus:** kirim form publik tanpa sesi → `SELECT count(*) FROM workflow_runs` naik 1 → `SELECT count(*) FROM workflow_run_steps` = jumlah langkah → lalu **kirim lagi dan pastikan naik lagi tepat 1** (bukan 2). Test-nya harus baca ulang DB, bukan cuma cek `201`.
 
-**Urutan yang gw rekomendasiin buat card-card berikutnya** (satu card = satu AC-group, biar bisa diverifikasi terpisah):
+**Urutan yang gw rekomendasiin buat card-card berikutnya** (satu card = satu AC-group, biar bisa diverifikasi terpisah). Card `[A/US-A20]` (`t_b61dc051`) dan `[A/US-A21]` (`t_93dbfd4e`) udah ada di board dalam keadaan `blocked` — rencana ini masuk ke dua card itu, bukan bikin card baru:
 
-1. `US-A20 AC1` + `AC5` — form publik → 1 run; workflow nonaktif → 0 run. **Blokir semua yang lain.**
-2. `US-A21 AC1/AC2/AC3` — handler `create_row` + `send_email` (transport-opsional) + `call_api`, semuanya nulis `workflow_run_steps` dengan error kebaca manusia.
-3. `US-A21 AC4/AC5` — reorder + delete (dan test riwayat lama tetap utuh).
-4. `US-A20 AC3/AC4/AC6` — cron + webhook HMAC + validasi jadwal. Butuh tabel `cron_jobs` yang sekarang belum ada.
-5. `US-A22` — `condition` dengan ekspresi aman (tanpa `eval`).
-6. `US-A23` — `on_error` continue/stop/retry + `attempt`.
-7. `US-A24` — mode uji (dry-run: tulis ke `workflow_run_steps`, JANGAN ke `app_data_rows`).
-8. `US-A25` + `US-A30` — halaman Eksekusi (design `platform_workflow_runs`) + metrik.
+1. `US-A20 AC1` + `AC5` — form publik → 1 run; workflow nonaktif → 0 run. **Blokir semua yang lain.** → `t_b61dc051`
+2. `US-A21 AC1/AC2/AC3` — handler `create_row` + `send_email` (transport-opsional) + `call_api`, semuanya nulis `workflow_run_steps` dengan error kebaca manusia. → `t_93dbfd4e`
+3. `US-A21 AC4/AC5` — reorder + delete (dan test riwayat lama tetap utuh). → `t_93dbfd4e`
+4. `US-A20 AC3/AC4/AC6` — cron + webhook HMAC + validasi jadwal. Butuh tabel `cron_jobs` yang sekarang belum ada. → `t_b61dc051`
+5. `US-A22` — `condition` dengan ekspresi aman (tanpa `eval`). → `t_1dc91e66`
+6. `US-A23` — `on_error` continue/stop/retry + `attempt`. → `t_61a8726e`
+7. `US-A24` — mode uji (dry-run: tulis ke `workflow_run_steps`, JANGAN ke `app_data_rows`). → `t_e48681df`
+8. `US-A25` + `US-A30` — halaman Eksekusi (design `platform_workflow_runs`) + metrik. → `t_5a6287a2`, `t_ea60c0f5`
 
 ---
 
@@ -295,7 +295,7 @@ AC6 memang beneran lulus (validasi whitelist jalan). AC2 **cuma ngecek `201` + a
 
 ---
 
-## 9. File probe (read-only, dihapus sebelum merge)
+## 9. File probe (read-only terhadap `src/`, di-commit biar bisa diulang)
 
 Tiga script sekali-pakai yang ngasih bukti runtime di atas. Semuanya bikin fixture terus **menghapusnya sendiri**, dan udah diverifikasi DB balik ke `ROWS 0`:
 
@@ -303,7 +303,9 @@ Tiga script sekali-pakai yang ngasih bukti runtime di atas. Semuanya bikin fixtu
 - `apps/platform/scripts/_audit_trigger_probe.mjs` — fire trigger, hitung `workflow_runs`
 - `apps/platform/scripts/_audit_step_probe.mjs` — bug id respons + reorder + 404 detail
 
-Nggak di-commit (nggak masuk `git add`) — prefix `_audit_` cuma penanda lokal, bukan pelindung.
+Ikut di-commit (satu commit sama laporan ini) supaya temuan di atas bisa direproduksi, bukan cuma diklaim. Prefix `_audit_` biar jelas ini bukan bagian test suite — tapi **itu cuma penanda nama, bukan pelindung**: `check_coverage.py` scan semua file di `--scan`.
+
+Jalannya: `cd apps/platform && PLATFORM_BASE_URL=http://localhost:3110 node scripts/_audit_trigger_probe.mjs` (server harus jalan dari worktree ini, `/ready` = `ready`).
 
 **Jebakan yang kena waktu audit ini:** `check_coverage.py` scan SEMUA file di `--scan` dan regex anotasinya (`(US-[A-Z]\d{2})\s*[,/ ]\s*(AC\d+)`) nggak peduli itu komentar, string, atau nama variabel. Probe gw nulis `// can we reorder? (US-A21 AC4)` di komentar → gate naik dari `US-A21 PARTIAL 1/5` jadi `2/5` **tanpa satu assertion pun**. Yang lebih bahaya: `orphan-citations` tetap 0, jadi naiknya kelihatan sah.
 
