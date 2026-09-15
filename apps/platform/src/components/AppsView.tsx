@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { IconPlus } from '@portico/ui/icons';
+import { IconPlus, IconSparkles } from '@portico/ui/icons';
 import { PlatformShell } from './PlatformShell';
 import { CreateAppModal } from './CreateAppModal';
+import { PromptAppModal } from './PromptAppModal';
 
 interface AppRow {
   id: string;
@@ -14,6 +15,8 @@ interface AppRow {
   version: number;
   is_published: boolean;
   created_at: string;
+  /** AC1's "waktu terakhir diubah" — the column the card's timestamp reads. */
+  updated_at: string;
 }
 
 function timeAgo(iso: string): string {
@@ -33,16 +36,40 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
   const [search, setSearch] = useState('');
   const [segment, setSegment] = useState<'semua' | 'saya' | 'tim'>('semua');
   const [showCreate, setShowCreate] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  // AC4 — a failed load is its own state. It is deliberately not folded into
+  // `loading`: a skeleton promises the data is coming, and after a failure it
+  // is not.
+  const [error, setError] = useState<string | null>(null);
 
+  /**
+   * AC3 — `loading` starts true and is only cleared once the request settles,
+   * so the first paint is the skeleton rather than an empty screen.
+   * AC4 — a non-2xx or a thrown fetch clears `apps` instead of keeping the
+   * previous list: half a list under an error banner reads as real data.
+   */
   async function load() {
-    const r = await fetch('/api/apps', { cache: 'no-store' });
-    if (r.status === 401) {
-      router.push('/login');
-      return;
+    setLoading(true);
+    setError(null);
+    try {
+      const r = await fetch('/api/apps', { cache: 'no-store' });
+      if (r.status === 401) {
+        router.push('/login');
+        return;
+      }
+      if (!r.ok) {
+        setApps([]);
+        setError(`Gagal memuat daftar aplikasi (${r.status}).`);
+        return;
+      }
+      const d = await r.json();
+      setApps(Array.isArray(d?.apps) ? d.apps : []);
+    } catch {
+      setApps([]);
+      setError('Gagal memuat daftar aplikasi. Periksa koneksi lalu coba lagi.');
+    } finally {
+      setLoading(false);
     }
-    const d = await r.json();
-    setApps(d.apps ?? []);
-    setLoading(false);
   }
 
   useEffect(() => { load(); }, []);
@@ -64,6 +91,7 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
   });
 
   const canCreate = user.role === 'admin' || user.role === 'builder';
+  const state = loading ? 'loading' : error ? 'error' : apps.length === 0 ? 'empty' : 'ready';
 
   return (
     <PlatformShell
@@ -158,18 +186,120 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
           </div>
 
           {/* Grid kartu */}
+          <div data-state={state}>
           {loading ? (
-            <p className="text-sm text-[var(--text-tertiary)]">Memuat…</p>
+            /* AC3 — the design export has no apps-list loading screen, so this is
+             * composed from the one it does have (helpdesk ticket list loading):
+             * `#ededf0` (= --surface-sunken) blocks under a 1.8s opacity pulse,
+             * arranged in the real card's own geometry so the list does not jump
+             * when the data lands. The count and the state live on the wrapper so
+             * a test can tell "still loading" from "loaded, empty". */
+            <div className="grid grid-cols-3 gap-3 pt-1" aria-hidden="true">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="skeleton-pulse bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-4 h-[160px] flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <div className="h-4 w-32 bg-[var(--surface-sunken)] rounded" />
+                    <div className="h-2.5 w-24 bg-[var(--surface-sunken)] rounded" />
+                    <div className="h-3 w-full bg-[var(--surface-sunken)] rounded pt-1" />
+                    <div className="h-3 w-4/5 bg-[var(--surface-sunken)] rounded" />
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
+                    <div className="h-4 w-16 bg-[var(--surface-sunken)] rounded-full" />
+                    <div className="h-2.5 w-20 bg-[var(--surface-sunken)] rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            /* AC4 — the export's error callout (platform_workflow_runs): critical
+             * tint panel, critical text, panel/hairline retry button with a
+             * replay glyph. `apps` is already empty here, so no half-built card
+             * can sit under the message. */
+            <div role="alert" className="bg-[var(--critical-tint)] border border-[var(--critical)]/20 rounded-[6px] p-3">
+              <p className="text-[12px] leading-relaxed text-[var(--critical)]">{error}</p>
+              <button
+                type="button"
+                onClick={load}
+                className="bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-primary)] px-3 py-1.5 rounded-[6px] text-[12px] font-medium hover:bg-[var(--surface-hover)] mt-2.5 inline-flex items-center gap-1.5 transition-colors shadow-sm"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 4.5a7.5 7.5 0 1 1-5.3 2.2" />
+                  <path d="M3.5 3.5v4.5h4.5" />
+                </svg>
+                <span>Coba lagi</span>
+              </button>
+            </div>
+          ) : apps.length === 0 ? (
+            /* AC2 — two actions, no apps. The export draws no apps-list empty
+             * state, so this is composed from the helpdesk empty state (icon
+             * disc + 14px/500 heading + 12px tertiary line, all at the same
+             * density) and the actions reuse the two button treatments already
+             * on this screen: the accent primary from "Aplikasi baru" and the
+             * panel/hairline secondary from that empty state's own button. */
+            <div className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-12 flex flex-col items-center justify-center text-center select-none">
+              <div className="w-10 h-10 rounded-full bg-[var(--surface-hover)] flex items-center justify-center mb-3 text-[var(--text-quaternary)]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+                  <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+                  <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+                  <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+                </svg>
+              </div>
+              <h3 className="text-[14px] font-medium text-[var(--text-primary)] mb-1">Belum ada aplikasi</h3>
+              <p className="text-[12px] text-[var(--text-tertiary)] max-w-[280px] mb-4">
+                Mulai dari satu deskripsi, atau susun sendiri dari kanvas kosong.
+              </p>
+              {canCreate && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPrompt(true)}
+                    className="h-8 px-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-[6px] text-[13px] font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+                  >
+                    <IconSparkles size={16} />
+                    <span>Buat dari prompt</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCreate(true)}
+                    className="h-8 px-3.5 bg-[var(--surface-panel)] border border-[rgba(15,23,42,0.12)] text-[var(--text-primary)] rounded-[6px] text-[13px] font-medium flex items-center gap-1.5 hover:bg-[var(--surface-hover)] transition-colors shadow-sm"
+                  >
+                    <IconPlus size={16} />
+                    <span>Buat kosong</span>
+                  </button>
+                </div>
+              )}
+            </div>
           ) : filtered.length === 0 ? (
+            /* A search that matches nothing is not the empty state: the two
+             * "create" actions would be the wrong answer, and the design's
+             * filter-empty treatment is a single clear action. */
             <div className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-12 text-center">
-              <p className="text-[var(--text-tertiary)] text-sm">{search ? 'Tidak ada hasil.' : 'Belum ada aplikasi. Buat yang pertama!'}</p>
+              <p className="text-[var(--text-tertiary)] text-sm">Tidak ada aplikasi yang cocok dengan pencarian.</p>
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                className="h-7 px-3 mt-4 rounded-md bg-[var(--surface-panel)] border border-[rgba(15,23,42,0.12)] text-[var(--text-primary)] text-[12px] font-medium hover:bg-[var(--surface-hover)] transition-colors shadow-sm"
+              >
+                Bersihkan pencarian
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-3 pt-1">
               {filtered.map((a) => {
                 return (
+                  /* The reference draws this card as an <article> with no href and
+                   * `cursor-pointer`. It has to navigate, so it is rendered as the
+                   * anchor that owns the same class list — one element, identical
+                   * geometry, no extra wrapper. `data-app-card` is the stable hook
+                   * for the AC1 assertions, which otherwise could not tell a card
+                   * from any other link on the page. */
                   <a
                     key={a.id}
+                    data-app-card={a.id}
                     href={`/apps/${a.id}`}
                     className="bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[8px] p-4 hover:border-[var(--accent)]/40 transition-colors flex flex-col justify-between h-[160px] cursor-pointer shadow-[0_1px_2px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.08)]"
                   >
@@ -186,17 +316,21 @@ export function AppsView({ user, appCount }: { user: { name: string; role: strin
                         : 'font-mono text-[11px] px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium'}>
                         {a.is_published ? 'Terbit' : 'Draft'}
                       </span>
-                      <span className="font-mono text-[11px] text-[var(--text-quaternary)]">{a.created_at ? `diubah ${timeAgo(a.created_at)}` : ''}</span>
+                      <span className="font-mono text-[11px] text-[var(--text-quaternary)]">
+                        {a.updated_at ? `diubah ${timeAgo(a.updated_at)}` : ''}
+                      </span>
                     </div>
                   </a>
                 );
               })}
             </div>
           )}
+          </div>
         </div>
       </div>
 
       <CreateAppModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={onCreated} />
+      <PromptAppModal open={showPrompt} onClose={() => setShowPrompt(false)} onCreated={onCreated} />
     </PlatformShell>
   );
 }

@@ -410,6 +410,92 @@ async function dropUserAndOrg(userId, orgId) {
   const r = await req('/api/apps');
   const b = await json(r);
   record('US-A06 AC1', 'list apps', Array.isArray(b?.apps) && b.apps.length >= 2, `count=${b?.apps?.length}`);
+
+  // AC1 is a contract about the FIELDS the list must carry — a card can only
+  // show name/slug/description/status/last-modified if the endpoint sends all
+  // five. Asserting the shape here keeps the browser test about rendering.
+  const row = (b?.apps ?? [])[0] ?? {};
+  const required = ['id', 'name', 'slug', 'description', 'is_published', 'updated_at'];
+  const missing = required.filter((f) => !(f in row));
+  record('US-A06 AC1', 'each list row carries the five fields the card renders',
+    missing.length === 0, `missing=${missing.join(',') || 'none'} keys=${Object.keys(row).join(',')}`);
+  // `created_at` would make the timestamp a lie the moment an app is edited.
+  record('US-A06 AC1', 'the last-modified timestamp is updated_at, not created_at',
+    'updated_at' in row && row.updated_at !== undefined,
+    `updated_at=${row.updated_at}`);
+}
+
+// ── US-A06 AC5: 100 apps still list in under a second (p95) ---------------
+// The AC is a latency claim, so it is measured: 100 rows are inserted for a
+// throwaway workspace, the list is requested 20 times, and p95 is read off the
+// real timings. A single warm request would not prove a p95.
+{
+  const tag = Date.now();
+  const email = `a06-perf-${tag}@seed.dev`;
+  const reg = await req('/api/auth/register', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Perf A06', workspace_name: `Perf WS ${tag}`, email,
+      password: 'perfsecret123', confirm: 'perfsecret123',
+    }),
+  });
+  const rb = await json(reg);
+  const orgId = rb?.workspace?.id;
+  record('US-A06 AC5', 'a 100-app workspace exists to measure', reg.status === 201 && !!orgId, `status=${reg.status}`);
+
+  const pool = await pgPool();
+  const before = Number((await pool.query('SELECT count(*)::int n FROM apps WHERE org_id = $1', [orgId])).rows[0].n);
+  const values = Array.from({ length: 100 }, (_, i) => `($${i * 3 + 2}, $1, $${i * 3 + 3}, $${i * 3 + 4}, 'perf row')`);
+  const params = [orgId];
+  for (let i = 0; i < 100; i++) params.push(`perf-${tag}-${i}`, `Perf App ${i}`, `perf-${tag}-${i}`);
+  await pool.query(
+    `INSERT INTO apps (id, org_id, name, slug, description) VALUES ${values.join(',')}`,
+    params,
+  );
+  const after = Number((await pool.query('SELECT count(*)::int n FROM apps WHERE org_id = $1', [orgId])).rows[0].n);
+  record('US-A06 AC5', 'exactly 100 apps are in the workspace', after - before === 100, `before=${before} after=${after}`);
+
+  // One warm request first: the AC is about the list being fast for a user who
+  // is already on the page, not about JIT warm-up on a cold process.
+  await req('/api/apps');
+  const times = [];
+  let lastCount = -1;
+  for (let i = 0; i < 20; i++) {
+    const t0 = performance.now();
+    const r = await req('/api/apps');
+    times.push(performance.now() - t0);
+    if (r.status !== 200) { times.push(Infinity); break; }
+    lastCount = (await json(r))?.apps?.length ?? -1;
+  }
+  times.sort((a, b) => a - b);
+  // p95 of 20 samples = the 19th value.
+  const p95 = times[Math.min(times.length - 1, Math.ceil(0.95 * times.length) - 1)];
+  const max = times[times.length - 1];
+  record('US-A06 AC5', 'the list actually returns all 100 apps, not a truncated page',
+    lastCount === 100, `apps=${lastCount}`);
+  record('US-A06 AC5', 'p95 for listing 100 apps is under 1 second',
+    p95 < 1000, `p95=${p95.toFixed(0)}ms max=${max.toFixed(0)}ms n=${times.length}`);
+
+  // Teardown: children before parents (apps -> org -> user), or the FK refuses.
+  await pool.query('DELETE FROM activity_logs WHERE org_id = $1', [orgId]);
+  await pool.query('DELETE FROM app_data_rows WHERE app_id IN (SELECT id FROM apps WHERE org_id = $1)', [orgId]);
+  await pool.query('DELETE FROM apps WHERE org_id = $1', [orgId]);
+  await pool.query('DELETE FROM users WHERE email = $1', [email]);
+  await pool.query('DELETE FROM organizations WHERE id = $1', [orgId]);
+  const left = await pool.query(
+    'SELECT (SELECT count(*)::int FROM apps WHERE org_id = $1) a, (SELECT count(*)::int FROM users WHERE email = $2) u',
+    [orgId, email],
+  );
+  await pool.end();
+  record('US-A06 AC5', 'the perf fixtures are gone (rows back to seed)',
+    left.rows[0].a === 0 && left.rows[0].u === 0, `apps=${left.rows[0].a} users=${left.rows[0].u}`);
+
+  // The registration above swapped the cookie jar to a user this block just
+  // deleted; hand the session back to the seed admin the later blocks expect.
+  await req('/api/auth/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: 'admin@seed.dev', password: 'seedadmin123' }),
+  });
 }
 
 // ── US-A29: health + ready -------------------------------------------------

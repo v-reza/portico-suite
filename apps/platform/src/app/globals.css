@@ -38,3 +38,27 @@ body {
     transform: none;
   }
 }
+
+/* Loading skeleton (AppsView, US-A06 AC3). Cloned from the export's loading
+ * screen: a 1.8s cubic-bezier(0.4,0,0.6,1) opacity pulse over #ededf0 blocks
+ * (--surface-sunken). Reduced motion renders the blocks static rather than
+ * animating them. */
+@keyframes po-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton-pulse {
+  animation: po-skeleton-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-pulse {
+    animation: none;
+  }
+}

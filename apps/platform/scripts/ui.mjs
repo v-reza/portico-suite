@@ -44,6 +44,15 @@ async function redisDel(...keys) {
   });
 }
 
+/**
+ * Direct DB access, for fixtures the HTTP API cannot remove (a whole workspace).
+ * Mirrors the helper in e2e.mjs.
+ */
+async function pgPool() {
+  const { Pool } = await import('pg');
+  return new Pool({ connectionString: process.env.PLATFORM_DATABASE_URL });
+}
+
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
@@ -184,11 +193,245 @@ async function shotPage(name) {
   await page.waitForTimeout(2000);
 }
 
-// ── US-A06 AC1: apps page -------------------------------------------------
+// ── US-A06 AC1: the list renders as cards carrying the five fields ----------
+// Driven in the browser because "tampil sebagai kartu berisi …" is a claim about
+// what is on screen. Each field is located inside the card, so a card that drops
+// the slug or the timestamp fails even though the list still "renders".
 {
-  const rows = await page.locator('table tbody tr, [class*="app"]').count();
-  const hasAppText = await page.getByText(/Test App|Welcome App|CRM Starter/).count() > 0;
-  record('US-A06 AC1', 'apps list populated', rows >= 2 || hasAppText, `rows=${rows} hasAppText=${hasAppText}`);
+  const s = await goto(page, '/apps');
+  record('US-A06 AC1', 'the apps list page renders', s === 200, `status=${s}`);
+
+  const grid = page.locator('[data-state="ready"]');
+  await grid.waitFor({ state: 'visible', timeout: 10000 });
+  const cards = grid.locator('[data-app-card]');
+  const count = await cards.count();
+  record('US-A06 AC1', 'the apps are rendered as cards', count >= 2, `cards=${count}`);
+
+  const first = cards.first();
+  const name = (await first.locator('h3').first().innerText()).trim();
+  record('US-A06 AC1', 'the card shows the app name', name.length > 0, `name=${name}`);
+
+  // The slug is rendered with the reference's literal `app/` prefix.
+  const slugText = (await first.locator('.font-mono').first().innerText()).trim();
+  record('US-A06 AC1', "the card shows the slug with the reference's app/ prefix",
+    /^app\/[a-z0-9-]+$/.test(slugText), `slug=${slugText}`);
+
+  const desc = (await first.locator('p').first().innerText()).trim();
+  record('US-A06 AC1', 'the card shows a short description',
+    desc.length > 0 && desc.split(/\s+/).length <= 40, `desc=${desc.slice(0, 60)}`);
+
+  const badge = (await first.locator('span').filter({ hasText: /^(Terbit|Draft)$/ }).first().innerText()).trim();
+  record('US-A06 AC1', 'the card shows a status badge (Terbit / Draft)',
+    badge === 'Terbit' || badge === 'Draft', `badge=${badge}`);
+
+  // The timestamp uses the reference's literal `diubah ` prefix and a relative
+  // age — "waktu terakhir diubah".
+  const stamp = (await first.locator('span').filter({ hasText: /^diubah / }).first().innerText()).trim();
+  record('US-A06 AC1', "the card shows the last-modified time with the reference's diubah prefix",
+    /^diubah \d+[mh] lalu$/.test(stamp), `stamp=${stamp}`);
+
+  // All five fields on the SAME card, not spread across the grid.
+  record('US-A06 AC1', 'one card carries all five fields together',
+    name.length > 0 && /^app\//.test(slugText) && desc.length > 0
+      && (badge === 'Terbit' || badge === 'Draft') && /^diubah /.test(stamp),
+    `name=${name} slug=${slugText} badge=${badge} stamp=${stamp}`);
+
+  // "Kalau ada 4 aplikasi": top the workspace up to exactly 4 so the count is
+  // known regardless of what a previous run left behind.
+  const tag = Date.now();
+  const made = [];
+  const apiCount = async () =>
+    ((await (await page.request.get(`${BASE}/api/apps`)).json())?.apps ?? []).length;
+  const existing = await apiCount();
+  for (let i = existing; i < 4; i++) {
+    const r = await page.request.post(`${BASE}/api/apps`, { data: { name: `A06 Kartu ${tag} ${i}` } });
+    const b = await r.json().catch(() => ({}));
+    if (b?.app?.id) made.push(b.app.id);
+  }
+  const apiFour = await apiCount();
+  await goto(page, '/apps');
+  await grid.waitFor({ state: 'visible', timeout: 10000 });
+  const four = await cards.count();
+  // Both halves matter: the workspace really holds 4, and the screen draws one
+  // card for each. A count that matched a stale page would pass on one alone.
+  record('US-A06 AC1', 'with 4 apps in the workspace, 4 cards are rendered',
+    apiFour === 4 && four === 4, `api=${apiFour} cards=${four}`);
+  const badges = await grid.locator('span').filter({ hasText: /^(Terbit|Draft)$/ }).allInnerTexts();
+  record('US-A06 AC1', 'both badge treatments render on real data',
+    badges.map((b) => b.trim()).includes('Terbit') && badges.map((b) => b.trim()).includes('Draft'),
+    `badges=${badges.map((b) => b.trim()).join(',')}`);
+
+  for (const id of made) await page.request.delete(`${BASE}/api/apps/${id}`);
+  // Deleting an app cascades to its pages/components but NOT to its audit rows
+  // (`activity_logs.entity_id` has no FK), so the log is purged explicitly —
+  // otherwise the workspace drifts away from the seed on every run.
+  const pool = await pgPool();
+  for (const id of made) {
+    await pool.query("DELETE FROM activity_logs WHERE entity_type = 'app' AND entity_id = $1", [id]);
+  }
+  const leftover = ((await (await page.request.get(`${BASE}/api/apps`)).json())?.apps ?? [])
+    .filter((a) => a.name.startsWith(`A06 Kartu ${tag}`)).length;
+  const orphanLogs = Number((await pool.query(
+    "SELECT count(*)::int n FROM activity_logs WHERE entity_id = ANY($1::text[])", [made],
+  )).rows[0].n);
+  await pool.end();
+  record('US-A06 AC1', 'the card fixtures were removed', leftover === 0, `leftover=${leftover}`);
+  record('US-A06 AC1', 'the fixture activity_log rows were removed too',
+    orphanLogs === 0, `orphanLogs=${orphanLogs}`);
+}
+
+// ── US-A06 AC2: the empty state offers exactly two actions ------------------
+// A brand-new workspace is the only honest way to see it: the seed workspace
+// always has apps, and an empty state faked by filtering would not exercise the
+// real zero-app branch.
+{
+  const tag = Date.now();
+  const email = `a06-empty-${tag}@seed.dev`;
+  const pw = 'emptysecret123';
+
+  const reg = await page.request.post(`${BASE}/api/auth/register`, {
+    data: { name: 'Empty A06', workspace_name: `Empty WS ${tag}`, email, password: pw, confirm: pw },
+  });
+  record('US-A06 AC2', 'an empty workspace exists to render the empty state',
+    reg.status() === 201, `status=${reg.status()}`);
+
+  await page.context().clearCookies();
+  await goto(page, '/login');
+  await waitForVisible('#email');
+  await page.fill('#email', email);
+  await page.fill('#password', pw);
+  await page.click('button[type="submit"]');
+  await page.waitForTimeout(2500);
+
+  await goto(page, '/apps');
+  const empty = page.locator('[data-state="empty"]');
+  await empty.waitFor({ state: 'visible', timeout: 10000 });
+  record('US-A06 AC2', 'a workspace with no apps renders the empty state', await empty.count() === 1);
+  const heading = (await empty.locator('h3').first().innerText()).trim();
+  record('US-A06 AC2', 'the empty state is not a blank screen (it carries a heading)',
+    heading.length > 0, `heading=${heading}`);
+
+  // Exactly the two actions the AC names — a third button would be chrome the
+  // design and the AC do not ask for.
+  const labels = (await empty.getByRole('button').allInnerTexts()).map((t) => t.trim()).filter(Boolean);
+  record('US-A06 AC2', 'the empty state offers exactly two actions',
+    labels.length === 2, `labels=${labels.join(' | ')}`);
+  record('US-A06 AC2', 'the two actions are "buat dari prompt" and "buat kosong"',
+    labels.some((l) => /prompt/i.test(l)) && labels.some((l) => /kosong/i.test(l)),
+    `labels=${labels.join(' | ')}`);
+
+  // Any browser dialog at all is a card failure; the listener goes on first.
+  const nativeDialogs = [];
+  page.on('dialog', async (d) => {
+    nativeDialogs.push(`${d.type()}: ${d.message()}`);
+    await d.dismiss().catch(() => {});
+  });
+
+  await empty.getByRole('button', { name: /prompt/i }).click();
+  const dialog = page.locator('[role="dialog"]');
+  await dialog.waitFor({ state: 'visible', timeout: 8000 });
+  record('US-A06 AC2', '"buat dari prompt" opens a real dialog, not a browser prompt',
+    (await dialog.getAttribute('aria-modal')) === 'true' && nativeDialogs.length === 0,
+    `aria-modal=${await dialog.getAttribute('aria-modal')} nativeDialogs=${nativeDialogs.join('|') || 'none'}`);
+  await page.keyboard.press('Escape');
+  await dialog.waitFor({ state: 'hidden', timeout: 4000 }).catch(() => {});
+
+  await empty.getByRole('button', { name: /kosong/i }).click();
+  await dialog.waitFor({ state: 'visible', timeout: 8000 });
+  const createTitle = (await dialog.locator('h3').first().innerText()).trim();
+  record('US-A06 AC2', '"buat kosong" opens the manual create dialog',
+    createTitle.length > 0 && nativeDialogs.length === 0,
+    `title=${createTitle} nativeDialogs=${nativeDialogs.join('|') || 'none'}`);
+  await page.keyboard.press('Escape');
+  await dialog.waitFor({ state: 'hidden', timeout: 4000 }).catch(() => {});
+
+  // Teardown: the workspace is empty, so only its log, user and org.
+  await page.context().clearCookies();
+  const pool = await pgPool();
+  const u = await pool.query('SELECT id, org_id FROM users WHERE email = $1', [email]);
+  if (u.rows[0]) {
+    await pool.query('DELETE FROM activity_logs WHERE org_id = $1', [u.rows[0].org_id]);
+    await pool.query('DELETE FROM users WHERE id = $1', [u.rows[0].id]);
+    await pool.query('DELETE FROM organizations WHERE id = $1', [u.rows[0].org_id]);
+  }
+  const gone = await pool.query('SELECT count(*)::int n FROM users WHERE email = $1', [email]);
+  await pool.end();
+  record('US-A06 AC2', 'the empty-state fixture workspace was removed',
+    Number(gone.rows[0].n) === 0, `remaining=${gone.rows[0].n}`);
+}
+
+// ── US-A06 AC3: loading shows a skeleton, not an empty screen ---------------
+// The window is opened artificially: the list resolves in milliseconds locally,
+// so waiting to catch the real one would make the assertion a race. `route` holds
+// the API response open, which is the state the AC describes.
+{
+  await page.context().clearCookies();
+  await goto(page, '/login');
+  await waitForVisible('#email');
+  await page.fill('#email', 'admin@seed.dev');
+  await page.fill('#password', 'seedadmin123');
+  await page.click('button[type="submit"]');
+  await page.waitForTimeout(2000);
+
+  await page.route('**/api/apps', async (route) => {
+    if (route.request().method() !== 'GET') return route.continue();
+    await new Promise((r) => setTimeout(r, 1500));
+    return route.continue();
+  });
+  await goto(page, '/apps');
+  await page.waitForTimeout(400); // inside the held window
+
+  const state = await page.locator('[data-state]').first().getAttribute('data-state').catch(() => null);
+  const skeletons = await page.locator('.skeleton-pulse').count();
+  record('US-A06 AC3', 'while the list is loading the page reports the loading state',
+    state === 'loading', `data-state=${state}`);
+  record('US-A06 AC3', 'the loading state renders skeleton blocks, not an empty screen',
+    skeletons > 0, `skeletonBlocks=${skeletons}`);
+  // "bukan layar kosong": no app card may be on screen yet.
+  record('US-A06 AC3', 'no app card is rendered while loading',
+    await page.locator('[data-state="loading"] [data-app-card]').count() === 0);
+
+  // Unroute only after the held response has landed: removing the handler while
+  // the request is still open would leave the skeleton up forever.
+  await page.locator('[data-state="ready"]').waitFor({ state: 'visible', timeout: 10000 });
+  const after = await page.locator('[data-state="ready"] [data-app-card]').count();
+  record('US-A06 AC3', 'the skeleton gives way to the real list', after >= 2, `cards=${after}`);
+  await page.unroute('**/api/apps');
+}
+
+// ── US-A06 AC4: a failed load shows an error + retry, and no half-built cards
+// The failure is injected at the network layer so the client's real error branch
+// runs; a mocked component would prove nothing about what the user sees.
+{
+  let failNext = true;
+  await page.route('**/api/apps', async (route) => {
+    if (route.request().method() !== 'GET') return route.continue();
+    if (!failNext) return route.continue();
+    failNext = false;
+    return route.fulfill({
+      status: 500, contentType: 'application/json', body: JSON.stringify({ error: 'boom' }),
+    });
+  });
+
+  await goto(page, '/apps');
+  const errorState = page.locator('[data-state="error"]');
+  await errorState.waitFor({ state: 'visible', timeout: 10000 });
+  const alert = errorState.locator('[role="alert"]');
+  const message = (await alert.innerText()).trim();
+  record('US-A06 AC4', 'a failed load shows an error message', message.length > 0, `message=${message}`);
+  const retry = alert.getByRole('button', { name: /coba lagi/i });
+  record('US-A06 AC4', 'the error state offers a retry button', await retry.count() === 1);
+  // "kartu aplikasi tidak ditampilkan setengah jadi": the failure leaves no
+  // cards behind — neither a stale list nor a partial render.
+  record('US-A06 AC4', 'no app card is left on screen under the error',
+    await errorState.locator('[data-app-card]').count() === 0);
+
+  // The retry must actually re-request and recover.
+  await retry.click();
+  await page.locator('[data-state="ready"]').waitFor({ state: 'visible', timeout: 10000 });
+  const recovered = await page.locator('[data-state="ready"] [data-app-card]').count();
+  record('US-A06 AC4', 'retry re-requests and the list recovers', recovered >= 2, `cards=${recovered}`);
+  await page.unroute('**/api/apps');
 }
 
 // ── US-A05 AC1/AC2: create an app from the apps list -----------------------
