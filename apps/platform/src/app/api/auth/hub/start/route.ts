@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import { query } from '@/lib/db';
 import { jsonError } from '@/lib/auth';
+import { safeNextPath } from '@/lib/next-path';
 
 /**
  * GET /api/auth/hub/start — kick off Hub SSO.
@@ -19,7 +20,9 @@ export async function GET(req: NextRequest) {
 
   const state = randomBytes(16).toString('hex');
   const codeVerifier = randomBytes(32).toString('base64url');
-  const redirectTo = req.nextUrl.searchParams.get('next') ?? '/apps';
+  // US-A02 AC4 also applies to the SSO path — a user denied /apps/123 and
+  // logging in via Hub must land back there too.
+  const redirectTo = safeNextPath(req.nextUrl.searchParams.get('next'));
 
   await query(
     `INSERT INTO hub_login_states (state, code_verifier, redirect_to, expires_at)

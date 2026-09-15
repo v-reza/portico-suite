@@ -6,7 +6,8 @@
   "description": "Shared shell + primitives for the Portico suite",
   "exports": {
     "./shell": "./src/shell.tsx",
-    "./icons": "./src/icons.tsx"
+    "./icons": "./src/icons.tsx",
+    "./modal": "./src/Modal.tsx"
   },
   "dependencies": {
     "@portico/tokens": "*"

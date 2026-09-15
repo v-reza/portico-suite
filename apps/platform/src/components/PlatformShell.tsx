@@ -15,6 +15,9 @@
  * toolbar + 3-panel workspace (see AppView). Keep list/console pages here.
  */
 import type { ReactNode } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Modal } from '@portico/ui/modal';
 import {
   IconHub, IconLayers, IconSupport, IconTerminal, IconSettings,
   IconGrid, IconExtension, IconCable, IconWorkflow, IconPlay, IconTune, IconKey,
@@ -55,6 +58,30 @@ interface PlatformShellProps {
 }
 
 export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', children }: PlatformShellProps) {
+  const router = useRouter();
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  /**
+   * US-A02 AC5 — logout must leave nothing behind for the back button.
+   *
+   * Clearing the cookie server-side is not enough on its own: the browser can
+   * restore the previous page from bfcache without re-asking the server. So we
+   * replace the history entry (not push) with /login and then call
+   * router.refresh() so the app list is dropped from the router cache too.
+   */
+  async function logout() {
+    setLoggingOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.replace('/login');
+      router.refresh();
+      setLoggingOut(false);
+      setConfirmLogout(false);
+    }
+  }
+
   return (
     <div className="h-screen w-screen overflow-hidden bg-[var(--surface-page)] text-[var(--text-primary)] font-body flex">
       {/* RAIL 56px */}
@@ -131,9 +158,18 @@ export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', 
           </div>
         </div>
 
-        {/* User card */}
+        {/* User card — the reference renders this as a hover-highlighted card
+            (cursor-pointer) with no action wired. Logout is the action it
+            implies; it opens the suite Modal rather than a browser confirm()
+            (banned in this codebase). Same 26px avatar, 13px/11px type, and
+            panel tokens as the reference. */}
         <div className="p-3 border-t border-[var(--border-standard)]">
-          <div className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-[var(--surface-hover)] transition-colors cursor-pointer">
+          <button
+            type="button"
+            onClick={() => setConfirmLogout(true)}
+            aria-haspopup="dialog"
+            className="w-full flex items-center gap-2.5 p-1.5 rounded-md hover:bg-[var(--surface-hover)] transition-colors cursor-pointer text-left"
+          >
             <div className="w-[26px] h-[26px] min-w-[26px] rounded-full bg-[var(--surface-sunken)] text-[var(--text-secondary)] flex items-center justify-center text-[11px] font-mono font-medium">
               {initials(user.name)}
             </div>
@@ -141,9 +177,35 @@ export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', 
               <span className="text-[13px] font-medium text-[var(--text-primary)] truncate leading-snug">{user.name}</span>
               <span className="text-[11px] text-[var(--text-quaternary)] truncate leading-none">{roleLabel(user.role)}</span>
             </div>
-          </div>
+          </button>
         </div>
       </aside>
+
+      <Modal
+        open={confirmLogout}
+        title="Keluar dari Platform?"
+        description="Sesi lu bakal diakhiri dan lu balik ke halaman masuk."
+        onClose={() => setConfirmLogout(false)}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setConfirmLogout(false)}
+              className="h-8 px-3 rounded-md text-[0.75rem] border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={logout}
+              disabled={loggingOut}
+              className="h-8 px-3 rounded-md text-[0.75rem] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
+            >
+              {loggingOut ? 'Keluar…' : 'Keluar'}
+            </button>
+          </>
+        }
+      />
 
       {/* MAIN PANE + TOP BAR */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-[var(--surface-page)] overflow-hidden">

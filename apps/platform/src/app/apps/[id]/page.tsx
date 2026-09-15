@@ -1,20 +1,18 @@
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { one, query } from '@/lib/db';
-import { SESSION_COOKIE, parseSessionCookie } from '@/lib/session';
+import { requireUser } from '@/lib/require-user';
 import { AppView } from '@/components/AppView';
+
+export const dynamic = 'force-dynamic';
 
 export default async function AppDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const raw = (await cookies()).get(SESSION_COOKIE)?.value;
-  const userId = parseSessionCookie(raw);
-  if (!userId) redirect('/login');
+  // US-A02 AC4: the guard carries the exact page back to /login, so the user
+  // returns to this app rather than the list.
+  await requireUser(`/apps/${id}`);
 
   const app = await one('SELECT * FROM apps WHERE id = $1', [id]);
   if (!app) redirect('/apps');
-
-  const user = await one('SELECT id, name, role, org_id FROM users WHERE id = $1', [userId]);
-  if (!user) redirect('/login');
 
   const pages = await query('SELECT * FROM pages WHERE app_id = $1 ORDER BY order_index', [id]);
   const workflows = await query('SELECT * FROM workflows WHERE app_id = $1 ORDER BY created_at DESC', [id]);

@@ -1,16 +1,14 @@
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { SESSION_COOKIE, parseSessionCookie } from '@/lib/session';
-import { one } from '@/lib/db';
+import { requireUser } from '@/lib/require-user';
 import { AppsView } from '@/components/AppsView';
 
-export default async function AppsPage() {
-  const raw = (await cookies()).get(SESSION_COOKIE)?.value;
-  const userId = parseSessionCookie(raw);
-  if (!userId) redirect('/login');
+/**
+ * US-A02 AC4/AC5 — guarded by requireUser(), which redirects to
+ * /login?next=/apps and marks the page no-store (see next.config.mjs).
+ */
+export const dynamic = 'force-dynamic';
 
-  const u = await one('SELECT id, name, role, org_id FROM users WHERE id = $1', [userId]);
-  if (!u) redirect('/login');
+export default async function AppsPage() {
+  const u = await requireUser('/apps');
 
   return <AppsView user={{ name: u.name, role: u.role }} />;
 }
