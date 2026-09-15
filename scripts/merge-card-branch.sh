@@ -21,8 +21,16 @@
 # The merge is pushed to `origin` by default, so the work is visible on GitHub
 # without a second step. `--no-push` (or PUSH_REMOTE=somewhere) changes that.
 #
-# Exit codes: 0 = merged and pushed (or already up to date); 1 = refused, reason
-# on stdout, nothing was changed; 3 = merged LOCALLY but the push failed.
+# A divergent target is rebased onto, not refused: every card branches from the
+# same base and merges on completion, so with two cards in flight the second one
+# always arrives behind. A rebase CONFLICT is refused (exit 1) with the branch
+# restored — resolve it by hand.
+#
+# Exit codes:
+#   0 = landed and pushed, or nothing to land (nothing to land is printed loudly
+#       and means the branch had NO commits — do not report it as a merge)
+#   1 = refused, nothing was changed, reason on stdout
+#   3 = merged LOCALLY but the push failed
 
 set -uo pipefail
 
@@ -100,20 +108,41 @@ if [ -n "$DIRTY" ]; then
 $(echo "$DIRTY" | head -5 | sed 's/^/    /')"
 fi
 
-# --- guard 3: the branch must exist and be ahead of the target ---------------
+# --- guard 3: the branch must exist ------------------------------------------
 git -C "$MAIN" rev-parse --verify --quiet "$BRANCH" >/dev/null \
     || die "branch '$BRANCH' not found in the main repo"
 
-if ! git -C "$MAIN" merge-base --is-ancestor "$TARGET" "$BRANCH"; then
-    die "$TARGET has commits '$BRANCH' does not have — not fast-forwardable.
-    Resolve by hand (rebase '$BRANCH' onto '$TARGET', or merge and review the
-    conflict). This script never creates a merge commit."
+# --- does this branch actually carry anything? -------------------------------
+# Distinguishing "landed N commits" from "added nothing" is the whole point: a
+# worker that reports "merged" when its branch was empty is a false success
+# report, and this script used to print "already up to date" for both.
+AHEAD="$(git -C "$MAIN" rev-list --count "$TARGET..$BRANCH" 2>/dev/null)"
+AHEAD="${AHEAD:-0}"
+
+if [ "$AHEAD" = "0" ]; then
+    LANDED=0
+else
+    LANDED=1
+fi
+
+if [ "$LANDED" = "1" ] && ! git -C "$MAIN" merge-base --is-ancestor "$TARGET" "$BRANCH"; then
+    # Divergent: the target moved on after we branched. Every card branches from
+    # the same base and each one merges as it finishes, so this is the NORMAL
+    # case, not an error — two cards in flight means the second always arrives
+    # divergent. Rebase our own commits onto the target rather than refusing.
+    echo "merge-card-branch: '$TARGET' moved ahead — rebasing '$BRANCH' onto it"
+    if ! REBASE_OUT="$(git rebase "$TARGET" 2>&1)"; then
+        git rebase --abort >/dev/null 2>&1
+        die "rebase onto '$TARGET' hit a conflict; nothing was merged and the
+    branch is back where it was. Resolve by hand:
+$(echo "$REBASE_OUT" | tail -15 | sed 's/^/    /')"
+    fi
 fi
 
 PRE="$(git -C "$MAIN" rev-parse HEAD)"
 
-if [ "$(git -C "$MAIN" rev-parse "$BRANCH")" = "$PRE" ]; then
-    echo "merge-card-branch: already up to date — '$BRANCH' is at $TARGET ($(git -C "$MAIN" rev-parse --short HEAD))"
+if [ "$LANDED" = "0" ]; then
+    echo "merge-card-branch: NOTHING TO LAND — '$BRANCH' adds no commits on top of $TARGET"
     POST="$PRE"
 else
     # --- merge --------------------------------------------------------------
