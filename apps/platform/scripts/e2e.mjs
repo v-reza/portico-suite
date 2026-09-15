@@ -54,6 +54,46 @@ async function redisDel(...keys) {
   });
 }
 
+/**
+ * Direct DB access for fixtures the HTTP API cannot create.
+ *
+ * `POST /api/auth/register` always makes its caller an `admin` (US-A01 AC1), so
+ * the only way to get a `viewer` to test US-A04 AC1 with is to write the row.
+ * Password hashing mirrors src/lib/password.ts (scrypt, `salt.hex`).
+ */
+async function pgPool() {
+  const { Pool } = await import('pg');
+  return new Pool({ connectionString: process.env.PLATFORM_DATABASE_URL });
+}
+
+async function hashPw(pw) {
+  const { randomBytes, scrypt } = await import('node:crypto');
+  const { promisify } = await import('node:util');
+  const salt = randomBytes(16).toString('hex');
+  const dk = await promisify(scrypt)(pw, salt, 64);
+  return `${salt}.${dk.toString('hex')}`;
+}
+
+async function createUser({ email, password, name, role, orgId }) {
+  const { randomBytes } = await import('node:crypto');
+  const pool = await pgPool();
+  const id = randomBytes(8).toString('hex');
+  await pool.query(
+    `INSERT INTO users (id, email, name, org_id, role, password_hash) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [id, email, name, orgId, role, await hashPw(password)],
+  );
+  await pool.end();
+  return id;
+}
+
+/** Delete dependents before the parent: users reference organizations (US-A01 schema). */
+async function dropUserAndOrg(userId, orgId) {
+  const pool = await pgPool();
+  if (userId) await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+  if (orgId) await pool.query('DELETE FROM organizations WHERE id = $1', [orgId]);
+  await pool.end();
+}
+
 // ── US-A02: local login ---------------------------------------------------
 {
   const r = await req('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'admin@seed.dev', password: 'wrongpassword' }) });
@@ -248,6 +288,245 @@ async function redisDel(...keys) {
   const r = await req('/api/apps');
   record('US-A04 AC5', 'no session -> 401', r.status === 401, `status=${r.status}`);
   cookies = saved;
+}
+
+// ── US-A04 AC1: `viewer` is refused server-side on writes -------------------
+// The AC is explicit that hiding the button is not enough, so every probe below
+// hits the endpoint directly with a real viewer session. The read-back at the
+// end is what proves the refusal was real: a 403 that still wrote the row would
+// pass a status-only assertion.
+{
+  const adminCookies = cookies;
+  const viewerEmail = `viewer-ac1-${Date.now()}@seed.dev`;
+  const viewerPw = 'viewertest123';
+  const viewerId = await createUser({
+    email: viewerEmail, password: viewerPw, name: 'Viewer AC1', role: 'viewer', orgId: 'seed-org-1',
+  });
+
+  // Baseline: the name we expect to still be there afterwards. Read through the
+  // list endpoint — /api/apps/[id] has no GET handler, so it answers 405.
+  const beforeList = await json(await req('/api/apps'));
+  const before = (beforeList?.apps || []).find((a) => a.id === 'app-1');
+
+  const login = await req('/api/auth/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: viewerEmail, password: viewerPw }),
+  });
+  record('US-A04 AC1', 'viewer session established', login.status === 200, `status=${login.status}`);
+
+  const pw = await req('/api/apps/app-1', {
+    method: 'PATCH', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Viewer Was Here' }),
+  });
+  record('US-A04 AC1', 'viewer PATCH app -> 403', pw.status === 403, `status=${pw.status}`);
+
+  const pg = await req('/api/apps/app-1/pages', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Viewer Page' }),
+  });
+  record('US-A04 AC1', 'viewer POST page -> 403', pg.status === 403, `status=${pg.status}`);
+
+  const dr = await req('/api/apps/app-1/data', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ row_json: { viewer: true } }),
+  });
+  record('US-A04 AC1', 'viewer POST data row -> 403', dr.status === 403, `status=${dr.status}`);
+
+  const wf = await req('/api/apps/app-1/workflows', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Viewer Flow', trigger_type: 'button' }),
+  });
+  record('US-A04 AC1', 'viewer POST workflow -> 403', wf.status === 403, `status=${wf.status}`);
+
+  const del = await req('/api/apps/app-1', { method: 'DELETE' });
+  record('US-A04 AC1', 'viewer DELETE app -> 403', del.status === 403, `status=${del.status}`);
+
+  // Read-back as the admin: the row must be byte-identical to the baseline.
+  cookies = adminCookies;
+  const afterList = await json(await req('/api/apps'));
+  const after = (afterList?.apps || []).find((a) => a.id === 'app-1');
+  record('US-A04 AC1', 'app row unchanged after viewer writes',
+    !!after && after.id === before?.id && after.name === before?.name,
+    `before=${before?.name} after=${after?.name}`);
+
+  await dropUserAndOrg(viewerId, null);
+}
+
+// ── US-A04 AC6: another workspace's app is 403, and reveals nothing ---------
+// The AC names 403 for a known row in workspace X. A guessed id that exists in
+// NO workspace is a different case and answers 404 — both are asserted so the
+// two paths cannot silently collapse into one another.
+{
+  const adminCookies = cookies;
+  const outsiderEmail = `outsider-ac6-${Date.now()}@seed.dev`;
+  const outsiderPw = 'outsider123';
+
+  const reg = await req('/api/auth/register', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Outsider', workspace_name: `Outsider WS ${Date.now()}`, email: outsiderEmail,
+      password: outsiderPw, confirm: outsiderPw,
+    }),
+  });
+  const regBody = await json(reg);
+  record('US-A04 AC6', 'second workspace + admin created', reg.status === 201 && !!regBody?.workspace?.id,
+    `status=${reg.status}`);
+  const outsiderOrg = regBody?.workspace?.id;
+
+  // /api/apps list is scoped by org, so a fresh workspace starts empty.
+  const list = await req('/api/apps');
+  const listBody = await json(list);
+  record('US-A04 AC6', 'outsider sees none of the seed workspace apps',
+    list.status === 200 && Array.isArray(listBody?.apps) && listBody.apps.length === 0,
+    `count=${listBody?.apps?.length}`);
+
+  const probes = [
+    ['PATCH app', () => req('/api/apps/app-1', { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Outsider Was Here' }) })],
+    ['DELETE app', () => req('/api/apps/app-1', { method: 'DELETE' })],
+    ['GET app pages', () => req('/api/apps/app-1/pages')],
+    ['GET app data', () => req('/api/apps/app-1/data')],
+    ['POST app data', () => req('/api/apps/app-1/data', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ row_json: { x: 1 } }) })],
+    ['GET app workflows', () => req('/api/apps/app-1/workflows')],
+    ['POST app publish', () => req('/api/apps/app-1/publish', { method: 'POST' })],
+  ];
+  for (const [label, probe] of probes) {
+    const r = await probe();
+    const body = await json(r);
+    const leaks = JSON.stringify(body ?? '').includes('Welcome App');
+    record('US-A04 AC6', `outsider ${label} -> 403, no app data leaked`,
+      r.status === 403 && !leaks, `status=${r.status} leaked=${leaks}`);
+  }
+
+  // Control: an id that exists nowhere is 404, not 403. Probed through a route
+  // that actually has a GET handler — /api/apps/[id] only exports PATCH/DELETE,
+  // so hitting it would answer 405 and prove nothing.
+  const missing = await req('/api/apps/does-not-exist-ac6/data');
+  record('US-A04 AC6', 'unknown id -> 404 (distinct from cross-workspace 403)',
+    missing.status === 404, `status=${missing.status}`);
+
+  // Read-back as admin: the publish probe above must not have flipped the flag.
+  cookies = adminCookies;
+  const nowList = await json(await req('/api/apps'));
+  const appNow = (nowList?.apps || []).find((a) => a.id === 'app-1');
+  record('US-A04 AC6', 'seed app untouched after outsider probes',
+    !!appNow && appNow.name === 'Welcome App', `name=${appNow?.name}`);
+
+  await dropUserAndOrg(regBody?.user?.id, outsiderOrg);
+}
+
+// ── US-A04 AC6: the guard holds on nested resources too ---------------------
+// An app is only one of the rows that can leak. A page, component, workflow or
+// step carries an id that is just as guessable, and each is reached through a
+// different route file. This builds a full object graph inside a SECOND
+// workspace and then, from the seed admin's session, touches every id in it.
+// All of them must answer 403 and leave the graph intact.
+{
+  const seedAdmin = cookies;
+  const tag = Date.now();
+  const outsiderEmail = `nested-ac6-${tag}@seed.dev`;
+  const outsiderPw = 'nested123';
+
+  const reg = await req('/api/auth/register', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Nested Outsider', workspace_name: `Nested WS ${tag}`, email: outsiderEmail,
+      password: outsiderPw, confirm: outsiderPw,
+    }),
+  });
+  const regBody = await json(reg);
+  const outsiderOrg = regBody?.workspace?.id;
+  record('US-A04 AC6', 'nested: second workspace created', reg.status === 201, `status=${reg.status}`);
+
+  // Build the graph through the real API, as its owner. Anything the API cannot
+  // make is not worth guarding, so using the HTTP path is the point here.
+  const appRes = await json(await req('/api/apps', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Outsider App', slug: `outsider-${tag}` }),
+  }));
+  const oApp = appRes?.app?.id;
+  const pageRes = await json(await req(`/api/apps/${oApp}/pages`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Outsider Page' }),
+  }));
+  const oPage = pageRes?.page?.id;
+  const compRes = await json(await req(`/api/pages/${oPage}/components`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ type: 'text' }),
+  }));
+  const oComp = compRes?.component?.id;
+  const wfRes = await json(await req(`/api/apps/${oApp}/workflows`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Outsider Flow', trigger_type: 'button' }),
+  }));
+  const oWf = wfRes?.workflow?.id;
+  const stepRes = await json(await req(`/api/workflows/${oWf}/steps`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action_type: 'send_email' }),
+  }));
+  const oStep = stepRes?.step?.id;
+  record('US-A04 AC6', 'nested: object graph built in the second workspace',
+    !!(oApp && oPage && oComp && oWf && oStep),
+    `app=${!!oApp} page=${!!oPage} comp=${!!oComp} wf=${!!oWf} step=${!!oStep}`);
+
+  // Count what exists before the probes, so "nothing was touched" is measured.
+  const pool = await pgPool();
+  const before = await pool.query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM pages WHERE app_id = $1)      AS pages,
+       (SELECT COUNT(*)::int FROM components c JOIN pages p ON p.id = c.page_id WHERE p.app_id = $1) AS comps,
+       (SELECT COUNT(*)::int FROM workflows WHERE app_id = $1)  AS wfs,
+       (SELECT COUNT(*)::int FROM workflow_steps s JOIN workflows w ON w.id = s.workflow_id WHERE w.app_id = $1) AS steps`,
+    [oApp],
+  );
+
+  // Now switch to the SEED admin — a legitimate admin of a DIFFERENT workspace.
+  cookies = seedAdmin;
+
+  const nested = [
+    ['GET page components', () => req(`/api/pages/${oPage}/components`)],
+    ['POST page components', () => req(`/api/pages/${oPage}/components`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'text' }) })],
+    ['POST page duplicate', () => req(`/api/pages/${oPage}/duplicate`, { method: 'POST' })],
+    ['PATCH component', () => req(`/api/components/${oComp}`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ config_json: { pwned: true } }) })],
+    ['DELETE component', () => req(`/api/components/${oComp}`, { method: 'DELETE' })],
+    ['GET workflow steps', () => req(`/api/workflows/${oWf}/steps`)],
+    ['POST workflow steps', () => req(`/api/workflows/${oWf}/steps`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action_type: 'send_email' }) })],
+    ['PATCH workflow toggle', () => req(`/api/workflows/${oWf}/toggle`, { method: 'PATCH' })],
+    ['PATCH workflow step', () => req(`/api/workflow-steps/${oStep}`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ on_error: 'stop' }) })],
+    ['DELETE workflow step', () => req(`/api/workflow-steps/${oStep}`, { method: 'DELETE' })],
+  ];
+  for (const [label, probe] of nested) {
+    const r = await probe();
+    const body = await json(r);
+    const leaks = JSON.stringify(body ?? '').includes('Outsider');
+    record('US-A04 AC6', `nested ${label} -> 403, no data leaked`,
+      r.status === 403 && !leaks, `status=${r.status} leaked=${leaks}`);
+  }
+
+  // Read-back: the row counts must be identical. A 403 that still wrote would
+  // pass every assertion above.
+  const after = await pool.query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM pages WHERE app_id = $1)      AS pages,
+       (SELECT COUNT(*)::int FROM components c JOIN pages p ON p.id = c.page_id WHERE p.app_id = $1) AS comps,
+       (SELECT COUNT(*)::int FROM workflows WHERE app_id = $1)  AS wfs,
+       (SELECT COUNT(*)::int FROM workflow_steps s JOIN workflows w ON w.id = s.workflow_id WHERE w.app_id = $1) AS steps`,
+    [oApp],
+  );
+  const b = before.rows[0], a = after.rows[0];
+  record('US-A04 AC6', 'nested: row counts unchanged after every probe',
+    b.pages === a.pages && b.comps === a.comps && b.wfs === a.wfs && b.steps === a.steps,
+    `before=${JSON.stringify(b)} after=${JSON.stringify(a)}`);
+
+  // The component's config must not have been written by the PATCH probe.
+  const cfg = await pool.query('SELECT config_json FROM components WHERE id = $1', [oComp]);
+  record('US-A04 AC6', 'nested: component config not modified by outsider PATCH',
+    !JSON.stringify(cfg.rows[0]?.config_json ?? {}).includes('pwned'),
+    `config=${JSON.stringify(cfg.rows[0]?.config_json)}`);
+
+  // Teardown: apps first (no ON DELETE CASCADE from organizations), then the org.
+  await pool.query('DELETE FROM apps WHERE org_id = $1', [outsiderOrg]);
+  await pool.end();
+  await dropUserAndOrg(regBody?.user?.id, outsiderOrg);
 }
 
 // ── teardown: leave no fixture behind --------------------------------------

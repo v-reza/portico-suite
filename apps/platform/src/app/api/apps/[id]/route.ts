@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { query } from '@/lib/db';
 import { getSessionUser, jsonError, can } from '@/lib/auth';
+import { appInOrg } from '@/lib/tenant';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -8,8 +9,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!user) return jsonError(401, 'unauthenticated', 'Silakan masuk.');
   if (!can(user, ['admin'])) return jsonError(403, 'forbidden', 'Hanya admin.');
 
-  const app = await query('SELECT id FROM apps WHERE id = $1 AND org_id = $2', [id, user.org_id]);
-  if (!app.rows.length) return jsonError(404, 'not_found', 'App tidak ditemukan.');
+  // US-A04 AC6: an app in another workspace answers 403, never a silent delete.
+  const owned = await appInOrg(id, user);
+  if (!owned.ok) return owned.response;
 
   await query('DELETE FROM apps WHERE id = $1', [id]);
   return NextResponse.json({ ok: true });
@@ -21,8 +23,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!user) return jsonError(401, 'unauthenticated', 'Silakan masuk.');
   if (!can(user, ['builder'])) return jsonError(403, 'forbidden', 'Akses ditolak.');
 
-  const app = await query('SELECT id FROM apps WHERE id = $1 AND org_id = $2', [id, user.org_id]);
-  if (!app.rows.length) return jsonError(404, 'not_found', 'App tidak ditemukan.');
+  // US-A04 AC6
+  const owned = await appInOrg(id, user);
+  if (!owned.ok) return owned.response;
 
   const { name, slug, description } = await req.json().catch(() => ({}));
   const updates: string[] = [];

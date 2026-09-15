@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { query } from '@/lib/db';
 import { getSessionUser, jsonError, can } from '@/lib/auth';
+import { appInOrg } from '@/lib/tenant';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -8,9 +9,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!user) return jsonError(401, 'unauthenticated', 'Silakan masuk.');
   if (!can(user, ['admin'])) return jsonError(403, 'forbidden', 'Hanya admin.');
 
-  const app = await query('SELECT id, is_published FROM apps WHERE id = $1', [id]);
-  if (!app.rows.length) return jsonError(404, 'not_found', 'App tidak ditemukan.');
+  // US-A04 AC6: check ownership before touching state, so a cross-workspace
+  // request cannot flip `is_published` on someone else's app.
+  const owned = await appInOrg(id, user);
+  if (!owned.ok) return owned.response;
 
   await query('UPDATE apps SET is_published = NOT is_published WHERE id = $1', [id]);
-  return NextResponse.json({ is_published: !app.rows[0].is_published });
+  return NextResponse.json({ is_published: !owned.row.is_published });
 }
