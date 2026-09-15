@@ -36,8 +36,10 @@ cp .env.example .env          # lalu isi
 npm install                   # workspaces, sekali di root
 npm run infra:up              # postgres + redis
 npm run tokens:build          # generate CSS vars dari DESIGN.md
-npm run dev:hub               # http://localhost:3000
+npm run dev:hub               # http://localhost:3100
 ```
+
+Port: Hub **3100**, Platform **3001**, Helpdesk **3002**, CodeReview **3003**.
 
 ## Skrip
 
@@ -49,3 +51,39 @@ npm run dev:hub               # http://localhost:3000
 | `npm run dev:<app>` | dev server app |
 | `npm run build:all` | build semua app |
 | `npm run db:migrate -w apps/<app>` | prisma migrate |
+
+## Alur kerja otonom
+
+Pengerjaan fitur di repo ini jalan lewat papan Kanban: satu card = satu user
+story, dikerjakan agent di git worktree terpisah, terus diverifikasi terhadap
+PRD + design sebelum masuk `master`.
+
+```bash
+bash scripts/bootstrap-worktree.sh   # di worktree card: link deps, .env, tokens/dist
+bash scripts/merge-card-branch.sh    # kerjaan terakhir: fast-forward + push ke origin
+bash scripts/kanban-run.sh           # jalankan papan sampai sepi
+```
+
+Tiga skrip itu nutup tiga lubang yang bikin kerjaan hilang:
+
+- **`bootstrap-worktree.sh`** — worktree `git worktree add` polos nggak punya
+  `node_modules`/`.env`/`tokens/dist`. Tanpa ini agent langsung mati di
+  `Cannot find module 'next'`.
+- **`merge-card-branch.sh`** — card `done` **nggak** otomatis nge-merge
+  branch-nya; dispatcher cuma spawn worker, dan worktree dibongkar pas selesai.
+  Tanpa langkah ini hasilnya ada di object database tapi nggak kelihatan di
+  `master`. Fast-forward doang, dan **nolak** kalau master divergen / kotor
+  daripada bikin merge commit atau nimpa kerjaan orang.
+- **`kanban-run.sh`** — loop `hermes kanban dispatch` sampai papan berhenti
+  berubah, karena nggak ada yang spawn otomatis.
+
+Semuanya ada tesnya:
+
+```bash
+bash scripts/test-merge-card-branch.sh scripts/merge-card-branch.sh   # 38 assertion
+```
+
+Tes dijalanin di repo git buangan di direktori temp — nggak pernah nyentuh repo
+asli. Yang dites termasuk jalur nolak (worktree kotor, master kotor, master
+divergen), jalur push, dan push yang gagal.
+
