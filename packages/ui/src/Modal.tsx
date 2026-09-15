@@ -15,7 +15,11 @@
  *
  * Styling follows the Stitch builder reference: `--surface-panel` panel,
  * hairline `--border-standard`, 12px radius (modal-only radius per the design
- * spec), backdrop rgba(15,23,42,0.45).
+ * spec), `--overlay` token for the backdrop, elevation from the token file.
+ *
+ * Panel layout follows the reference: `flex flex-col gap-4` so all children
+  * (title, description, form, footer) space evenly at 16px. The footer parameter
+  * carries its own spacing and optional border.
  */
 import { useEffect, useId, useRef } from 'react';
 import { IconX } from './icons';
@@ -31,8 +35,8 @@ export function Modal({
   children,
   footer,
   panelWidthClass = 'max-w-[440px]',
-  descriptionClassName = 'text-[0.813rem] text-[var(--text-secondary)] mt-1',
-  footerClassName = 'flex justify-end gap-2 mt-6',
+  descriptionClassName = 'text-[0.813rem] text-[var(--text-secondary)]',
+  footerClassName = 'flex justify-end gap-2',
 }: {
   open: boolean;
   title: string;
@@ -111,7 +115,7 @@ export function Modal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(15,23,42,0.45)' }}
+      style={{ background: 'var(--overlay)' }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -122,20 +126,21 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={`w-full ${panelWidthClass} bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[12px] shadow-xl p-6 focus:outline-none motion-safe:animate-[po-modal-in_120ms_ease-out]`}
+        className={`w-full ${panelWidthClass} flex flex-col gap-4 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded-[12px] p-6 focus:outline-none motion-safe:animate-[po-modal-in_120ms_ease-out]`}
+                style={{ boxShadow: 'var(--elevation-dialog)' }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <h3 id={titleId} className="text-[1.125rem] font-semibold leading-[1.33] text-[var(--text-primary)]">{title}</h3>
           </div>
           {/* Reference treatment (platform_apps_list_modal_buat_aplikasi_ai):
-              transparent control, 4px padding, --text-tertiary glyph, 4px radius. */}
+              transparent control, 4px padding, --text-tertiary/close glyph. */}
           <button
             type="button"
             data-dialog-dismiss
             onClick={onClose}
             aria-label="Tutup"
-            className="-mt-1 -mr-1 shrink-0 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            className="shrink-0 p-[4px] rounded text-[var(--text-tertiary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
           >
             <IconX size={20} />
           </button>
@@ -143,7 +148,7 @@ export function Modal({
         {description && (
           <p className={descriptionClassName}>{description}</p>
         )}
-        {children && <div className="mt-4">{children}</div>}
+        {children && <div>{children}</div>}
         <div className={footerClassName}>{footer}</div>
       </div>
     </div>

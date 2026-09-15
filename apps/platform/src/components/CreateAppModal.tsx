@@ -12,9 +12,10 @@
  * Every value below is lifted from that reference rather than invented:
  *   560px panel, 24px padding, 16px gaps, 18px/600 title, 12px tertiary
  *   description, textarea `#f7f7f8` + hairline + 6px radius, chips `#ededf0`
- *   / 11px mono, footer split with a 16px top rule and `Batal` (white, hairline)
- *   next to the accent action button. The Modal primitive supplies the shared
- *   backdrop, radius, elevation and focus contract.
+ *   / 11px mono, footer split with a 16px top rule (rgba(15,23,42,0.08)) and
+ *   `Batal` (white, hairline) next to the accent action button. The Modal
+ *   primitive supplies the shared backdrop, radius, elevation and focus
+ *   contract, and the panel layout `flex flex-col gap-4`.
  */
 import { useRef, useState } from 'react';
 import { Modal } from '@portico/ui/modal';
@@ -83,11 +84,10 @@ export function CreateAppModal({
       open={open}
       title="Buat aplikasi baru"
       description="Mulai dari kosong. Halaman dan komponennya bisa diatur di builder."
-      descriptionClassName="text-[12px] leading-relaxed text-[var(--text-tertiary)] mt-1"
-      // Reference footer: a hairline rule, then `Batal` hard left and the accent
-      // action hard right. `--border-subtle` is the divider token closest to the
-      // reference's rgba(15,23,42,0.08) rule.
-      footerClassName="flex items-center justify-between gap-2 mt-2 pt-4 border-t border-[var(--border-subtle)]"
+      // Reference subtitle: 12px, line-height 1.5 (18px), --text-tertiary (#62676f)
+            descriptionClassName="text-[12px] leading-[1.5] text-[var(--text-tertiary)] mt-1"
+            // Reference footer: hairline rgba(15,23,42,0.08) top rule, split left/right
+      footerClassName="flex items-center justify-between gap-2 mt-2 pt-4 border-t border-[rgba(15,23,42,0.08)]"
       onClose={() => {
         reset();
         onClose();
@@ -101,7 +101,8 @@ export function CreateAppModal({
               reset();
               onClose();
             }}
-            className="h-8 px-4 bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-secondary)] rounded-[6px] text-[13px] font-medium hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            // Reference: padding: 8px 16px, radius 6px, white bg + hairline
+                        className="px-4 py-2 bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-secondary)] rounded-[6px] text-[13px] font-medium hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
           >
             Batal
           </button>
@@ -109,7 +110,8 @@ export function CreateAppModal({
             type="submit"
             form="create-app-form"
             disabled={busy}
-            className="h-8 px-5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white rounded-[6px] text-[13px] font-medium transition-colors"
+            // Reference: padding: 8px 20px, radius 6px, accent bg, font-weight 500
+                        className="px-5 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white rounded-[6px] text-[13px] font-medium transition-colors"
           >
             {busy ? 'Menyimpan…' : 'Buat aplikasi'}
           </button>
@@ -165,7 +167,8 @@ export function CreateAppModal({
             placeholder="Aplikasi ini dipakai untuk apa?"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full box-border bg-[#f7f7f8] border border-[var(--border-standard)] rounded-[6px] p-3 text-[14px] leading-relaxed text-[var(--text-primary)] placeholder-[var(--text-quaternary)] resize-none focus:outline-none focus:border-[var(--accent)] transition-colors"
+            // Reference: bg #f7f7f8, line-height 1.5, padding 12px, font 14px
+                        className="w-full box-border bg-[#f7f7f8] border border-[var(--border-standard)] rounded-[6px] p-3 text-[14px] leading-[1.5] text-[var(--text-primary)] placeholder-[var(--text-quaternary)] resize-none focus:outline-none focus:border-[var(--accent)] transition-colors"
           />
         </div>
       </form>

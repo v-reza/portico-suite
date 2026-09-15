@@ -5,7 +5,7 @@
 @import '@portico/tokens/css';
 
 :root {
-  --text-body-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --text-body-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --text-body-size: 0.875rem;
   --text-body-weight: 400;
   --text-body-line-height: 1.5;

@@ -182,30 +182,30 @@ export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', 
       </aside>
 
       <Modal
-        open={confirmLogout}
-        title="Keluar dari Platform?"
-        description="Sesi lu bakal diakhiri dan lu balik ke halaman masuk."
-        onClose={() => setConfirmLogout(false)}
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setConfirmLogout(false)}
-              className="h-8 px-3 rounded-md text-[0.75rem] border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              Batal
-            </button>
-            <button
-              type="button"
-              onClick={logout}
-              disabled={loggingOut}
-              className="h-8 px-3 rounded-md text-[0.75rem] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
-            >
-              {loggingOut ? 'Keluar…' : 'Keluar'}
-            </button>
-          </>
-        }
-      />
+              open={confirmLogout}
+              title="Keluar dari Platform?"
+              description="Sesi lu bakal diakhiri dan lu balik ke halaman masuk."
+              onClose={() => setConfirmLogout(false)}
+              footer={
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmLogout(false)}
+                    className="px-4 py-2 rounded-[6px] text-[13px] font-medium border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    disabled={loggingOut}
+                    className="px-5 py-2 rounded-[6px] text-[13px] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
+                  >
+                    {loggingOut ? 'Keluar…' : 'Keluar'}
+                  </button>
+                </>
+              }
+            />
 
       {/* MAIN PANE + TOP BAR */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-[var(--surface-page)] overflow-hidden">

@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           `INSERT INTO apps (id, org_id, name, slug, description, is_published)
            VALUES ($1, $2, $3, $4, $5, false)
            RETURNING id, name, slug, description, version, is_published, created_at, updated_at`,
-          [appId, user.org_id, appName, slug, description?.trim() || null],
+          [appId, user.org_id, appName, slug, typeof description === 'string' ? description.trim() || null : null],
         );
         await client.query(
           `INSERT INTO activity_logs (id, org_id, user_id, action, entity_type, entity_id, meta_json)
