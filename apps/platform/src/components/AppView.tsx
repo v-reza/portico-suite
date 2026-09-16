@@ -13,10 +13,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconPlus, IconSparkles, IconTrash, IconChevronRight } from '@portico/ui/icons';
+import { ComponentPreview, typeLabel, type PreviewComponent } from './ComponentPreview';
+import { Modal } from '@portico/ui/modal';
 
 // ---- types ---------------------------------------------------------------
 interface App { id: string; name: string; slug: string; description: string | null; is_published: boolean }
-interface Component { id: string; page_id: string; type: string; config_json: any; order_index: number }
+interface Component extends PreviewComponent { page_id: string; order_index: number }
 interface Page { id: string; app_id: string; name: string; route: string; order_index: number; components: Component[] }
 interface WorkflowStep { id: string; workflow_id: string; action_type: string; config_json: any; step_order: number; on_error: string }
 interface Workflow { id: string; app_id: string; name: string; trigger_type: string; config_json: any; active: boolean; steps: WorkflowStep[] }
@@ -55,87 +57,6 @@ const TYPE_GLYPH: Record<string, string> = {
   rich_text: '▦', table: '⊞', textarea: '≡', image: '🖼', email: '@', number: '#', checkbox: '☑', rating: '★', file: '⤒',
 };
 
-// Component preview renderers (visual, per-type).
-function ComponentPreview({ comp }: { comp: Component }) {
-  const cfg = comp.config_json ?? {};
-  const label = cfg.label ?? cfg.text ?? typeLabel(comp.type);
-  switch (comp.type) {
-    case 'heading':
-      return <h2 className="font-bold text-[1rem] text-[var(--text-primary)]">{cfg.text || label}</h2>;
-    case 'button':
-      return <button className="w-full bg-[var(--accent)] text-white font-medium text-[0.813rem] px-5 py-2.5 rounded text-center shadow-sm">{label}</button>;
-    case 'divider':
-      return <div className="h-px bg-[var(--border-standard)]" />;
-    case 'text':
-    case 'email':
-    case 'number':
-    case 'textarea':
-    case 'date':
-      return (
-        <div>
-          <label className="block text-[0.75rem] text-[var(--text-tertiary)] mb-1.5 font-medium">{label}</label>
-          <div className="h-[38px] border border-[var(--border-standard)] rounded px-3 text-[0.875rem] text-[var(--text-quaternary)] bg-[var(--surface-panel)] flex items-center">
-            {cfg.placeholder ?? 'Isi di sini…'}
-          </div>
-        </div>
-      );
-    case 'select':
-      return (
-        <div>
-          <label className="block text-[0.75rem] text-[var(--text-tertiary)] mb-1.5 font-medium">{label}</label>
-          <div className="h-[38px] border border-[var(--border-standard)] rounded px-3 text-[0.875rem] text-[var(--text-quaternary)] bg-[var(--surface-panel)] flex items-center justify-between">
-            <span>Pilih opsi…</span>
-            <span className="text-[var(--text-quaternary)]">▾</span>
-          </div>
-        </div>
-      );
-    case 'rich_text':
-      return (
-        <div className="bg-[var(--surface-panel)] border border-[var(--border-subtle)] rounded-lg p-4 shadow-sm">
-          <h2 className="font-bold text-[1rem] text-[var(--text-primary)]">{cfg.heading || 'Judul Kartu'}</h2>
-          <p className="text-[0.813rem] text-[var(--text-secondary)] mt-1">{cfg.body ?? 'Deskripsi singkat kartu ini.'}</p>
-        </div>
-      );
-    case 'table':
-      return (
-        <div>
-          <label className="block text-[0.75rem] text-[var(--text-tertiary)] mb-1.5 font-medium">{label}</label>
-          <div className="border border-[var(--border-standard)] rounded overflow-hidden">
-            <div className="flex py-2 px-3 bg-[var(--surface-sunken)] text-[0.75rem] font-medium text-[var(--text-tertiary)]">
-              <span className="flex-1">Kolom 1</span><span className="flex-1">Kolom 2</span>
-            </div>
-            <div className="flex py-2 px-3 text-[0.75rem] text-[var(--text-secondary)]">
-              <span className="flex-1">–</span><span className="flex-1">–</span>
-            </div>
-          </div>
-        </div>
-      );
-    default:
-      return <span className="text-[0.75rem] text-[var(--text-secondary)]">{label}</span>;
-  }
-}
-
-function typeLabel(type: string): string {
-  switch (type) {
-    case 'heading': return 'Judul';
-    case 'button': return 'Tombol';
-    case 'divider': return 'Pemisah';
-    case 'text': return 'Input teks';
-    case 'select': return 'Dropdown';
-    case 'date': return 'Tanggal';
-    case 'rich_text': return 'Kartu';
-    case 'table': return 'Tabel';
-    case 'textarea': return 'Area teks';
-    case 'image': return 'Gambar';
-    case 'email': return 'Email';
-    case 'number': return 'Angka';
-    case 'checkbox': return 'Centang';
-    case 'rating': return 'Rating';
-    case 'file': return 'Upload';
-    default: return type;
-  }
-}
-
 export function AppView({ app, pages: initialPages, workflows: initialWorkflows }: {
   app: App;
   pages: Page[];
@@ -151,6 +72,12 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  // US-A08 — the badge and the dialog read this, not the prop: a publish
+  // mutates the row, and mutating a prop in place would desync the UI from
+  // React until the next refresh lands.
+  const [isPublished, setIsPublished] = useState(app.is_published);
+  const [showPublish, setShowPublish] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
 
   const activePage = pages.find((p) => p.id === activePageId);
   const selectedComp = activePage?.components.find((c) => c.id === selected) ?? null;
@@ -159,7 +86,23 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
     .map((s) => ({ ...s, items: s.items.filter((i) => !paletteSearch || i.label.toLowerCase().includes(paletteSearch.toLowerCase())) }))
     .filter((s) => s.items.length > 0);
 
+
   // ---- handlers ----------------------------------------------------------
+  /** US-A08 AC2/AC3 — one toggle, two directions; the response is the truth. */
+  async function togglePublish() {
+    setPublishLoading(true);
+    try {
+      const r = await fetch(`/api/apps/${app.id}/publish`, { method: 'POST' });
+      if (!r.ok) return;
+      const d = await r.json();
+      setIsPublished(d.is_published);
+      setShowPublish(false);
+      router.refresh();
+    } finally {
+      setPublishLoading(false);
+    }
+  }
+
   async function addPage() {
     const name = prompt('Nama halaman:');
     if (!name) return;
@@ -237,7 +180,7 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
             <span className="text-[16px] leading-none text-[var(--text-quaternary)] group-hover:text-[var(--text-secondary)] transition-colors">✎</span>
           </a>
           <span className="bg-[var(--surface-hover)] text-[var(--text-tertiary)] text-[0.75rem] px-2 py-0.5 rounded border border-[var(--border-subtle)]">
-            {app.is_published ? 'Terbit' : 'Draft'}
+            {isPublished ? 'Terbit' : 'Draft'}
           </span>
         </div>
 
@@ -280,7 +223,7 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
             <IconSparkles size={16} />
             <span>Generate dengan AI</span>
           </button>
-          <button onClick={() => router.push('/apps')} className="border border-[var(--border-standard)] bg-[var(--surface-panel)] hover:bg-[var(--surface-hover)] text-[var(--text-primary)] font-medium text-[0.75rem] px-3 py-1.5 rounded transition-colors shadow-xs">
+          <button onClick={() => setShowPublish(true)} className="border border-[var(--border-standard)] bg-[var(--surface-panel)] hover:bg-[var(--surface-hover)] text-[var(--text-primary)] font-medium text-[0.75rem] px-3 py-1.5 rounded transition-colors shadow-xs">
             Terbitkan
           </button>
         </div>
@@ -398,7 +341,7 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[0.75rem] text-[var(--text-tertiary)]">{selectedComp.type === 'button' ? 'Label Tombol' : 'Label'}</label>
                     <input
-                      defaultValue={selectedComp.config_json?.label ?? selectedComp.config_json?.text ?? cfgPlaceholder(selectedComp)}
+                      defaultValue={cfgPlaceholder(selectedComp)}
                       readOnly
                       className="h-10 px-3 bg-[var(--surface-panel)] border border-[var(--border-standard)] rounded text-[0.813rem] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
                     />
@@ -513,11 +456,45 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
           </div>
         </div>
       )}
+
+      {/* US-A08 AC2/AC3 — publish and unpublish go through the shared Modal;
+          the reference draws "Terbitkan" as a plain toolbar button, so the
+          confirmation reuses the confirm-dialog treatment already on the
+          settings screen rather than inventing a new one. */}
+      <Modal
+        open={showPublish}
+        title={isPublished ? `Batalkan publikasi ${app.name}?` : `Terbitkan ${app.name}?`}
+        description={
+          isPublished
+            ? 'Tautan publik kembali menampilkan halaman "belum dipublikasikan". Data yang sudah masuk tidak terhapus.'
+            : `Setelah diterbitkan, siapa pun dengan tautan publik ${app.slug} bisa membuka dan mengirim data ke aplikasi ini.`
+        }
+        onClose={() => setShowPublish(false)}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setShowPublish(false)}
+              className="h-8 px-3 rounded-[6px] text-[12px] border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={togglePublish}
+              disabled={publishLoading}
+              className="h-8 px-3 rounded-[6px] text-[12px] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
+            >
+              {publishLoading ? 'Memproses…' : isPublished ? 'Batalkan publikasi' : 'Terbitkan'}
+            </button>
+          </>
+        }
+      />
     </div>
   );
 }
 
 function cfgPlaceholder(comp: Component): string {
-  const cfg = comp.config_json ?? {};
+  const cfg = (comp.config_json ?? {}) as Record<string, any>;
   return cfg.label ?? cfg.text ?? cfg.heading ?? comp.type;
 }
