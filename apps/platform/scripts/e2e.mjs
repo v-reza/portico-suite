@@ -758,6 +758,108 @@ async function dropUserAndOrg(userId, orgId) {
   await dropUserAndOrg(regBody?.user?.id, outsiderOrg);
 }
 
+// ── US-A04 AC6: the server-rendered page /apps/[id] must not leak either ──
+// The API routes are guarded; the SSR page was the one gap (it carried the app's
+// name, its pages and workflows to a visitor who was not in the owning
+// workspace). The AC is about "tidak ada data yang terungkap", so the assertion
+// is on the BODY of the HTML, not the status code.
+//
+// The probe uses its own app with a timestamped name rather than the seed's
+// "Welcome App" alone: a generic word ("Home") would also appear in unrelated
+// chrome, and a name the fixture controls cannot false-pass on coincidence.
+{
+  const seedAdmin = cookies;
+
+  // Fixture built through the real API, as the seed admin, in the seed workspace.
+  const tag = Date.now();
+  const leakAppName = `AC6 Leak Probe ${tag}`;
+  const leakPageName = `Leak Page ${tag}`;
+  const made = await json(await req('/api/apps', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: leakAppName, slug: `ac6-leak-${tag}` }),
+  }));
+  const leakApp = made?.app?.id;
+  const madePage = await json(await req(`/api/apps/${leakApp}/pages`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: leakPageName }),
+  }));
+  record('US-A04 AC6', 'page: leak-probe app + page created in the seed workspace',
+    !!(leakApp && madePage?.page?.id), `app=${leakApp} page=${madePage?.page?.id}`);
+
+  // Owner control FIRST, while the seed admin's session is still the current
+  // one. Without it the guard could simply break the page for everyone and the
+  // cross-tenant assertions below would still pass.
+  const own = await req(`/apps/${leakApp}`);
+  const ownHtml = await own.text();
+  record('US-A04 AC6', 'page: owner GET renders the app name (control)',
+    own.status === 200 && ownHtml.includes(leakAppName),
+    `status=${own.status} hasName=${ownHtml.includes(leakAppName)}`);
+
+  // A fresh workspace for the outsider (the AC needs a second org to exist).
+  // Registering replaces the current cookie with the outsider's session, which
+  // is exactly the session the cross-tenant probes below must run as.
+  const outsiderEmail = `page-ac6-${tag}@seed.dev`;
+  const outsiderPw = 'pageac6123';
+  const reg = await req('/api/auth/register', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Page Outsider', workspace_name: `Page WS ${tag}`, email: outsiderEmail,
+      password: outsiderPw, confirm: outsiderPw,
+    }),
+  });
+  const regBody = await json(reg);
+  record('US-A04 AC6', 'page: second workspace created', reg.status === 201 && !!regBody?.workspace?.id,
+    `status=${reg.status}`);
+  const outsiderOrg = regBody?.workspace?.id;
+
+  // The outsider guesses both URLs: the fixture's, and the seed app-1 named in
+  // the card's reproduction. Each case checks against THAT app's own page names
+  // (read from the DB), not a hard-coded word — a generic string like "Home"
+  // could also appear in unrelated page chrome and false-fail.
+  const pool = await pgPool();
+  const caseSecrets = [
+    { label: 'fixture', id: leakApp, name: leakAppName },
+    { label: 'seed app-1', id: 'app-1', name: 'Welcome App' },
+  ];
+  for (const c of caseSecrets) {
+    const pageRows = await pool.query('SELECT name FROM pages WHERE app_id = $1', [c.id]);
+    c.pages = pageRows.rows.map((x) => x.name);
+  }
+
+  for (const c of caseSecrets) {
+    const cross = await req(`/apps/${c.id}`);
+    // Read the body even though a redirect answers empty: if the guard ever
+    // regressed to rendering, this is the call that would carry the leak.
+    const crossHtml = await cross.text();
+    const leakedApp = crossHtml.includes(c.name);
+    const leakedPage = c.pages.find((p) => crossHtml.includes(p)) ?? null;
+    record('US-A04 AC6', `page: outsider sees no app name from ${c.label} in the body`,
+      !leakedApp, `status=${cross.status} leaked=${leakedApp}`);
+    record('US-A04 AC6', `page: outsider sees no page name from ${c.label} in the body`,
+      !leakedPage, `status=${cross.status} leakedPage=${leakedPage}`);
+    // The refusal is the generic list redirect: no name, no page, no count.
+    const loc = cross.headers.get('location') || '';
+    record('US-A04 AC6', `page: outsider is redirected off the foreign page (${c.label})`,
+      cross.status === 307 && loc.includes('/apps') && !leakedApp,
+      `status=${cross.status} location=${loc}`);
+  }
+
+  // AC5 still holds: signed out, a deep link lands on /login carrying ?next=.
+  cookies = '';
+  const anon = await req(`/apps/${leakApp}`);
+  const anonLoc = anon.headers.get('location') || '';
+  record('US-A04 AC6', 'page: anon is redirected to /login (AC5 undamaged)',
+    anon.status === 307 && anonLoc.includes('/login')
+      && anonLoc.includes(encodeURIComponent(`/apps/${leakApp}`)),
+    `status=${anon.status} location=${anonLoc}`);
+
+  // Teardown: the fixture app (pages cascade), then the outsider's workspace.
+  cookies = seedAdmin;
+  await pool.query('DELETE FROM apps WHERE id = $1', [leakApp]);
+  await pool.end();
+  await dropUserAndOrg(regBody?.user?.id, outsiderOrg);
+}
+
 // ── teardown: leave no fixture behind --------------------------------------
 // The US-A05 block deletes its own rows by id (and its activity_logs, which a
 // name-based sweep would miss). What is left to check is that nothing this
