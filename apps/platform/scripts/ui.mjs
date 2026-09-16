@@ -673,7 +673,7 @@ if (usA05AppId) {
     compsBefore?.components?.length === 1, `count=${compsBefore?.components?.length}`);
 
   await page.getByText('Hapus komponen').click();
-  const delDialog = page.locator('[role="dialog"]').filter({ hasText: 'Hapus Komponen' });
+  const delDialog = page.locator('[role="dialog"]').filter({ hasText: 'Hapus komponen ini?' });
   await delDialog.waitFor({ state: 'visible', timeout: 8000 });
   record('US-A10 AC2', 'delete opens a real dialog (role=dialog, no browser confirm)',
     await delDialog.getAttribute('aria-modal') === 'true',
@@ -689,7 +689,7 @@ if (usA05AppId) {
 
   // Confirm path: the component leaves the canvas AND storage.
   await page.getByText('Hapus komponen').click();
-  const delDialog2 = page.locator('[role="dialog"]').filter({ hasText: 'Hapus Komponen' });
+  const delDialog2 = page.locator('[role="dialog"]').filter({ hasText: 'Hapus komponen ini?' });
   await delDialog2.waitFor({ state: 'visible', timeout: 8000 });
   await delDialog2.getByRole('button', { name: /^Hapus$/ }).click();
   const afterConfirm = await waitForCount(`${BASE}/api/pages/${newPage.id}/components`, 'components', 0);
