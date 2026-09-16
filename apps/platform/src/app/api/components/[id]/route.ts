@@ -18,6 +18,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   return NextResponse.json({ ok: true });
 }
 
+/**
+ * US-A09 AC4 — the inspector edits one property at a time (label, then
+ * placeholder, then wajib-isi). This MERGES the patch into the stored config
+ * rather than replacing it, so the three edits are independent: with a
+ * whole-object replace, a client that sends the config it last rendered
+ * overwrites a newer field whenever two PATCHes overlap, and the user watches
+ * a setting they just changed silently revert.
+ *
+ * `||` is jsonb "shallow merge" — keys present in the patch win, keys absent
+ * from it are left alone.
+ */
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await getSessionUser(req);
@@ -29,6 +40,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!owned.ok) return owned.response;
 
   const { config_json } = await req.json().catch(() => ({}));
-  await query('UPDATE components SET config_json = $1 WHERE id = $2', [JSON.stringify(config_json || {}), id]);
-  return NextResponse.json({ ok: true });
+  if (!config_json || typeof config_json !== 'object' || Array.isArray(config_json)) {
+    return jsonError(400, 'invalid_config', 'Konfigurasi tidak valid.');
+  }
+
+  const updated = await query(
+    'UPDATE components SET config_json = config_json || $1::jsonb WHERE id = $2 RETURNING config_json',
+    [JSON.stringify(config_json), id],
+  );
+  return NextResponse.json({ ok: true, config_json: updated.rows[0].config_json });
 }

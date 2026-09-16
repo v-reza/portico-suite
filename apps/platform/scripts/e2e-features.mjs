@@ -112,9 +112,133 @@ let compId;
   const r = await req(`/api/components/${compId}`, {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ config_json: { label: 'Nama Lengkap', required: true } }),
+    body: JSON.stringify({ config_json: { label: 'Nama Lengkap', placeholder: 'mis. PT Maju', required: true } }),
   });
   record('US-A09 AC4', 'update component config', r.status === 200, `status=${r.status}`);
+}
+{
+  // AC4 — "pengaturannya bisa diubah": a 200 on the PATCH only proves the
+  // request was accepted. Read the component back and assert the three named
+  // settings (label, placeholder, wajib-isi) actually changed.
+  const r = await req(`/api/pages/${pageId}/components`);
+  const b = await json(r);
+  const c = b?.components?.find((x) => x.id === compId);
+  record('US-A09 AC4', 'the three settings (label, placeholder, wajib-isi) read back changed',
+    r.status === 200 && c?.config_json?.label === 'Nama Lengkap'
+      && c?.config_json?.placeholder === 'mis. PT Maju' && c?.config_json?.required === true,
+    `label=${c?.config_json?.label} placeholder=${c?.config_json?.placeholder} required=${c?.config_json?.required}`);
+}
+
+// ── US-A09 AC1: the component lands at the index it was dropped on ────────
+{
+  // Snapshot whatever the page already holds, then insert at index 0. The
+  // append-only endpoint would put the new one last; the AC asks for "di
+  // urutan tempat dijatuhkan".
+  const priorOrder = ((await json(await req(`/api/pages/${pageId}/components`)))?.components ?? [])
+    .map((c) => c.id);
+  const ins = await req(`/api/pages/${pageId}/components`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ type: 'heading', config_json: { text: 'Disisipkan di atas' }, position: 0 }),
+  });
+  const insBody = await json(ins);
+  record('US-A09 AC1', 'a drop at index 0 is accepted', ins.status === 201, `status=${ins.status}`);
+
+  const listed = await json(await req(`/api/pages/${pageId}/components`));
+  const order = (listed?.components ?? []).map((c) => c.id);
+  record('US-A09 AC1', 'the dropped component is first, every existing row shifts down intact',
+    order[0] === insBody?.component?.id && order.slice(1).join() === priorOrder.join(),
+    `inserted=${insBody?.component?.id} order=${order.join(',')}`);
+  record('US-A09 AC1', 'the stored order_index matches the drop position, with no duplicates',
+    (listed?.components ?? []).map((c) => c.order_index).join() ===
+      (listed?.components ?? []).map((_, i) => i).join(),
+    `order_index=${(listed?.components ?? []).map((c) => c.order_index).join(',')}`);
+}
+
+// ── US-A09 AC5: the ceiling holds under concurrency ───────────────────────
+{
+  // The limit is a COUNT-then-INSERT, which is the classic read-then-write race:
+  // without the row lock on `pages`, N simultaneous adds all read the same
+  // count, all pass, and the page ends up over the limit. Burst the same
+  // request and assert zero 5xx AND that the page never exceeds 15.
+  const pageRes = await req(`/api/apps/${appId}/pages`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Balapan', route: '/balapan' }),
+  });
+  const racePage = (await json(pageRes))?.page?.id;
+
+  // 14 pre-filled, so the burst straddles the boundary (14 -> exactly one of
+  // the eight racers may win).
+  for (let i = 0; i < 14; i++) {
+    await req(`/api/pages/${racePage}/components`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ type: 'text', config_json: { label: `race-${i}` } }),
+    });
+  }
+
+  const burst = await Promise.all(Array.from({ length: 8 }, (_, i) =>
+    req(`/api/pages/${racePage}/components`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ type: 'text', config_json: { label: `burst-${i}` } }),
+    }).then((r) => r.status).catch(() => 0)));
+
+  const created = burst.filter((c) => c === 201).length;
+  const serverErrors = burst.filter((c) => c >= 500).length;
+  record('US-A09 AC5', 'a burst of 8 simultaneous adds produces no 5xx', serverErrors === 0,
+    `statuses=${burst.join(',')}`);
+
+  const settled = await json(await req(`/api/pages/${racePage}/components`));
+  const total = settled?.components?.length;
+  record('US-A09 AC5', 'the race does not push the page past the 15 limit',
+    total === 15, `count=${total} created_by_burst=${created} statuses=${burst.join(',')}`);
+  record('US-A09 AC5', 'the order_index stays dense after the race (no duplicated index)',
+    (settled?.components ?? []).map((c) => c.order_index).join() ===
+      (settled?.components ?? []).map((_, i) => i).join(),
+    `order_index=${(settled?.components ?? []).map((c) => c.order_index).join(',')}`);
+}
+
+// ── US-A09 AC5: the per-page ceiling ──────────────────────────────────────
+{
+  // Fill a page to exactly 15, then attempt a 16th. The refusal must name the
+  // limit and leave the page at 15 — a clear message, not a silent no-op and
+  // not a 500.
+  const pageRes = await req(`/api/apps/${appId}/pages`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name: 'Batas', route: '/batas' }),
+  });
+  const limitPage = (await json(pageRes))?.page?.id;
+  const codes = [];
+  for (let i = 0; i < 15; i++) {
+    const r = await req(`/api/pages/${limitPage}/components`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ type: 'text', config_json: { label: `field-${i}` } }),
+    });
+    codes.push(r.status);
+  }
+  record('US-A09 AC5', '15 components on one page are all accepted',
+    codes.every((c) => c === 201), `statuses=${[...new Set(codes)].join(',')}`);
+
+  const over = await req(`/api/pages/${limitPage}/components`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ type: 'text', config_json: { label: 'yang ke-16' } }),
+  });
+  const overBody = await json(over);
+  record('US-A09 AC5', 'the 16th is refused with 409, not a 500',
+    over.status === 409, `status=${over.status}`);
+  record('US-A09 AC5', 'the refusal names the limit in a readable message',
+    typeof overBody?.message === 'string' && /15/.test(overBody.message) && overBody.message.length > 0,
+    `message=${JSON.stringify(overBody?.message)}`);
+
+  const after = await json(await req(`/api/pages/${limitPage}/components`));
+  record('US-A09 AC5', 'the page is still at 15 — no row was written past the limit',
+    after?.components?.length === 15, `count=${after?.components?.length}`);
+
+  // AC3 — the ceiling is per page, not per app: a different page still accepts.
+  const other = await req(`/api/pages/${pageId}/components`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ type: 'text', config_json: { label: 'halaman lain' } }),
+  });
+  record('US-A09 AC5', 'the limit is per page — another page still accepts',
+    other.status === 201, `status=${other.status}`);
 }
 
 // ── US-A20/A21: workflows ─────────────────────────────────────────────────

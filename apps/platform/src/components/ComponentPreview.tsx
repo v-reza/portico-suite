@@ -91,7 +91,7 @@ export function ComponentPreview({
       return (
         <div>
           <label htmlFor={name} className={FIELD_LABEL}>
-            {label}{isForm && cfg.required && <span className="text-[var(--critical)]"> *</span>}
+            {label}{cfg.required && <span data-required-marker className="text-[var(--critical)] ml-0.5" aria-label="wajib diisi">*</span>}
           </label>
           {isForm ? (
             <input
@@ -115,7 +115,7 @@ export function ComponentPreview({
       return (
         <div>
           <label htmlFor={name} className={FIELD_LABEL}>
-            {label}{isForm && cfg.required && <span className="text-[var(--critical)]"> *</span>}
+            {label}{cfg.required && <span data-required-marker className="text-[var(--critical)] ml-0.5" aria-label="wajib diisi">*</span>}
           </label>
           {isForm ? (
             <select
