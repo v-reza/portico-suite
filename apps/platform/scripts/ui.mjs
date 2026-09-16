@@ -24,6 +24,26 @@ async function waitForVisible(selector, timeout = 8000) {
 }
 
 /**
+ * Poll a resource until its `key` array has `n` entries. A fixed
+ * `waitForTimeout` races the dev server: the FIRST hit on a route also pays for
+ * its compile (7.5s observed on /api/pages/[pageId]/components), so a 1.2s sleep
+ * reads an empty list and the test blames the app. Wait for the outcome.
+ */
+async function waitForCount(url, key, n, timeout = 20000) {
+  const deadline = Date.now() + timeout;
+  let last = null;
+  while (Date.now() < deadline) {
+    const r = await page.request.get(url);
+    if (r.ok()) {
+      last = await r.json();
+      if (last?.[key]?.length === n) return last;
+    }
+    await page.waitForTimeout(250);
+  }
+  return last;
+}
+
+/**
  * Delete Redis keys the throttle tests created. Same stdlib RESP approach as
  * apps/platform/src/lib/redis.ts — a suite must not leave a 15-minute login
  * block behind for the next run.
@@ -142,7 +162,11 @@ async function shotPage(name) {
   await page.fill('#email', 'admin@seed.dev');
   await page.fill('#password', 'seedadmin123');
   await page.click('button[type="submit"]');
-  await page.waitForTimeout(2500);
+  // Wait for the destination instead of a fixed delay: the first hit on
+  // /apps/[id] also pays for the dev server's compile, so a 2.5s sleep races
+  // it and fails intermittently.
+  await page.waitForURL((u) => u.pathname.startsWith('/apps/app-1'), { timeout: 20000 })
+    .catch(() => {});
   // AC4: not /apps — the app the user asked for.
   record('US-A02 AC4', 'after login the browser is on the originally requested page',
     page.url().includes('/apps/app-1'), `url=${page.url()}`);
@@ -552,6 +576,132 @@ if (usA05AppId) {
   await pool.end();
   record('US-A05 AC1', 'the fixture activity_log row is removed too',
     purged.rowCount >= 1, `deleted_logs=${purged.rowCount}`);
+}
+
+// ── US-A11 AC1 + US-A10 AC2: the builder's dialogs are real Modals ─────────
+// "Kalau Adit menambahkan halaman, maka tab halaman baru muncul dan bisa
+//  diberi nama serta rute." (US-A11 AC1)
+// "Kalau Adit menghapus komponen, maka komponen hilang dari kanvas dan dari
+//  penyimpanan setelah perubahan disimpan." (US-A10 AC2)
+// Drives the actual controls. A browser prompt()/confirm() would satisfy the
+// old code but cannot be queried by role, so every assertion below fails on
+// the previous implementation.
+{
+  // Throwaway app: the seeded app-1 must come back untouched, and this suite
+  // has no page-DELETE endpoint to undo a page created there.
+  const created = await page.request.post(`${BASE}/api/apps`, {
+    data: { name: 'UI Modal App', description: 'created by ui.mjs' },
+  });
+  const { app } = await created.json();
+  const appId = app?.id;
+  record('US-A11 AC1', 'fixture app created for the builder checks', created.status() === 201 && !!appId,
+    `status=${created.status()} id=${appId}`);
+
+  await goto(page, `/apps/${appId}`);
+  await page.getByTitle('Tambah Tab').waitFor({ state: 'visible', timeout: 20000 }).catch(() => {});
+  record('US-A11 AC1', 'builder opens the app builder', page.url().includes(`/apps/${appId}`),
+    `url=${page.url()}`);
+
+  // ── add page: the + ("Tambah Tab") must open a Modal, not prompt() ────────
+  await page.getByTitle('Tambah Tab').click();
+  const nameDialog = page.locator('[role="dialog"]').filter({ hasText: 'Tambah Halaman' });
+  await nameDialog.waitFor({ state: 'visible', timeout: 8000 });
+  record('US-A11 AC1', 'add page opens a real dialog (role=dialog, no browser prompt)',
+    await nameDialog.getAttribute('aria-modal') === 'true',
+    `role=dialog aria-modal=${await nameDialog.getAttribute('aria-modal')}`);
+
+  // The dialog is labelled by its title and carries a visible close control —
+  // a browser prompt() has neither.
+  const labelledBy = await nameDialog.getAttribute('aria-labelledby');
+  record('US-A11 AC1', 'the dialog is labelled by its own title',
+    !!labelledBy && await page.locator(`#${labelledBy}`).innerText() === 'Tambah Halaman',
+    `aria-labelledby=${labelledBy}`);
+  record('US-A11 AC1', 'the dialog has a visible close control',
+    await nameDialog.getByRole('button', { name: 'Tutup' }).isVisible());
+
+  // Focus lands in the name field, not on the close control — otherwise the
+  // user has to click before typing.
+  record('US-A11 AC1', 'focus opens in the name field, not on the close control',
+    await page.evaluate(() => document.activeElement?.tagName) === 'INPUT',
+    `activeElement=${await page.evaluate(() => document.activeElement?.tagName)}`);
+
+  // Escape closes it, like every other dialog in the suite.
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(400);
+  record('US-A11 AC1', 'Escape closes the dialog',
+    await page.locator('[role="dialog"]').count() === 0);
+
+  // Reopen for the Batal check below.
+  await page.getByTitle('Tambah Tab').click();
+  await nameDialog.waitFor({ state: 'visible', timeout: 8000 });
+
+  // Batal is a real gate: it closes the dialog and creates nothing.
+  await nameDialog.getByRole('button', { name: /^Batal$/ }).click();
+  await page.waitForTimeout(600);
+  const pagesAfterCancel = await page.request.get(`${BASE}/api/apps/${appId}/pages`);
+  record('US-A11 AC1', 'Batal closes the dialog and creates no page',
+    await page.locator('[role="dialog"]').count() === 0
+      && (await pagesAfterCancel.json())?.pages?.length === 0,
+    `dialogs=${await page.locator('[role="dialog"]').count()}`);
+
+  // Confirm path: type a name, submit, the tab appears AND the page exists.
+  await page.getByTitle('Tambah Tab').click();
+  const dlg2 = page.locator('[role="dialog"]').filter({ hasText: 'Tambah Halaman' });
+  await dlg2.waitFor({ state: 'visible', timeout: 8000 });
+  await dlg2.locator('input[type="text"]').fill('Form Pengajuan');
+  await dlg2.getByRole('button', { name: /^Tambah$/ }).click();
+
+  // The tab renders from the POST response, so wait on the tab rather than a
+  // sleep — the first POST on this route also pays for its compile.
+  await page.getByRole('button', { name: 'Form Pengajuan' })
+    .waitFor({ state: 'visible', timeout: 20000 })
+    .catch(() => {});
+
+  const pagesBody = await waitForCount(`${BASE}/api/apps/${appId}/pages`, 'pages', 1);
+  const newPage = pagesBody?.pages?.[0];
+  record('US-A11 AC1', 'the tab appears on screen after confirming',
+    await page.getByRole('button', { name: 'Form Pengajuan' }).count() > 0);
+  record('US-A11 AC1', 'the page is really stored (name + route), not just a tab',
+    pagesBody?.pages?.length === 1 && newPage?.name === 'Form Pengajuan'
+      && newPage?.route === '/form-pengajuan',
+    `pages=${pagesBody?.pages?.length} name=${newPage?.name} route=${newPage?.route}`);
+
+  // ── delete component: "Hapus komponen" must open a Modal, not confirm() ───
+  await page.locator('aside button', { hasText: 'Judul' }).first().click();
+  const compsBefore = await waitForCount(`${BASE}/api/pages/${newPage.id}/components`, 'components', 1);
+  record('US-A10 AC2', 'component added to the page (fixture for the delete check)',
+    compsBefore?.components?.length === 1, `count=${compsBefore?.components?.length}`);
+
+  await page.getByText('Hapus komponen').click();
+  const delDialog = page.locator('[role="dialog"]').filter({ hasText: 'Hapus Komponen' });
+  await delDialog.waitFor({ state: 'visible', timeout: 8000 });
+  record('US-A10 AC2', 'delete opens a real dialog (role=dialog, no browser confirm)',
+    await delDialog.getAttribute('aria-modal') === 'true',
+    `role=dialog aria-modal=${await delDialog.getAttribute('aria-modal')}`);
+
+  // Batal is a real gate: the component survives a cancelled delete.
+  await delDialog.getByRole('button', { name: /^Batal$/ }).click();
+  await page.waitForTimeout(600);
+  const afterCancel = await (await page.request.get(`${BASE}/api/pages/${newPage.id}/components`)).json();
+  record('US-A10 AC2', 'Batal closes the dialog and the component survives',
+    await page.locator('[role="dialog"]').count() === 0 && afterCancel?.components?.length === 1,
+    `count=${afterCancel?.components?.length}`);
+
+  // Confirm path: the component leaves the canvas AND storage.
+  await page.getByText('Hapus komponen').click();
+  const delDialog2 = page.locator('[role="dialog"]').filter({ hasText: 'Hapus Komponen' });
+  await delDialog2.waitFor({ state: 'visible', timeout: 8000 });
+  await delDialog2.getByRole('button', { name: /^Hapus$/ }).click();
+  const afterConfirm = await waitForCount(`${BASE}/api/pages/${newPage.id}/components`, 'components', 0);
+  record('US-A10 AC2', 'confirming removes the component from storage',
+    afterConfirm?.components?.length === 0, `count=${afterConfirm?.components?.length}`);
+  record('US-A10 AC2', 'confirming removes the component from the canvas',
+    await page.getByText('Hapus komponen').count() === 0);
+
+  // Clean up the fixture app — pages and components cascade with it.
+  const del = await page.request.delete(`${BASE}/api/apps/${appId}`);
+  record('US-A11 AC1', 'fixture app deleted (suite leaves no rows behind)',
+    del.status() === 200, `status=${del.status()}`);
 }
 
 // ── US-A29 AC1: health ----------------------------------------------------

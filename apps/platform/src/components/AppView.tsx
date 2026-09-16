@@ -136,6 +136,11 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
   // implementations of one feature. Undo restores the server too, so the
   // rollback survives a reload rather than only repainting the canvas.
   const [addedIds, setAddedIds] = useState<string[]>([]);
+  // US-A11 AC1 — addPage asks for a name through the suite Modal, not prompt().
+  const [showAddPage, setShowAddPage] = useState(false);
+  const [pageName, setPageName] = useState('');
+  // US-A10 AC2 — removeComponent confirms through the suite Modal, not confirm().
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const activePage = pages.find((p) => p.id === activePageId);
   const selectedComp = activePage?.components.find((c) => c.id === selected) ?? null;
@@ -161,8 +166,19 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
     }
   }
 
-  async function addPage() {
-    const name = prompt('Nama halaman:');
+  /**
+   * US-A11 AC1 — the name is collected in a real dialog. `prompt()` returns
+   * `null` on cancel and `''` on empty, which is the only place the browser
+   * dialog does something a Modal needs help with: the confirm handler exits
+   * on a blank name exactly like the old `if (!name) return`.
+   */
+  function addPage() {
+    setPageName('');
+    setShowAddPage(true);
+  }
+
+  async function confirmAddPage() {
+    const name = pageName.trim();
     if (!name) return;
     const slug = '/' + name.toLowerCase().replace(/[\s_]+/g, '-');
     const r = await fetch(`/api/apps/${app.id}/pages`, {
@@ -174,6 +190,8 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
       setPages([...pages, { ...page, components: [] }]);
       setActivePageId(page.id);
     }
+    setShowAddPage(false);
+    setPageName('');
   }
 
   /**
@@ -232,13 +250,24 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
     return comps.length;
   }
 
-  async function removeComponent(id: string) {
-    if (!confirm('Hapus komponen ini?')) return;
+  /**
+   * US-A10 AC2 — deletion is confirmed in a real dialog. The old `confirm()`
+   * gated the DELETE inline; here the click only arms `pendingDeleteId` and the
+   * request fires from the dialog's confirm button.
+   */
+  function removeComponent(id: string) {
+    setPendingDeleteId(id);
+  }
+
+  async function confirmRemoveComponent() {
+    const id = pendingDeleteId;
+    if (!id) return;
     const r = await fetch(`/api/components/${id}`, { method: 'DELETE' });
     if (r.ok) {
       setPages(pages.map((p) => (p.id === activePageId ? { ...p, components: p.components.filter((c) => c.id !== id) } : p)));
       if (selected === id) setSelected(null);
     }
+    setPendingDeleteId(null);
   }
 
   /**
@@ -721,6 +750,83 @@ export function AppView({ app, pages: initialPages, workflows: initialWorkflows 
           </div>
         </div>
       )}
+
+      {/* US-A11 AC1 — adding a page collects the name in a real dialog. The
+          reference has no add-page dialog, so the composition follows the
+          create-app dialog (platform_apps_list_modal_buat_aplikasi_ai): same
+          panel, 16px field label, h-10 input on --surface-page with the 6px
+          input radius, ruled footer with Batal + accent Tambah. */}
+      <Modal
+        open={showAddPage}
+        title="Tambah Halaman"
+        description="Halaman baru muncul sebagai tab di toolbar dan bisa dipakai untuk memisahkan langkah."
+        onClose={() => { setShowAddPage(false); setPageName(''); }}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => { setShowAddPage(false); setPageName(''); }}
+              className="h-8 px-4 bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-secondary)] rounded-[6px] text-[13px] font-medium hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={confirmAddPage}
+              disabled={!pageName.trim()}
+              className="h-8 px-5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white rounded-[6px] text-[13px] font-medium transition-colors"
+            >
+              Tambah
+            </button>
+          </>
+        }
+      >
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[13px] font-medium text-[var(--text-secondary)]">Nama halaman</span>
+          <input
+            type="text"
+            value={pageName}
+            autoFocus
+            onChange={(e) => setPageName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && pageName.trim()) {
+                e.preventDefault();
+                confirmAddPage();
+              }
+            }}
+            placeholder="Misal: Form Pengajuan"
+            className="w-full h-10 px-3 bg-[var(--surface-page)] text-[var(--text-primary)] placeholder-[var(--text-quaternary)] text-[0.875rem] rounded-[6px] border border-[var(--border-standard)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+          />
+        </label>
+      </Modal>
+
+      {/* US-A10 AC2 — destructive confirmation. `--danger-solid` is the token
+          the design system assigns to `button-danger`; SettingsView already
+          draws its destructive confirm the same way, so this matches. */}
+      <Modal
+        open={!!pendingDeleteId}
+        title="Hapus komponen ini?"
+        description="Komponen hilang dari kanvas dan dari penyimpanan setelah perubahan disimpan."
+        onClose={() => setPendingDeleteId(null)}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setPendingDeleteId(null)}
+              className="h-8 px-4 bg-[var(--surface-panel)] border border-[var(--border-standard)] text-[var(--text-secondary)] rounded-[6px] text-[13px] font-medium hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={confirmRemoveComponent}
+              className="h-8 px-5 bg-[var(--danger-solid)] hover:bg-[var(--critical)] text-white rounded-[6px] text-[13px] font-medium transition-colors"
+            >
+              Hapus
+            </button>
+          </>
+        }
+      />
 
       {/* US-A08 AC2/AC3 — publish and unpublish go through the shared Modal;
           the reference draws "Terbitkan" as a plain toolbar button, so the
