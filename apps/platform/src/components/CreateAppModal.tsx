@@ -85,7 +85,7 @@ export function CreateAppModal({
       title="Buat aplikasi baru"
       description="Mulai dari kosong. Halaman dan komponennya bisa diatur di builder."
       // Reference subtitle: 12px, line-height 1.5 (18px), --text-tertiary (#62676f)
-            descriptionClassName="text-[12px] leading-[1.5] text-[var(--text-tertiary)] mt-1"
+      descriptionClassName="text-[12px] leading-[1.5] text-[var(--text-tertiary)] mt-1"
             // Reference footer: hairline rgba(15,23,42,0.08) top rule, split left/right
       footerClassName="flex items-center justify-between gap-2 mt-2 pt-4 border-t border-[rgba(15,23,42,0.08)]"
       onClose={() => {

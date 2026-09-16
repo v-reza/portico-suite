@@ -137,8 +137,11 @@ export function Modal({
         style={{ boxShadow: '0 16px 48px rgba(15,23,42,0.16), 0 4px 12px rgba(15,23,42,0.08)' }}
       >
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-start gap-0">
             <h3 id={titleId} className="text-[1.125rem] font-semibold leading-[1.33] text-[var(--text-primary)]">{title}</h3>
+            {description && (
+              <p className={descriptionClassName}>{description}</p>
+            )}
           </div>
           {/* Reference treatment (platform_apps_list_modal_buat_aplikasi_ai):
               transparent control, 4px padding, --text-tertiary/close glyph. */}
@@ -152,9 +155,6 @@ export function Modal({
             <IconX size={20} />
           </button>
         </div>
-        {description && (
-          <p className={descriptionClassName}>{description}</p>
-        )}
         {children && <div>{children}</div>}
         <div className={footerClassName}>{footer}</div>
       </div>
