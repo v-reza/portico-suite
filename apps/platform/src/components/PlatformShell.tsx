@@ -46,6 +46,12 @@ const GROUPED_NAV: { group: string; items: NavItem[] }[] = [
   },
 ];
 
+/**
+ * Standalone nav item rendered after a hairline divider — the reference's
+ * "Pengaturan" entry, which is NOT part of a titled group.
+ */
+const FOOT_NAV: NavItem = { id: 'settings', label: 'Pengaturan', href: '/settings', icon: IconSettings };
+
 interface PlatformShellProps {
   /** Active sidebar nav id. */
   active?: string;
@@ -155,6 +161,23 @@ export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', 
                 </nav>
               </div>
             ))}
+
+            {/* Standalone Pengaturan entry, after a hairline divider */}
+            <div className="pt-1 border-t border-[rgba(15,23,42,0.06)]">
+              <a
+                href={FOOT_NAV.href}
+                aria-current={active === FOOT_NAV.id ? 'page' : undefined}
+                className={[
+                  'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors',
+                  active === FOOT_NAV.id
+                    ? 'font-[560] bg-[#f2f0fe] text-[#5b46d6]'
+                    : 'text-[#4b5058] hover:bg-[#f1f1f3] hover:text-[#101014]',
+                ].join(' ')}
+              >
+                <IconSettings size={ICON_SIZE} />
+                <span>{FOOT_NAV.label}</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -182,30 +205,30 @@ export function PlatformShell({ active = 'apps', user, toolbar, title = 'Apps', 
       </aside>
 
       <Modal
-              open={confirmLogout}
-              title="Keluar dari Platform?"
-              description="Sesi lu bakal diakhiri dan lu balik ke halaman masuk."
-              onClose={() => setConfirmLogout(false)}
-              footer={
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmLogout(false)}
-                    className="px-4 py-2 rounded-[6px] text-[13px] font-medium border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    disabled={loggingOut}
-                    className="px-5 py-2 rounded-[6px] text-[13px] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
-                  >
-                    {loggingOut ? 'Keluar…' : 'Keluar'}
-                  </button>
-                </>
-              }
-            />
+        open={confirmLogout}
+        title="Keluar dari Platform?"
+        description="Sesi lu bakal diakhiri dan lu balik ke halaman masuk."
+        onClose={() => setConfirmLogout(false)}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setConfirmLogout(false)}
+              className="h-8 px-3 rounded-md text-[0.75rem] border border-[var(--border-standard)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={logout}
+              disabled={loggingOut}
+              className="h-8 px-3 rounded-md text-[0.75rem] font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
+            >
+              {loggingOut ? 'Keluar…' : 'Keluar'}
+            </button>
+          </>
+        }
+      />
 
       {/* MAIN PANE + TOP BAR */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-[var(--surface-page)] overflow-hidden">

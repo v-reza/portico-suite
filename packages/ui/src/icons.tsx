@@ -216,3 +216,45 @@ export function IconX(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconSearch(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4.5 4.5" />
+    </Icon>
+  );
+}
+
+/** Person + plus — "Undang anggota". */
+export function IconPersonAdd(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="10" cy="8" r="3.6" />
+      <path d="M4 19.5c0-3.1 2.7-5.2 6-5.2s6 2.1 6 5.2" />
+      <path d="M18.5 7v5M16 9.5h5" />
+    </Icon>
+  );
+}
+
+/** Vertical ellipsis — per-row action menu. */
+export function IconMoreVertical(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="5.5" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="18.5" r="1.4" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+/** Check in a circle — success banner. */
+export function IconCheckCircle(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m8.5 12.2 2.4 2.4 4.6-5" />
+    </Icon>
+  );
+}
+
